@@ -289,7 +289,6 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
     }
 
-    /* Quick Action Launchers (Maps / Transit) */
     .launcher-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -803,7 +802,6 @@
     </section>
   </div>
 
-  <!-- Native iOS Bottom Sheet for Home, Office & Shift Hours -->
   <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSheetOnBg(event)">
     <div class="sheet">
       <div class="sheet-grabber"></div>
@@ -856,7 +854,6 @@
       isRaining: false
     };
 
-    // Support Apple Shortcuts URL trigger (?checkin=1)
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkin") === "1") {
       if (!localStorage.getItem(todayKey())) {
@@ -1040,13 +1037,19 @@
     }
 
     function speakBriefing() {
-      if (!("speechSynthesis" in window)) return;
       const leave = document.getElementById("leaveHome").textContent;
       const mode = document.getElementById("transitTitle").textContent;
-      const msg = new SpeechSynthesisUtterance(
-        `LOKIFFICE briefing. Leave home by ${leave}. Estimated travel is ${state.liveMins} minutes via ${mode}.`
-      );
-      window.speechSynthesis.speak(msg);
+      const text = `LOKIFFICE briefing. Leave home by ${leave}. Estimated travel is ${state.liveMins} minutes via ${mode}.`;
+
+      if (window.AndroidTTS && typeof window.AndroidTTS.speak === "function") {
+        window.AndroidTTS.speak(text);
+        return;
+      }
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(msg);
+      }
     }
 
     function setPreset(val, el) {

@@ -9,7 +9,9 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.webkit.GeolocationPermissions
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -22,16 +24,19 @@ import com.google.android.gms.location.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var geofencingClient: GeofencingClient
-    private val liveAppUrl = "https://logesh-1023.github.io/LOKIFFCE/"
+    private lateinit var tts: TextToSpeech
+    private var ttsReady = false
+    private val liveAppUrl = "https://logesh-1023.github.io/LOKIFFICE/"
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         createNotificationChannel()
+        tts = TextToSpeech(this, this)
         geofencingClient = LocationServices.getGeofencingClient(this)
 
         val webView = WebView(this)
@@ -39,6 +44,15 @@ class MainActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
+
+        webView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun speak(text: String) {
+                if (ttsReady) {
+                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "LOKIFFICE_BRIEFING")
+                }
+            }
+        }, "AndroidTTS")
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -64,8 +78,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.loadUrl(liveAppUrl)
-
         requestPermissionsAndRegisterGeofence()
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            tts.language = Locale.US
+            ttsReady = true
+        }
+    }
+
+    override fun onDestroy() {
+        if (::tts.isInitialized) {
+            tts.stop()
+            tts.shutdown()
+        }
+        super.onDestroy()
     }
 
     private fun requestPermissionsAndRegisterGeofence() {
@@ -138,7 +166,7 @@ class GeofenceReceiver : BroadcastReceiver() {
         if (event.hasError()) return
 
         if (event.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-            val prefs = context.getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
+            val prefs = context.getSharedPreferences("lokiffice", Context.MODE_PRIVATE)
             val todayKey = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 
             if (prefs.contains(todayKey)) return
