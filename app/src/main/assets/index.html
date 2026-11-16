@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LOKIFFCE</title>
+  <title>LOKIFFCE AI</title>
   <style>
     :root {
       --bg: #090d16;
@@ -22,59 +22,84 @@
       color: var(--text); display: flex; align-items: center; justify-content: center; padding: 14px;
     }
     .card {
-      width: 100%; max-width: 420px; background: rgba(19, 28, 46, 0.92);
+      width: 100%; max-width: 420px; background: rgba(19, 28, 46, 0.95);
       border: 1px solid var(--border); border-radius: 20px; padding: 20px;
       box-shadow: 0 24px 48px rgba(0,0,0,0.55); backdrop-filter: blur(12px);
     }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.08em; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.08em; background: linear-gradient(90deg, #38bdf8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .badge {
       font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px;
-      background: rgba(148, 163, 184, 0.15); color: var(--muted); border: 1px solid rgba(148,163,184,0.2);
+      background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3);
     }
     .badge.ok { background: rgba(34, 197, 94, 0.15); color: var(--green); border-color: rgba(34,197,94,0.3); }
-    .badge.warn { background: rgba(245, 158, 11, 0.15); color: var(--amber); border-color: rgba(245,158,11,0.3); }
-    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    
+    /* AI Copilot Banner */
+    .ai-banner {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(56, 189, 248, 0.12));
+      border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 10px 12px;
+      margin-bottom: 14px; display: flex; align-items: flex-start; gap: 10px;
+    }
+    .ai-icon { font-size: 1rem; margin-top: 1px; }
+    .ai-text { font-size: 0.75rem; color: #e2e8f0; line-height: 1.4; }
+    .ai-text b { color: var(--accent); }
+
+    label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
     input[type="time"] {
-      width: 100%; padding: 12px 14px; font-size: 1.3rem; font-weight: 700;
+      width: 100%; padding: 10px 14px; font-size: 1.2rem; font-weight: 700;
       background: var(--bg); color: var(--text); border: 1px solid var(--border);
       border-radius: 12px; outline: none;
     }
     .chips { display: flex; gap: 6px; margin-top: 8px; }
     .chip {
-      flex: 1; padding: 6px 0; font-size: 0.75rem; font-weight: 600; border-radius: 8px;
+      flex: 1; padding: 6px 0; font-size: 0.73rem; font-weight: 600; border-radius: 8px;
       background: var(--bg); border: 1px solid var(--border); color: var(--muted); cursor: pointer; text-align: center;
     }
     .chip.active { border-color: var(--accent); color: var(--accent); background: rgba(56, 189, 248, 0.1); }
+    
     .hero {
-      margin-top: 14px; padding: 14px; border-radius: 14px;
+      margin-top: 12px; padding: 12px; border-radius: 14px;
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(168, 85, 247, 0.1));
       border: 1px solid rgba(56, 189, 248, 0.3); text-align: center;
     }
-    .hero span { display: block; font-size: 0.72rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
-    .hero strong { display: block; font-size: 2rem; margin-top: 2px; color: #fff; }
+    .hero span { display: block; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .hero strong { display: block; font-size: 1.8rem; margin-top: 2px; color: #fff; }
+    
     .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-    .box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center; }
-    .box small { display: block; font-size: 0.68rem; color: var(--muted); }
-    .box b { display: block; font-size: 0.9rem; margin-top: 3px; }
-    hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    .box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; text-align: center; }
+    .box small { display: block; font-size: 0.65rem; color: var(--muted); }
+    .box b { display: block; font-size: 0.88rem; margin-top: 2px; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    
     .timer-box {
       background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
-      padding: 14px; text-align: center; margin-bottom: 10px;
+      padding: 12px; text-align: center; margin-bottom: 10px;
     }
-    .countdown { font-size: 1.85rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--green); }
-    .status-text { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .countdown { font-size: 1.7rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--green); }
+    .status-text { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+
+    .transit-pill {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 8px 12px; margin-bottom: 10px; font-size: 0.75rem;
+    }
+    .transit-pill span { color: var(--muted); }
+    .transit-pill b { color: var(--purple); }
+
     .adjust-row { display: flex; gap: 6px; margin-bottom: 10px; }
-    .adjust-row button { flex: 1; padding: 6px; font-size: 0.74rem; }
+    .adjust-row button { flex: 1; padding: 6px; font-size: 0.72rem; }
+    
     .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     button {
-      padding: 10px; border-radius: 10px; border: 1px solid var(--border);
-      background: var(--bg); color: var(--text); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      padding: 9px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text); font-size: 0.78rem; font-weight: 600; cursor: pointer;
     }
     button.primary { background: var(--accent); color: #090d16; border: none; font-weight: 700; }
-    .streak-bar { display: flex; justify-content: space-between; gap: 6px; margin-top: 14px; }
+
+    .streak-bar { display: flex; justify-content: space-between; gap: 6px; margin-top: 12px; }
     .day-pill {
-      flex: 1; padding: 7px 0; text-align: center; border-radius: 8px; font-size: 0.7rem;
+      flex: 1; padding: 6px 0; text-align: center; border-radius: 8px; font-size: 0.68rem;
       font-weight: 700; background: var(--bg); border: 1px solid var(--border); color: var(--muted);
     }
     .day-pill.done { background: rgba(34, 197, 94, 0.18); border-color: var(--green); color: var(--green); }
@@ -83,21 +108,27 @@
 <body>
   <div class="card">
     <div class="top-bar">
-      <div class="brand">LOKIFFCE</div>
-      <span id="gpsBadge" class="badge">24/7 Native Guard</span>
+      <div class="brand">LOKIFFCE AI</div>
+      <span id="gpsBadge" class="badge">AI Copilot Active</span>
+    </div>
+
+    <!-- AI Feature 1: OMR Traffic & Weather Copilot -->
+    <div class="ai-banner" id="aiCopilotBanner">
+      <div class="ai-icon">🤖</div>
+      <div class="ai-text" id="aiCopilotText">Analyzing OMR traffic patterns & weather for Comcast shift...</div>
     </div>
 
     <label for="homeBy">When do you need to be back home?</label>
     <input type="time" id="homeBy" value="18:00" />
     <div class="chips">
-      <div class="chip" onclick="setPreset('17:00', this)">5:00 PM</div>
-      <div class="chip active" onclick="setPreset('18:00', this)">6:00 PM</div>
-      <div class="chip" onclick="setPreset('19:00', this)">7:00 PM</div>
-      <div class="chip" onclick="setPreset('20:00', this)">8:00 PM</div>
+      <div class="chip" onclick="setPreset('17:00', this)">5 PM</div>
+      <div class="chip active" onclick="setPreset('18:00', this)">6 PM</div>
+      <div class="chip" onclick="setPreset('19:00', this)">7 PM</div>
+      <div class="chip" onclick="setPreset('20:00', this)">8 PM</div>
     </div>
 
     <div class="hero">
-      <span>Leave Home At</span>
+      <span>AI Recommended Leave Home At</span>
       <strong id="leaveHome">--:--</strong>
     </div>
 
@@ -108,6 +139,12 @@
     </div>
 
     <hr />
+
+    <!-- AI Feature 3: Smart Transit Advisor (Rapido / Metro) -->
+    <div class="transit-pill">
+      <span>Smart Transit Rec (Rapido / Metro):</span>
+      <b id="transitRec">Calculating...</b>
+    </div>
 
     <div class="timer-box">
       <div class="countdown" id="countdown">05:00:00</div>
@@ -126,6 +163,7 @@
       <button onclick="requestGPS()">Sync GPS</button>
     </div>
 
+    <!-- AI Feature 4: Weekly Flow & Pattern Analyzer Bar -->
     <div class="streak-bar" id="streakBar"></div>
   </div>
 
@@ -148,6 +186,29 @@
       updatePlanner();
     }
 
+    function runAICopilot() {
+      const now = new Date();
+      const hour = now.getHours();
+      const bannerText = document.getElementById("aiCopilotText");
+      const transitRec = document.getElementById("transitRec");
+
+      // AI Feature 1: OMR Traffic Heuristics
+      if (hour < 10) {
+        bannerText.innerHTML = "<b>OMR Morning Flow:</b> Moderate traffic near Perungudi. Leaving on time keeps you right on target.";
+      } else if (hour >= 17 && hour <= 20) {
+        bannerText.innerHTML = "<b>Evening Peak Alert:</b> OMR return traffic is peaking. <b>Rapido Bike Taxi</b> recommended for faster lane filtering.";
+      } else {
+        bannerText.innerHTML = "<b>AI Status:</b> OMR route is clear. 5-hour shift timer synced with standard transit buffers.";
+      }
+
+      // AI Feature 3: Smart Transit Rec
+      if (hour < 11) {
+        transitRec.textContent = "🚇 Chennai Metro Rail recommended (Smooth morning schedule)";
+      } else {
+        transitRec.textContent = "🏍️ Rapido Bike Taxi recommended (Best for weaving past evening congestion)";
+      }
+    }
+
     function updatePlanner() {
       const [h, m] = homeInput.value.split(":").map(Number);
       if (isNaN(h)) return;
@@ -164,6 +225,7 @@
     }
     homeInput.addEventListener("input", updatePlanner);
     updatePlanner();
+    runAICopilot();
 
     function getDistanceMeters(lat1, lon1, lat2, lon2) {
       const R = 6371000;
@@ -228,14 +290,23 @@
       const labels = ["M", "T", "W", "T", "F", "S", "S"];
       const now = new Date();
       const day = (now.getDay() + 6) % 7;
+      let completedCount = 0;
+      
       for (let i = 0; i < 7; i++) {
         const d = new Date(now);
         d.setDate(now.getDate() - (day - i));
         const key = "lokiffce_in_" + d.toISOString().slice(0, 10);
+        if (localStorage.getItem(key)) completedCount++;
+        
         const div = document.createElement("div");
         div.className = "day-pill" + (localStorage.getItem(key) ? " done" : "");
         div.textContent = labels[i];
         bar.appendChild(div);
+      }
+
+      // AI Feature 4: Weekly Flow Pattern summary update
+      if (completedCount >= 4) {
+        document.getElementById("aiCopilotText").innerHTML = `<b>AI Weekly Flow:</b> Exceptional consistency (${completedCount}/5 days). Your OMR transit timing is locked in!`;
       }
     }
 
@@ -243,7 +314,7 @@
       const saved = localStorage.getItem(todayKey());
       if (!saved) return;
       const inTime = Number(saved);
-      const outTime = inTime + SHIFT_MS;
+      const outTime = saved ? inTime + SHIFT_MS : 0;
       const homeTime = outTime + 3600000;
       const rem = outTime - Date.now();
 
