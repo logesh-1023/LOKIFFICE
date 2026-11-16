@@ -1,54 +1,58 @@
-# LOKIFFICE — Automated Office Shift & Smart Commute Copilot
+# LOKIFFICE — Cross-Platform Hybrid Shift & Reverse-Curfew Copilot
 
-**LOKIFFICE** is a zero-cost, 24/7 native Android application and progressive web dashboard built for a **5-hour on-site office shift** at **Comcast India Engineering Center (Perungudi, OMR, Chennai)** with dynamic door-to-door commute routing.
+**LOKIFFICE** is a unified **iPhone (PWA + Apple Shortcuts), Web, and Native Android** application built to protect your evening curfew around mandatory hybrid office hours.
 
----
-
-## Core Capabilities
-
-### 1. 24/7 Native Android Background Engine (Zero Battery Drain)
-- **Hardware Geofencing (`GeofencingClient`):** Registers a 150-meter circular perimeter around Comcast Perungudi (`12.947238, 80.229203`) directly with Android OS location services. The app remains asleep until you cross the office boundary.
-- **Once-Per-Day Auto Check-In:** Automatically logs your exact arrival timestamp, sends an instant Android notification, and ignores subsequent entry/exit events (such as stepping out for lunch) so your morning check-in stays locked.
-- **Exact Deep-Sleep Hardware Alarm (`AlarmManager`):** Schedules `setExactAndAllowWhileIdle` for `IN + 5 hours`, waking your phone from Doze mode to trigger a loud alarm and notification when your shift ends.
-
-### 2. Dynamic Route & Live Weather Copilot (100% Free, Zero API Keys)
-- **Door-to-Door Home Pinning (`Photon Komoot` + GPS):** Set your exact home location via street/landmark search, Google Maps `lat, lng` coordinates, or 1-tap current GPS lock.
-- **Arterial Road Routing (`OSRM`):** Computes actual road distance and baseline travel duration between your home and Comcast Perungudi, dynamically adjusting your `Leave Home By`, `Office IN`, `Office OUT`, and `Back Home` schedule.
-- **Live Rain & Weather Radar (`Open-Meteo`):** Monitors real-time temperature and hourly precipitation probability at Perungudi. Automatically adds a +20% wet-road buffer during rain and shifts transit recommendations from **Rapido Bike Taxi** to **Chennai Metro Rail**.
-- **Native Voice Briefing (`Web SpeechSynthesis`):** Reads your departure time, travel duration, and optimal transit mode aloud with a single tap.
-
-### 3. Apple HIG-Inspired OLED Interface
-- Pure `#000000` OLED background with `#1C1C1E` grouped cards, hairline `0.5px` separators, and `Inter` + `-apple-system` typography with `tabular-nums` alignment so digits never jitter during live countdowns.
-- Includes a custom adaptive vector launcher icon (`@mipmap/ic_launcher`).
+Instead of asking *"When do I leave?"* like Google Maps, **LOKIFFICE** works **backward from your personal life**: set when you want to be back home, and it automatically calculates your departure window using live arterial routing, rain radar, and your mandatory shift duration (5h, 6h, 8h, or 9h).
 
 ---
 
-## Project Structure
+## Core Advantages & Features
+
+1. **Reverse-Curfew Commute Engine:** Enter your target home arrival time (e.g., `6:00 PM`) and LOKIFFICE dynamically shifts your `Leave Home By` time based on live road travel duration and wet-road buffers.
+2. **Custom Home, Office & Shift Hours:** Pre-configured for **Comcast Perungudi (OMR, Chennai)** with a **5-hour shift**, while allowing any user to customize their Home pin, Office location, and shift duration (`5h / 6h / 8h / 9h`).
+3. **1-Tap Navigation Launchers:** Launches pre-configured two-wheeler/route directions directly in Google Maps for both **Route to Office** and **Route Home**.
+4. **Live Rain & Weather Radar (`Open-Meteo`):** Monitors real-time temperature and hourly precipitation probability, adding a +20% wet-road buffer during rain and shifting transit advice from **Rapido Bike Taxi** to **Chennai Metro / Covered Cab**.
+5. **Hybrid Attendance & CSV Compliance Export:** Tracks weekly check-ins and exports a clean CSV log (`LOKIFFICE-Attendance-Log.csv`) of your in-office timestamps.
+
+---
+
+## Cross-Platform Setup (Single Source of Truth)
+
+### 1. Web & Desktop
+- Hosted directly via **GitHub Pages** from the root `index.html` at:
+  `https://logesh-1023.github.io/LOKIFFCE/`
+
+### 2. iPhone (iOS PWA + Hands-Free Apple Shortcuts)
+1. Open `https://logesh-1023.github.io/LOKIFFCE/` in **Safari** on your iPhone.
+2. Tap the **Share** icon → **Add to Home Screen** to install LOKIFFICE as a full-screen standalone app.
+3. *(Optional 24/7 Auto Check-In)*: Open the iOS **Shortcuts** app → **Automation** → **+** → **Arrive** (select your Office) → **Run Immediately** → **Open URLs** → `https://logesh-1023.github.io/LOKIFFCE/?checkin=1`.
+
+### 3. Native Android APK (24/7 Hardware Geofence + Deep-Sleep Alarm)
+- `MainActivity.kt` loads the live GitHub Pages URL (with Service Worker offline caching) while running native `GeofencingClient` (150m perimeter) and `AlarmManager.setExactAndAllowWhileIdle` in the background.
+- Pushing to `main` automatically builds `app-debug.apk` via `.github/workflows/build.yml`.
+
+---
+
+## Repository Structure
 
 ```text
 LOKIFFCE/
+├── index.html                                         # Unified Web, iPhone PWA & Android UI
+├── manifest.json                                      # iOS / Android PWA install manifest
+├── icon.svg                                           # High-DPI vector app icon
+├── sw.js                                              # Offline Service Worker cache
+├── README.md                                          # End-to-end documentation
 ├── .github/workflows/build.yml                        # Automated cloud APK builder
 ├── build.gradle                                       # Top-level Gradle config
 ├── settings.gradle                                    # Module & repository definitions
 ├── gradle.properties                                  # AndroidX & JVM settings
-├── README.md                                          # End-to-end documentation
 └── app/
     ├── build.gradle                                   # Android SDK 34 & Play Services Location
     └── src/main/
-        ├── AndroidManifest.xml                        # Background location, alarm & icon config
-        ├── assets/index.html                          # LOKIFFICE Apple-styled UI & routing engine
-        ├── java/com/lokiffce/app/MainActivity.kt      # Native GeofenceReceiver & AlarmReceiver
+        ├── AndroidManifest.xml                        # Permissions, LOKIFFICE label & icon
+        ├── java/com/lokiffce/app/MainActivity.kt      # Native 24/7 Geofence, Alarm & WebView
         └── res/
-            ├── drawable/ic_launcher_background.xml    # Vector icon background
-            ├── drawable/ic_launcher_foreground.xml    # Vector icon foreground
+            ├── drawable/ic_launcher_background.xml    # Android adaptive icon background
+            ├── drawable/ic_launcher_foreground.xml    # Android adaptive icon foreground
             └── mipmap-anydpi-v26/ic_launcher.xml      # Adaptive icon definition
 ```
-
----
-
-## Cloud APK Build & Installation (No Software Required)
-
-1. Upload all files in this archive (including `.github/workflows/build.yml`) to your GitHub repository.
-2. Open the **Actions** tab on GitHub and wait ~90 seconds for **Build LOKIFFICE APK** to complete.
-3. Download **`LOKIFFCE-app`** under **Artifacts**, extract `app-debug.apk`, and install it on your Android device.
-4. On first launch, grant **Location → Allow all the time**, allow **Notifications**, and set **Settings → Apps → LOKIFFICE → Battery** to **Unrestricted**.

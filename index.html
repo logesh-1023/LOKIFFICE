@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>LOKIFFICE</title>
-  <!-- Apple SF Pro Geometric Equivalent (Inter) loaded cleanly so Android WebView renders crisp Apple-grade typography instead of Android Roboto -->
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LOKIFFICE" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -39,7 +45,7 @@
       color: var(--label-soft);
       display: flex;
       justify-content: center;
-      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+      padding: max(16px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -281,6 +287,34 @@
       background: var(--bg-tertiary);
       color: var(--label-primary);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Quick Action Launchers (Maps / Transit) */
+    .launcher-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .launch-btn {
+      height: 38px;
+      border-radius: 11px;
+      background: var(--bg-elevated);
+      border: 0.5px solid var(--separator);
+      color: var(--label-soft);
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .launch-btn:active {
+      background: var(--bg-tertiary);
     }
 
     .shift-layout {
@@ -586,6 +620,16 @@
       cursor: pointer;
     }
 
+    .sheet-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--label-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
     .sheet-input {
       width: 100%;
       height: 44px;
@@ -596,7 +640,7 @@
       color: var(--label-primary);
       font-size: 15px;
       outline: none;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .sheet-hint {
@@ -620,14 +664,14 @@
         </button>
         <button class="pill-btn" onclick="openSheet()">
           <span class="status-dot" id="gpsDot"></span>
-          <span id="gpsLabel">Geofence</span>
+          <span id="gpsLabel">Setup</span>
         </button>
       </div>
     </header>
 
     <section class="card">
       <div class="card-header">
-        <span class="section-label">Commute Schedule</span>
+        <span class="section-label">Reverse Curfew Schedule</span>
         <span class="meta-badge" onclick="openSheet()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span id="homeLabel">Set Home</span>
@@ -672,11 +716,22 @@
           <button class="seg-btn" onclick="setPreset('20:00', this)">8:00 PM</button>
         </div>
       </div>
+
+      <div class="launcher-row">
+        <a class="launch-btn" id="gmapsToOffice" href="#" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Route to Office
+        </a>
+        <a class="launch-btn" id="gmapsToHome" href="#" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Route Home
+        </a>
+      </div>
     </section>
 
     <section class="card">
       <div class="card-header">
-        <span class="section-label">5-Hour Shift Timer</span>
+        <span class="section-label" id="shiftHeaderLabel">5-Hour Shift Timer</span>
         <span class="meta-badge" style="color: var(--label-secondary)" onclick="refreshLiveIntel()">Sync</span>
       </div>
 
@@ -694,7 +749,7 @@
 
         <div class="shift-details">
           <div class="countdown-readout" id="countdown">05:00:00</div>
-          <div class="shift-sub" id="shiftInfo">Awaiting arrival at Comcast</div>
+          <div class="shift-sub" id="shiftInfo">Awaiting arrival at office</div>
         </div>
       </div>
 
@@ -713,7 +768,7 @@
 
     <section class="card">
       <div class="intel-row">
-        <div class="icon-box icon-blue" id="transitIconBox">
+        <div class="icon-box icon-blue">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/></svg>
         </div>
         <div class="intel-body">
@@ -726,12 +781,12 @@
       </div>
 
       <div class="intel-row">
-        <div class="icon-box icon-amber" id="wxIconBox">
+        <div class="icon-box icon-amber">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
         </div>
         <div class="intel-body">
           <div class="intel-top">
-            <span class="intel-title">Perungudi Weather</span>
+            <span class="intel-title">Live Weather Radar</span>
             <span class="intel-tag" id="wxTemp">--°C</span>
           </div>
           <div class="intel-desc" id="wxDesc">Fetching live precipitation probability for your return trip.</div>
@@ -741,37 +796,54 @@
 
     <section class="card">
       <div class="card-header">
-        <span class="section-label">Weekly Attendance</span>
-        <span class="meta-badge" style="color: var(--tint-green)" id="streakCount">0 / 5 Days</span>
+        <span class="section-label">Weekly Compliance</span>
+        <span class="meta-badge" style="color: var(--tint-green)" onclick="exportCompliance()">Export Log</span>
       </div>
       <div class="streak-row" id="streakBar"></div>
     </section>
   </div>
 
+  <!-- Native iOS Bottom Sheet for Home, Office & Shift Hours -->
   <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSheetOnBg(event)">
     <div class="sheet">
       <div class="sheet-grabber"></div>
       <div class="sheet-header">
-        <h3>Home Location</h3>
+        <h3>Commute & Shift Setup</h3>
         <button class="sheet-close" onclick="closeSheet()">✕</button>
       </div>
+
+      <span class="sheet-label">Home Location</span>
       <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street name, landmark, or lat, lng" />
-      <p class="sheet-hint">Lock your exact current GPS while at home or paste Google Maps coordinates for exact door-to-door routing to Comcast Perungudi.</p>
+
+      <span class="sheet-label">Office Location (Default: Comcast Perungudi)</span>
+      <input type="text" class="sheet-input" id="officeAddressInput" placeholder="12.947238, 80.229203 or office address" />
+
+      <span class="sheet-label">Mandatory Office Shift Hours</span>
+      <div class="segmented" style="margin-bottom:14px;" id="shiftHoursSeg">
+        <button class="seg-btn active" onclick="setShiftHours(5, this)">5 Hours</button>
+        <button class="seg-btn" onclick="setShiftHours(6, this)">6 Hours</button>
+        <button class="seg-btn" onclick="setShiftHours(8, this)">8 Hours</button>
+        <button class="seg-btn" onclick="setShiftHours(9, this)">9 Hours</button>
+      </div>
+
+      <p class="sheet-hint">Works on iPhone (Add to Home Screen + Apple Shortcuts), Web, and Android. Lock your current GPS while at home for exact door-to-door routing.</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
-        <button class="btn-ios btn-primary" style="width:100%" onclick="saveHomeInput()">Save Home Location</button>
-        <button class="btn-ios btn-secondary" style="width:100%" onclick="saveCurrentGPSAsHome()">Use Current GPS Coordinates</button>
+        <button class="btn-ios btn-primary" style="width:100%" onclick="saveSettings()">Save Settings</button>
+        <button class="btn-ios btn-secondary" style="width:100%" onclick="saveCurrentGPSAsHome()">Use Current GPS as Home</button>
       </div>
     </div>
   </div>
 
   <script>
-    const OFFICE = { lat: 12.947238, lng: 80.229203 };
+    const DEFAULT_OFFICE = { lat: 12.947238, lng: 80.229203, label: "Comcast Perungudi" };
+    let officeData = JSON.parse(localStorage.getItem("lokiffice_office") || "null") || DEFAULT_OFFICE;
+    let homeData = JSON.parse(localStorage.getItem("lokiffice_home") || "null");
+    let shiftHours = Number(localStorage.getItem("lokiffice_shift_hours") || "5");
+    const SHIFT_MS = () => shiftHours * 60 * 60 * 1000;
     const RADIUS_M = 150;
-    const SHIFT_MS = 5 * 60 * 60 * 1000;
     const CIRCUMFERENCE = 226.2;
     const todayKey = () => "lokiffice_in_" + new Date().toISOString().slice(0, 10);
 
-    let homeData = JSON.parse(localStorage.getItem("lokiffice_home") || "null");
     let state = {
       distanceKm: 17.0,
       baseMins: 38,
@@ -784,6 +856,15 @@
       isRaining: false
     };
 
+    // Support Apple Shortcuts URL trigger (?checkin=1)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkin") === "1") {
+      if (!localStorage.getItem(todayKey())) {
+        localStorage.setItem(todayKey(), String(Date.now()));
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     document.getElementById("dateHeader").textContent =
       new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }).toUpperCase();
 
@@ -792,32 +873,60 @@
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
-    function openSheet() { document.getElementById("sheetBackdrop").classList.add("open"); }
+    function openSheet() {
+      document.getElementById("officeAddressInput").value = `${officeData.lat}, ${officeData.lng}`;
+      if (homeData) {
+        document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
+      }
+      document.getElementById("sheetBackdrop").classList.add("open");
+    }
     function closeSheet() { document.getElementById("sheetBackdrop").classList.remove("open"); }
     function closeSheetOnBg(e) { if (e.target.id === "sheetBackdrop") closeSheet(); }
 
-    async function saveHomeInput() {
-      const val = document.getElementById("homeAddressInput").value.trim();
-      if (!val) return;
+    function setShiftHours(hrs, el) {
+      shiftHours = hrs;
+      localStorage.setItem("lokiffice_shift_hours", String(hrs));
+      document.querySelectorAll("#shiftHoursSeg .seg-btn").forEach(b => b.classList.remove("active"));
+      if (el) el.classList.add("active");
+      document.getElementById("shiftHeaderLabel").textContent = `${shiftHours}-Hour Shift Timer`;
+      updatePlanner();
+    }
+
+    async function geocodeInput(val, defaultLabel) {
       const coordMatch = val.match(/^(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)$/);
       if (coordMatch) {
-        homeData = { lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), label: "Home Pin" };
-        localStorage.setItem("lokiffice_home", JSON.stringify(homeData));
-        closeSheet();
-        await refreshLiveIntel();
-        return;
+        return { lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), label: defaultLabel };
       }
+      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&lat=12.98&lon=80.22&limit=1`);
+      const data = await res.json();
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].geometry.coordinates;
+        return { lat, lng, label: val };
+      }
+      return null;
+    }
+
+    async function saveSettings() {
+      const hVal = document.getElementById("homeAddressInput").value.trim();
+      const oVal = document.getElementById("officeAddressInput").value.trim();
       try {
-        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val + " Chennai")}&lat=12.98&lon=80.22&limit=1`);
-        const data = await res.json();
-        if (data.features && data.features.length > 0) {
-          const [lng, lat] = data.features[0].geometry.coordinates;
-          homeData = { lat, lng, label: val };
-          localStorage.setItem("lokiffice_home", JSON.stringify(homeData));
-          closeSheet();
-          await refreshLiveIntel();
+        if (hVal) {
+          const parsedH = await geocodeInput(hVal, "Home Pin");
+          if (parsedH) {
+            homeData = parsedH;
+            localStorage.setItem("lokiffice_home", JSON.stringify(homeData));
+          }
+        }
+        if (oVal) {
+          const parsedO = await geocodeInput(oVal, officeData.label);
+          if (parsedO) {
+            officeData = parsedO;
+            localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
+          }
         }
       } catch (e) {}
+      closeSheet();
+      await refreshLiveIntel();
     }
 
     function saveCurrentGPSAsHome() {
@@ -834,25 +943,39 @@
       });
     }
 
+    function updateMapLaunchers() {
+      const destOffice = `${officeData.lat},${officeData.lng}`;
+      const originHome = homeData ? `&origin=${homeData.lat},${homeData.lng}` : "";
+      document.getElementById("gmapsToOffice").href =
+        `https://www.google.com/maps/dir/?api=1${originHome}&destination=${destOffice}&travelmode=two-wheeler`;
+
+      const destHome = homeData ? `${homeData.lat},${homeData.lng}` : "";
+      document.getElementById("gmapsToHome").href = destHome
+        ? `https://www.google.com/maps/dir/?api=1&origin=${destOffice}&destination=${destHome}&travelmode=two-wheeler`
+        : `https://www.google.com/maps/search/?api=1&query=Home`;
+    }
+
     async function refreshLiveIntel() {
+      document.getElementById("shiftHeaderLabel").textContent = `${shiftHours}-Hour Shift Timer`;
+      updateMapLaunchers();
+
       if (homeData) {
         document.getElementById("homeLabel").textContent = homeData.label;
-        document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
         try {
-          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${homeData.lng},${homeData.lat};${OFFICE.lng},${OFFICE.lat}?alternatives=true&overview=false`;
+          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${homeData.lng},${homeData.lat};${officeData.lng},${officeData.lat}?alternatives=true&overview=false`;
           const rRes = await fetch(osrmUrl);
           const rData = await rRes.json();
           if (rData.routes && rData.routes.length > 0) {
             const best = rData.routes[0];
             state.distanceKm = +(best.distance / 1000).toFixed(1);
             state.baseMins = Math.max(10, Math.round(best.duration / 60));
-            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "OMR Arterial Corridor";
+            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "Primary Arterial Corridor";
           }
         } catch (e) {}
       }
 
       try {
-        const wxUrl = `https://api.open-meteo.com/v1/forecast?latitude=${OFFICE.lat}&longitude=${OFFICE.lng}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability&forecast_days=1`;
+        const wxUrl = `https://api.open-meteo.com/v1/forecast?latitude=${officeData.lat}&longitude=${officeData.lng}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability&forecast_days=1`;
         const wRes = await fetch(wxUrl);
         const wData = await wRes.json();
         if (wData.current) {
@@ -896,13 +1019,13 @@
       document.getElementById("wxTemp").textContent = `${state.tempC}°C · ${state.rainProb}% Rain`;
       document.getElementById("wxDesc").textContent = state.isRaining
         ? "Wet road conditions detected. Added +20% transit buffer; covered transit advised."
-        : "Dry conditions along OMR. Standard road grip and clear visibility.";
+        : "Dry conditions along corridor. Standard road grip and clear visibility.";
 
       const tTitle = document.getElementById("transitTitle");
       const tReason = document.getElementById("transitReason");
 
       if (state.isRaining) {
-        tTitle.textContent = "Chennai Metro Rail";
+        tTitle.textContent = "Chennai Metro / Covered Cab";
         tReason.textContent = `Rain risk (${state.rainProb}%) makes two-wheelers unfavorable. Take covered Metro + short feeder.`;
       } else if (state.distanceKm > 12 && state.trafficLevel === "Heavy") {
         tTitle.textContent = "Metro + Last-Mile Rapido";
@@ -928,7 +1051,7 @@
 
     function setPreset(val, el) {
       homeInput.value = val;
-      document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".target-controls .seg-btn").forEach(b => b.classList.remove("active"));
       if (el) el.classList.add("active");
       updatePlanner();
     }
@@ -940,7 +1063,7 @@
       const back = new Date();
       back.setHours(h, m, 0, 0);
       const out = new Date(back.getTime() - travelMs);
-      const inn = new Date(out.getTime() - SHIFT_MS);
+      const inn = new Date(out.getTime() - SHIFT_MS());
       const leave = new Date(inn.getTime() - travelMs);
 
       document.getElementById("leaveHome").textContent = format12(leave);
@@ -949,7 +1072,7 @@
       document.getElementById("backHome").textContent = format12(back);
     }
     homeInput.addEventListener("input", () => {
-      document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".target-controls .seg-btn").forEach(b => b.classList.remove("active"));
       updatePlanner();
     });
 
@@ -981,11 +1104,29 @@
 
     function resetShift() {
       localStorage.removeItem(todayKey());
-      document.getElementById("countdown").textContent = "05:00:00";
-      document.getElementById("shiftInfo").textContent = "Awaiting arrival at Comcast";
+      const hrsStr = String(shiftHours).padStart(2, "0");
+      document.getElementById("countdown").textContent = `${hrsStr}:00:00`;
+      document.getElementById("shiftInfo").textContent = "Awaiting arrival at office";
       document.getElementById("ringProgress").style.strokeDashoffset = CIRCUMFERENCE;
       document.getElementById("pctLabel").textContent = "0%";
       renderStreak();
+    }
+
+    function exportCompliance() {
+      const lines = ["LOKIFFICE Hybrid Attendance Log", "Date,Check-In Time,Target Out Time"];
+      Object.keys(localStorage).sort().forEach(k => {
+        if (k.startsWith("lokiffice_in_")) {
+          const dateStr = k.replace("lokiffice_in_", "");
+          const inTs = Number(localStorage.getItem(k));
+          const outTs = inTs + SHIFT_MS();
+          lines.push(`${dateStr},${format12(new Date(inTs))},${format12(new Date(outTs))}`);
+        }
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "LOKIFFICE-Attendance-Log.csv";
+      a.click();
     }
 
     function requestGPS() {
@@ -995,7 +1136,7 @@
       navigator.geolocation.watchPosition(
         (pos) => {
           const dist = Math.round(getDistanceMeters(
-            pos.coords.latitude, pos.coords.longitude, OFFICE.lat, OFFICE.lng
+            pos.coords.latitude, pos.coords.longitude, officeData.lat, officeData.lng
           ));
           if (dist <= RADIUS_M) {
             dot.classList.remove("away");
@@ -1017,14 +1158,12 @@
       const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       const now = new Date();
       const todayIdx = (now.getDay() + 6) % 7;
-      let count = 0;
 
       for (let i = 0; i < 7; i++) {
         const d = new Date(now);
         d.setDate(now.getDate() - (todayIdx - i));
         const key = "lokiffice_in_" + d.toISOString().slice(0, 10);
         const isDone = Boolean(localStorage.getItem(key));
-        if (isDone) count++;
 
         const cell = document.createElement("div");
         cell.className = "day-cell" + (isDone ? " done" : "") + (i === todayIdx ? " today" : "");
@@ -1036,17 +1175,16 @@
         `;
         bar.appendChild(cell);
       }
-      document.getElementById("streakCount").textContent = `${count} / 5 Days`;
     }
 
     setInterval(() => {
       const saved = localStorage.getItem(todayKey());
       if (!saved) return;
       const inTime = Number(saved);
-      const outTime = inTime + SHIFT_MS;
+      const outTime = inTime + SHIFT_MS();
       const rem = Math.max(0, outTime - Date.now());
-      const elapsed = Math.min(SHIFT_MS, Math.max(0, Date.now() - inTime));
-      const pct = Math.round((elapsed / SHIFT_MS) * 100);
+      const elapsed = Math.min(SHIFT_MS(), Math.max(0, Date.now() - inTime));
+      const pct = Math.round((elapsed / SHIFT_MS()) * 100);
 
       document.getElementById("ringProgress").style.strokeDashoffset =
         CIRCUMFERENCE - (CIRCUMFERENCE * pct) / 100;
@@ -1063,6 +1201,10 @@
         document.getElementById("countdown").textContent = `${hrs}:${mins}:${secs}`;
       }
     }, 1000);
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
 
     renderStreak();
     refreshLiveIntel();
