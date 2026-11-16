@@ -2,446 +2,948 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LOKIFFCE AI — Dynamic Route</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>LOKIFFCE</title>
   <style>
     :root {
-      --bg: #090d16;
-      --card: #131c2e;
-      --border: #23314d;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --green: #22c55e;
-      --amber: #f59e0b;
-      --red: #ef4444;
-      --purple: #a855f7;
+      /* Apple HIG Dark Mode Semantic Tokens */
+      --bg-canvas: #000000;
+      --bg-grouped: #1C1C1E;
+      --bg-elevated: #2C2C2E;
+      --bg-tertiary: #3A3A3C;
+      --label-primary: #FFFFFF;
+      --label-soft: #EBEBF5;
+      --label-secondary: rgba(235, 235, 245, 0.6);
+      --label-tertiary: rgba(235, 235, 245, 0.35);
+      --separator: rgba(84, 84, 88, 0.45);
+      --tint-blue: #0A84FF;
+      --tint-green: #30D158;
+      --tint-amber: #FF9F0A;
+      --tint-red: #FF453A;
+      --tint-indigo: #5E5CE6;
+      --radius-card: 20px;
+      --radius-inner: 13px;
     }
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    }
+
     body {
-      margin: 0; min-height: 100vh; background: radial-gradient(circle at top, #172554 0%, var(--bg) 60%);
-      color: var(--text); display: flex; align-items: center; justify-content: center; padding: 14px;
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--bg-canvas);
+      color: var(--label-soft);
+      display: flex;
+      justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+      -webkit-font-smoothing: antialiased;
     }
+
+    .app-shell {
+      width: 100%;
+      max-width: 414px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Navigation Header */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 2px 2px;
+    }
+
+    .nav-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--label-secondary);
+    }
+
+    .nav-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--label-primary);
+      line-height: 1.15;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--bg-grouped);
+      border: 0.5px solid var(--separator);
+      color: var(--label-soft);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.12s ease;
+    }
+
+    .pill-btn:active {
+      background: var(--bg-elevated);
+      transform: scale(0.97);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--tint-green);
+    }
+    .status-dot.away { background: var(--tint-blue); }
+
+    /* Grouped Card Surface */
     .card {
-      width: 100%; max-width: 430px; background: rgba(19, 28, 46, 0.95);
-      border: 1px solid var(--border); border-radius: 20px; padding: 18px;
-      box-shadow: 0 24px 48px rgba(0,0,0,0.55); backdrop-filter: blur(12px);
-    }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .brand { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.08em; background: linear-gradient(90deg, #38bdf8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .top-actions { display: flex; gap: 6px; align-items: center; }
-    .badge {
-      font-size: 0.7rem; font-weight: 600; padding: 4px 9px; border-radius: 999px;
-      background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3);
-    }
-    .badge.ok { background: rgba(34, 197, 94, 0.15); color: var(--green); border-color: rgba(34,197,94,0.3); }
-    .icon-btn {
-      padding: 4px 8px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border);
-      color: var(--muted); font-size: 0.72rem; cursor: pointer;
+      background: var(--bg-grouped);
+      border-radius: var(--radius-card);
+      padding: 16px;
+      border: 0.5px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* Route Setup Drawer */
-    .route-drawer {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
-      padding: 12px; margin-bottom: 12px; display: none;
-    }
-    .route-drawer.open { display: block; }
-    .route-drawer label { font-size: 0.72rem; color: var(--muted); display: block; margin-bottom: 4px; }
-    .input-group { display: flex; gap: 6px; margin-bottom: 8px; }
-    .input-group input {
-      flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--card); color: var(--text); font-size: 0.8rem; outline: none;
-    }
-    .mini-btn {
-      padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--card); color: var(--accent); font-size: 0.74rem; font-weight: 600; cursor: pointer; white-space: nowrap;
-    }
-    .mini-btn.solid { background: var(--accent); color: #090d16; border: none; }
-
-    /* AI Copilot Banner */
-    .ai-banner {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.13), rgba(56, 189, 248, 0.12));
-      border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 12px; padding: 10px 12px;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 12px;
     }
-    .ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-    .ai-title { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #d8b4fe; }
-    .traffic-tag { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: rgba(34,197,94,0.18); color: var(--green); }
-    .traffic-tag.mod { background: rgba(245,158,11,0.18); color: var(--amber); }
-    .traffic-tag.heavy { background: rgba(239,68,68,0.18); color: var(--red); }
-    .ai-text { font-size: 0.76rem; color: #e2e8f0; line-height: 1.4; }
-    .ai-text b { color: var(--accent); }
 
-    /* Route Summary Bar */
-    .route-strip {
-      display: flex; justify-content: space-between; align-items: center;
-      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-      padding: 7px 10px; margin-bottom: 12px; font-size: 0.73rem;
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--label-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .route-strip span { color: var(--muted); }
-    .route-strip b { color: var(--text); }
 
-    label.main-lbl { display: block; font-size: 0.76rem; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+    .meta-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--tint-blue);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    /* Hero Departure & Shift Grid */
+    .hero-departure {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 14px;
+      border-bottom: 0.5px solid var(--separator);
+    }
+
+    .hero-left small {
+      display: block;
+      font-size: 13px;
+      color: var(--label-secondary);
+      margin-bottom: 2px;
+    }
+
+    .hero-time {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--label-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+
+    .hero-right {
+      text-align: right;
+    }
+
+    .buffer-pill {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 8px;
+      background: rgba(10, 132, 255, 0.14);
+      color: var(--tint-blue);
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .route-caption {
+      font-size: 12px;
+      color: var(--label-secondary);
+      margin-top: 5px;
+    }
+
+    /* 3-Column Timeline Strip */
+    .timeline-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding-top: 12px;
+      gap: 8px;
+    }
+
+    .timeline-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .timeline-cell:nth-child(2) { text-align: center; }
+    .timeline-cell:nth-child(3) { text-align: right; }
+
+    .timeline-cell span {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--label-secondary);
+    }
+
+    .timeline-cell strong {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--label-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Apple Segmented Control + Time Picker */
+    .target-controls {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 0.5px solid var(--separator);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .target-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .target-row span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--label-soft);
+    }
+
     input[type="time"] {
-      width: 100%; padding: 10px 12px; font-size: 1.15rem; font-weight: 700;
-      background: var(--bg); color: var(--text); border: 1px solid var(--border);
-      border-radius: 12px; outline: none;
+      background: var(--bg-elevated);
+      border: none;
+      border-radius: 9px;
+      padding: 6px 10px;
+      color: var(--label-primary);
+      font-size: 15px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      outline: none;
     }
-    .chips { display: flex; gap: 6px; margin-top: 7px; }
-    .chip {
-      flex: 1; padding: 5px 0; font-size: 0.72rem; font-weight: 600; border-radius: 8px;
-      background: var(--bg); border: 1px solid var(--border); color: var(--muted); cursor: pointer; text-align: center;
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-elevated);
+      padding: 2px;
+      border-radius: 10px;
     }
-    .chip.active { border-color: var(--accent); color: var(--accent); background: rgba(56, 189, 248, 0.1); }
 
-    .hero {
-      margin-top: 11px; padding: 11px; border-radius: 14px;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(168, 85, 247, 0.1));
-      border: 1px solid rgba(56, 189, 248, 0.3); text-align: center;
+    .seg-btn {
+      height: 30px;
+      border: none;
+      background: transparent;
+      color: var(--label-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    .hero span { display: block; font-size: 0.68rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
-    .hero strong { display: block; font-size: 1.75rem; margin-top: 2px; color: #fff; }
-    .hero small { display: block; font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
 
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 9px; }
-    .box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 7px 5px; text-align: center; }
-    .box small { display: block; font-size: 0.64rem; color: var(--muted); }
-    .box b { display: block; font-size: 0.86rem; margin-top: 2px; }
-
-    hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
-
-    /* Smart Transit Recommendation Card */
-    .transit-card {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
-      padding: 9px 11px; margin-bottom: 10px;
+    .seg-btn.active {
+      background: var(--bg-tertiary);
+      color: var(--label-primary);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
     }
-    .transit-top { display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; }
-    .transit-top span { color: var(--muted); font-weight: 600; }
-    .transit-top b { color: #d8b4fe; }
-    .transit-reason { font-size: 0.69rem; color: var(--muted); margin-top: 4px; line-height: 1.35; }
 
-    .timer-box {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
-      padding: 11px; text-align: center; margin-bottom: 9px;
+    /* Live Shift Timer Card with Activity Ring */
+    .shift-layout {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
     }
-    .countdown { font-size: 1.65rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--green); }
-    .status-text { font-size: 0.73rem; color: var(--muted); margin-top: 3px; }
 
-    .adjust-row { display: flex; gap: 6px; margin-bottom: 9px; }
-    .adjust-row button { flex: 1; padding: 6px; font-size: 0.71rem; }
-
-    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    button {
-      padding: 9px; border-radius: 10px; border: 1px solid var(--border);
-      background: var(--bg); color: var(--text); font-size: 0.77rem; font-weight: 600; cursor: pointer;
+    .ring-wrap {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
     }
-    button.primary { background: var(--accent); color: #090d16; border: none; font-weight: 700; }
 
-    .streak-bar { display: flex; justify-content: space-between; gap: 6px; margin-top: 11px; }
-    .day-pill {
-      flex: 1; padding: 6px 0; text-align: center; border-radius: 8px; font-size: 0.67rem;
-      font-weight: 700; background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+    .ring-wrap svg {
+      transform: rotate(-90deg);
+      width: 84px;
+      height: 84px;
     }
-    .day-pill.done { background: rgba(34, 197, 94, 0.18); border-color: var(--green); color: var(--green); }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--bg-elevated);
+      stroke-width: 7;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--tint-green);
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 226.2;
+      stroke-dashoffset: 226.2;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring-center b {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--label-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ring-center small {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--label-secondary);
+      text-transform: uppercase;
+    }
+
+    .shift-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .countdown-readout {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--label-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    .shift-sub {
+      font-size: 13px;
+      color: var(--label-secondary);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Action Buttons (44pt minimum touch targets) */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn-ios {
+      height: 44px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-ios:active {
+      opacity: 0.82;
+      transform: scale(0.985);
+    }
+
+    .btn-primary {
+      background: var(--tint-blue);
+      color: #FFFFFF;
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--label-soft);
+    }
+
+    .tweak-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tweak-btn {
+      height: 32px;
+      border-radius: 8px;
+      background: transparent;
+      border: 0.5px solid var(--separator);
+      color: var(--label-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tweak-btn:active {
+      background: var(--bg-elevated);
+      color: var(--label-primary);
+    }
+
+    /* Commute Intelligence Grouped List */
+    .intel-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+    }
+
+    .intel-row:first-child { padding-top: 0; }
+    .intel-row:last-child { padding-bottom: 0; }
+    .intel-row + .intel-row { border-top: 0.5px solid var(--separator); }
+
+    .icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: rgba(10, 132, 255, 0.16); color: var(--tint-blue); }
+    .icon-green { background: rgba(48, 209, 88, 0.16); color: var(--tint-green); }
+    .icon-amber { background: rgba(255, 159, 10, 0.16); color: var(--tint-amber); }
+
+    .intel-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .intel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .intel-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--label-primary);
+    }
+
+    .intel-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--label-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .intel-desc {
+      font-size: 13px;
+      color: var(--label-secondary);
+      line-height: 1.38;
+      margin-top: 2px;
+    }
+
+    /* Weekly Streak Strip */
+    .streak-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .day-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+    }
+
+    .day-cell span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--label-secondary);
+    }
+
+    .day-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--label-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+    }
+
+    .day-cell.done .day-check {
+      background: var(--tint-green);
+      border-color: var(--tint-green);
+      color: #000000;
+    }
+
+    .day-cell.today {
+      outline: 1px solid rgba(10, 132, 255, 0.5);
+    }
+
+    /* iOS Modal Bottom Sheet for Home Setup */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .sheet-backdrop.open { display: flex; }
+
+    .sheet {
+      width: 100%;
+      max-width: 430px;
+      background: var(--bg-grouped);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 12px 20px max(28px, env(safe-area-inset-bottom));
+      border-top: 0.5px solid rgba(255, 255, 255, 0.15);
+      animation: slideUp 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .sheet-grabber {
+      width: 36px;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--bg-tertiary);
+      margin: 0 auto 14px;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .sheet-header h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--label-primary);
+    }
+
+    .sheet-close {
+      background: var(--bg-elevated);
+      border: none;
+      color: var(--label-secondary);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .sheet-input {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 0.5px solid var(--separator);
+      padding: 0 14px;
+      color: var(--label-primary);
+      font-size: 15px;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .sheet-hint {
+      font-size: 12px;
+      color: var(--label-secondary);
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="top-bar">
-      <div class="brand">LOKIFFCE AI</div>
-      <div class="top-actions">
-        <button class="icon-btn" onclick="toggleDrawer()">🏠 Route Setup</button>
-        <span id="gpsBadge" class="badge">Live Route</span>
+  <div class="app-shell">
+    <!-- Top Navigation Bar -->
+    <header class="nav-bar">
+      <div class="nav-title-group">
+        <span class="nav-subtitle" id="dateHeader">COMCAST PERUNGUDI</span>
+        <h1 class="nav-title">LOKIFFCE</h1>
+      </div>
+      <div class="nav-actions">
+        <button class="pill-btn" onclick="speakBriefing()" aria-label="Audio Briefing">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+        <button class="pill-btn" onclick="openSheet()">
+          <span class="status-dot" id="gpsDot"></span>
+          <span id="gpsLabel">Geofence</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Primary Card: Dynamic Departure & Route Schedule -->
+    <section class="card">
+      <div class="card-header">
+        <span class="section-label">Commute Schedule</span>
+        <span class="meta-badge" onclick="openSheet()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="homeLabel">Set Home</span>
+        </span>
+      </div>
+
+      <div class="hero-departure">
+        <div class="hero-left">
+          <small>Leave Home By</small>
+          <div class="hero-time" id="leaveHome">--:--</div>
+        </div>
+        <div class="hero-right">
+          <span class="buffer-pill" id="bufferPill">17.0 km · 55m</span>
+          <div class="route-caption" id="roadLabel">OMR Arterial Corridor</div>
+        </div>
+      </div>
+
+      <div class="timeline-row">
+        <div class="timeline-cell">
+          <span>Office IN</span>
+          <strong id="officeIn">--:--</strong>
+        </div>
+        <div class="timeline-cell">
+          <span>Office OUT</span>
+          <strong id="officeOut">--:--</strong>
+        </div>
+        <div class="timeline-cell">
+          <span>Back Home</span>
+          <strong id="backHome">--:--</strong>
+        </div>
+      </div>
+
+      <div class="target-controls">
+        <div class="target-row">
+          <span>Target Home Arrival</span>
+          <input type="time" id="homeBy" value="18:00" />
+        </div>
+        <div class="segmented">
+          <button class="seg-btn" onclick="setPreset('17:00', this)">5:00 PM</button>
+          <button class="seg-btn active" onclick="setPreset('18:00', this)">6:00 PM</button>
+          <button class="seg-btn" onclick="setPreset('19:00', this)">7:00 PM</button>
+          <button class="seg-btn" onclick="setPreset('20:00', this)">8:00 PM</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Secondary Card: 5-Hour Shift Tracker & Progress Ring -->
+    <section class="card">
+      <div class="card-header">
+        <span class="section-label">5-Hour Shift Timer</span>
+        <span class="meta-badge" style="color: var(--label-secondary)" onclick="refreshLiveIntel()">Sync</span>
+      </div>
+
+      <div class="shift-layout">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 84 84">
+            <circle class="ring-bg" cx="42" cy="42" r="36" />
+            <circle class="ring-progress" id="ringProgress" cx="42" cy="42" r="36" />
+          </svg>
+          <div class="ring-center">
+            <b id="pctLabel">0%</b>
+            <small>Shift</small>
+          </div>
+        </div>
+
+        <div class="shift-details">
+          <div class="countdown-readout" id="countdown">05:00:00</div>
+          <div class="shift-sub" id="shiftInfo">Awaiting arrival at Comcast</div>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <button class="btn-ios btn-primary" onclick="manualLogin()">Check In Now</button>
+        <button class="btn-ios btn-secondary" onclick="resetShift()">Reset Shift</button>
+      </div>
+
+      <div class="tweak-strip">
+        <button class="tweak-btn" onclick="adjustIn(-15)">-15m IN</button>
+        <button class="tweak-btn" onclick="adjustIn(-5)">-5m IN</button>
+        <button class="tweak-btn" onclick="adjustIn(5)">+5m IN</button>
+        <button class="tweak-btn" onclick="adjustIn(15)">+15m IN</button>
+      </div>
+    </section>
+
+    <!-- Tertiary Card: Live Transit & Weather Advisory -->
+    <section class="card">
+      <div class="intel-row">
+        <div class="icon-box icon-blue" id="transitIconBox">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/></svg>
+        </div>
+        <div class="intel-body">
+          <div class="intel-top">
+            <span class="intel-title" id="transitTitle">Chennai Metro / Rapido</span>
+            <span class="intel-tag" id="trafficBadge">Moderate</span>
+          </div>
+          <div class="intel-desc" id="transitReason">Analyzing live corridor congestion and distance.</div>
+        </div>
+      </div>
+
+      <div class="intel-row">
+        <div class="icon-box icon-amber" id="wxIconBox">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </div>
+        <div class="intel-body">
+          <div class="intel-top">
+            <span class="intel-title">Perungudi Weather</span>
+            <span class="intel-tag" id="wxTemp">--°C</span>
+          </div>
+          <div class="intel-desc" id="wxDesc">Fetching live precipitation probability for your return trip.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quaternary Card: Weekly Streak -->
+    <section class="card">
+      <div class="card-header">
+        <span class="section-label">Weekly Attendance</span>
+        <span class="meta-badge" style="color: var(--tint-green)" id="streakCount">0 / 5 Days</span>
+      </div>
+      <div class="streak-row" id="streakBar"></div>
+    </section>
+  </div>
+
+  <!-- Native iOS Bottom Sheet for Home Location -->
+  <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSheetOnBg(event)">
+    <div class="sheet">
+      <div class="sheet-grabber"></div>
+      <div class="sheet-header">
+        <h3>Home Location</h3>
+        <button class="sheet-close" onclick="closeSheet()">✕</button>
+      </div>
+      <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street name, landmark, or lat, lng" />
+      <p class="sheet-hint">Lock your exact current GPS while at home or paste Google Maps coordinates for exact door-to-door routing to Comcast Perungudi.</p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btn-ios btn-primary" style="width:100%" onclick="saveHomeInput()">Save Home Location</button>
+        <button class="btn-ios btn-secondary" style="width:100%" onclick="saveCurrentGPSAsHome()">Use Current GPS Coordinates</button>
       </div>
     </div>
-
-    <!-- Collapsible Home Address & API Setup -->
-    <div class="route-drawer" id="routeDrawer">
-      <label>Your Home Neighborhood / Address (Office: Comcast Perungudi)</label>
-      <div class="input-group">
-        <input type="text" id="homeAddressInput" placeholder="e.g., Velachery, Anna Nagar, Tambaram..." />
-        <button class="mini-btn solid" onclick="saveHomeByAddress()">Save</button>
-      </div>
-      <div class="input-group">
-        <button class="mini-btn" style="width:100%" onclick="saveCurrentGPSAsHome()">📍 Use My Current GPS Location as Home</button>
-      </div>
-      <label>Optional: Google Maps Routes API Key (for live traffic feed)</label>
-      <div class="input-group" style="margin-bottom:0">
-        <input type="password" id="gmapsKeyInput" placeholder="AIzaSy... (Leave blank for free OSRM routing)" />
-        <button class="mini-btn" onclick="saveApiKey()">Save Key</button>
-      </div>
-    </div>
-
-    <!-- Dynamic Route Summary Strip -->
-    <div class="route-strip" onclick="toggleDrawer()" style="cursor:pointer">
-      <span>🏠 <b id="homeLabel">Set Home Location</b> → Comcast</span>
-      <span id="routeMetrics"><b>-- km</b> • ~60m</span>
-    </div>
-
-    <!-- AI Feature 1: Dynamic Route + Traffic Status -->
-    <div class="ai-banner">
-      <div class="ai-header">
-        <span class="ai-title">🤖 AI Route & Traffic Status</span>
-        <span class="traffic-tag" id="trafficTag">CLEAR</span>
-      </div>
-      <div class="ai-text" id="aiCopilotText">Tap <b>🏠 Route Setup</b> to set your home location for live dynamic travel buffers.</div>
-    </div>
-
-    <label class="main-lbl" for="homeBy">When do you need to be back home?</label>
-    <input type="time" id="homeBy" value="18:00" />
-    <div class="chips">
-      <div class="chip" onclick="setPreset('17:00', this)">5 PM</div>
-      <div class="chip active" onclick="setPreset('18:00', this)">6 PM</div>
-      <div class="chip" onclick="setPreset('19:00', this)">7 PM</div>
-      <div class="chip" onclick="setPreset('20:00', this)">8 PM</div>
-    </div>
-
-    <div class="hero">
-      <span>Dynamic Leave Home At</span>
-      <strong id="leaveHome">--:--</strong>
-      <small id="bufferNote">Includes 60m dynamic commute buffer each way</small>
-    </div>
-
-    <div class="grid">
-      <div class="box"><small>Office IN</small><b id="officeIn">--:--</b></div>
-      <div class="box"><small>Office OUT</small><b id="officeOut">--:--</b></div>
-      <div class="box"><small>Back Home</small><b id="backHome">--:--</b></div>
-    </div>
-
-    <hr />
-
-    <!-- AI Feature 3: Traffic-Driven Smart Transit Recommendation -->
-    <div class="transit-card">
-      <div class="transit-top">
-        <span>Smart Transit Rec:</span>
-        <b id="transitRec">Calculating best mode...</b>
-      </div>
-      <div class="transit-reason" id="transitReason">Analyzing road distance, traffic delay, and Chennai Metro / Rapido efficiency.</div>
-    </div>
-
-    <div class="timer-box">
-      <div class="countdown" id="countdown">05:00:00</div>
-      <div class="status-text" id="shiftInfo">Comcast 150m Geofence Active</div>
-    </div>
-
-    <div class="adjust-row">
-      <button onclick="adjustIn(-15)">-15m IN</button>
-      <button onclick="adjustIn(-5)">-5m IN</button>
-      <button onclick="adjustIn(5)">+5m IN</button>
-      <button onclick="resetShift()">Reset</button>
-    </div>
-
-    <div class="btn-row">
-      <button class="primary" onclick="manualLogin()">Log IN Now</button>
-      <button onclick="refreshRouteAndTraffic()">Refresh Traffic</button>
-    </div>
-
-    <div class="streak-bar" id="streakBar"></div>
   </div>
 
   <script>
-    // Static Office: Comcast India Engineering Center, Perungudi, Chennai
-    const OFFICE = { lat: 12.947238, lng: 80.229203, name: "Comcast Perungudi" };
+    const OFFICE = { lat: 12.947238, lng: 80.229203 };
     const RADIUS_M = 150;
     const SHIFT_MS = 5 * 60 * 60 * 1000;
+    const CIRCUMFERENCE = 226.2;
     const todayKey = () => "lokiffce_in_" + new Date().toISOString().slice(0, 10);
 
-    // State for Dynamic Route & Traffic
     let homeData = JSON.parse(localStorage.getItem("lokiffce_home") || "null");
-    let routeState = {
-      distanceKm: 14.0,
-      baseMins: 35,
-      liveMins: 60,
+    let state = {
+      distanceKm: 17.0,
+      baseMins: 38,
+      liveMins: 55,
       delayMins: 10,
-      trafficLevel: "MODERATE", // CLEAR | MODERATE | HEAVY
-      roadSummary: "OMR / Inner Ring Corridor"
+      trafficLevel: "Moderate",
+      roadSummary: "OMR Arterial Corridor",
+      tempC: 30,
+      rainProb: 0,
+      isRaining: false
     };
+
+    // Set subtle Apple-style date subtitle
+    document.getElementById("dateHeader").textContent =
+      new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }).toUpperCase();
 
     const homeInput = document.getElementById("homeBy");
     function format12(date) {
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
-    function toggleDrawer() {
-      document.getElementById("routeDrawer").classList.toggle("open");
-    }
+    function openSheet() { document.getElementById("sheetBackdrop").classList.add("open"); }
+    function closeSheet() { document.getElementById("sheetBackdrop").classList.remove("open"); }
+    function closeSheetOnBg(e) { if (e.target.id === "sheetBackdrop") closeSheet(); }
 
-    function saveApiKey() {
-      const key = document.getElementById("gmapsKeyInput").value.trim();
-      localStorage.setItem("lokiffce_gmaps_key", key);
-      toggleDrawer();
-      refreshRouteAndTraffic();
-    }
-
-    async function saveHomeByAddress() {
-      const query = document.getElementById("homeAddressInput").value.trim();
-      if (!query) return;
-      document.getElementById("aiCopilotText").innerHTML = "Searching best route from <b>" + query + "</b> to Comcast...";
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ", Chennai, Tamil Nadu")}&limit=1`);
-        const data = await res.json();
-        if (data && data.length > 0) {
-          homeData = {
-            lat: parseFloat(data[0].lat),
-            lng: parseFloat(data[0].lon),
-            label: query
-          };
-          localStorage.setItem("lokiffce_home", JSON.stringify(homeData));
-          document.getElementById("routeDrawer").classList.remove("open");
-          await refreshRouteAndTraffic();
-        } else {
-          document.getElementById("aiCopilotText").innerHTML = "Could not pinpoint that address. Try a nearby landmark or tap <b>Use Current GPS</b>.";
-        }
-      } catch (e) {
-        document.getElementById("aiCopilotText").innerHTML = "Network error while finding address. Check connection.";
+    async function saveHomeInput() {
+      const val = document.getElementById("homeAddressInput").value.trim();
+      if (!val) return;
+      const coordMatch = val.match(/^(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)$/);
+      if (coordMatch) {
+        homeData = { lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), label: "Home Pin" };
+        localStorage.setItem("lokiffce_home", JSON.stringify(homeData));
+        closeSheet();
+        await refreshLiveIntel();
+        return;
       }
+      try {
+        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val + " Chennai")}&lat=12.98&lon=80.22&limit=1`);
+        const data = await res.json();
+        if (data.features && data.features.length > 0) {
+          const [lng, lat] = data.features[0].geometry.coordinates;
+          homeData = { lat, lng, label: val };
+          localStorage.setItem("lokiffce_home", JSON.stringify(homeData));
+          closeSheet();
+          await refreshLiveIntel();
+        }
+      } catch (e) {}
     }
 
     function saveCurrentGPSAsHome() {
       if (!("geolocation" in navigator)) return;
-      document.getElementById("aiCopilotText").innerHTML = "Locking current GPS coordinates as your Home...";
       navigator.geolocation.getCurrentPosition(async (pos) => {
         homeData = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          label: "My Home (GPS)"
+          lat: +pos.coords.latitude.toFixed(6),
+          lng: +pos.coords.longitude.toFixed(6),
+          label: "My Home"
         };
         localStorage.setItem("lokiffce_home", JSON.stringify(homeData));
-        document.getElementById("routeDrawer").classList.remove("open");
-        await refreshRouteAndTraffic();
+        closeSheet();
+        await refreshLiveIntel();
       });
     }
 
-    // Dynamic Route + Traffic Engine (Google Routes API if key provided, else OSRM + Chennai Corridor Traffic Model)
-    async function refreshRouteAndTraffic() {
-      if (!homeData) {
-        document.getElementById("routeDrawer").classList.add("open");
-        updatePlanner();
-        return;
-      }
-
-      document.getElementById("homeLabel").textContent = homeData.label;
-      document.getElementById("homeAddressInput").value = homeData.label;
-      const gmapsKey = localStorage.getItem("lokiffce_gmaps_key") || "";
-      document.getElementById("gmapsKeyInput").value = gmapsKey;
-
-      let fetched = false;
-
-      // 1. Try Google Maps Routes API (TRAFFIC_AWARE) if user added a free-tier key
-      if (gmapsKey) {
+    async function refreshLiveIntel() {
+      if (homeData) {
+        document.getElementById("homeLabel").textContent = homeData.label;
+        document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
         try {
-          const resp = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Goog-Api-Key": gmapsKey,
-              "X-Goog-FieldMask": "routes.duration,routes.staticDuration,routes.distanceMeters,routes.description"
-            },
-            body: JSON.stringify({
-              origin: { location: { latLng: { latitude: homeData.lat, longitude: homeData.lng } } },
-              destination: { location: { latLng: { latitude: OFFICE.lat, longitude: OFFICE.lng } } },
-              travelMode: "DRIVE",
-              routingPreference: "TRAFFIC_AWARE"
-            })
-          });
-          const json = await resp.json();
-          if (json.routes && json.routes.length > 0) {
-            const r = json.routes[0];
-            const liveSec = parseInt(r.duration.replace("s", ""), 10);
-            const staticSec = parseInt(r.staticDuration.replace("s", ""), 10);
-            routeState.distanceKm = +(r.distanceMeters / 1000).toFixed(1);
-            routeState.baseMins = Math.max(10, Math.round(staticSec / 60));
-            routeState.liveMins = Math.max(10, Math.round(liveSec / 60));
-            routeState.delayMins = Math.max(0, routeState.liveMins - routeState.baseMins);
-            routeState.roadSummary = r.description || "Best Traffic-Aware Route";
-            fetched = true;
+          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${homeData.lng},${homeData.lat};${OFFICE.lng},${OFFICE.lat}?alternatives=true&overview=false`;
+          const rRes = await fetch(osrmUrl);
+          const rData = await rRes.json();
+          if (rData.routes && rData.routes.length > 0) {
+            const best = rData.routes[0];
+            state.distanceKm = +(best.distance / 1000).toFixed(1);
+            state.baseMins = Math.max(10, Math.round(best.duration / 60));
+            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "OMR Arterial Corridor";
           }
         } catch (e) {}
       }
 
-      // 2. Fallback: Free OSRM Road Routing + Chennai Corridor Congestion Model
-      if (!fetched) {
-        try {
-          const url = `https://router.project-osrm.org/route/v1/driving/${homeData.lng},${homeData.lat};${OFFICE.lng},${OFFICE.lat}?overview=false`;
-          const res = await fetch(url);
-          const data = await res.json();
-          if (data.routes && data.routes.length > 0) {
-            const r = data.routes[0];
-            routeState.distanceKm = +(r.distance / 1000).toFixed(1);
-            routeState.baseMins = Math.max(8, Math.round(r.duration / 60));
-            const mainRoad = r.legs && r.legs[0] && r.legs[0].summary ? r.legs[0].summary : "Best Road Route";
-            routeState.roadSummary = mainRoad;
+      try {
+        const wxUrl = `https://api.open-meteo.com/v1/forecast?latitude=${OFFICE.lat}&longitude=${OFFICE.lng}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability&forecast_days=1`;
+        const wRes = await fetch(wxUrl);
+        const wData = await wRes.json();
+        if (wData.current) {
+          state.tempC = Math.round(wData.current.temperature_2m);
+          const currentRain = (wData.current.rain || 0) + (wData.current.precipitation || 0);
+          const hr = new Date().getHours();
+          const nextProb = (wData.hourly && wData.hourly.precipitation_probability) ? (wData.hourly.precipitation_probability[hr] || 0) : 0;
+          state.rainProb = nextProb;
+          state.isRaining = currentRain > 0.1 || nextProb >= 55;
+        }
+      } catch (e) {}
 
-            // Time-of-day Chennai traffic multiplier
-            const hr = new Date().getHours();
-            let factor = 1.15; // normal daytime
-            if ((hr >= 8 && hr <= 10) || (hr >= 17 && hr <= 20)) factor = 1.55; // peak rush
-            else if (hr >= 11 && hr <= 16) factor = 1.25; // moderate afternoon
-            else factor = 1.05; // late night / early morning
+      const hr = new Date().getHours();
+      let factor = 1.15;
+      if ((hr >= 8 && hr <= 10) || (hr >= 17 && hr <= 20)) factor = 1.50;
+      else if (hr >= 11 && hr <= 16) factor = 1.25;
+      else factor = 1.05;
 
-            routeState.liveMins = Math.round(routeState.baseMins * factor);
-            routeState.delayMins = Math.max(0, routeState.liveMins - routeState.baseMins);
-          }
-        } catch (e) {}
-      }
+      if (state.isRaining) factor += 0.20;
 
-      // Classify Traffic Severity
-      const delayRatio = routeState.liveMins / Math.max(1, routeState.baseMins);
-      if (delayRatio >= 1.45 || routeState.delayMins >= 15) {
-        routeState.trafficLevel = "HEAVY";
-      } else if (delayRatio >= 1.2 || routeState.delayMins >= 6) {
-        routeState.trafficLevel = "MODERATE";
-      } else {
-        routeState.trafficLevel = "CLEAR";
-      }
+      state.liveMins = Math.round(state.baseMins * factor);
+      state.delayMins = Math.max(0, state.liveMins - state.baseMins);
 
-      updateAIAndTransitInsights();
+      if (factor >= 1.45) state.trafficLevel = "Heavy";
+      else if (factor >= 1.22) state.trafficLevel = "Moderate";
+      else state.trafficLevel = "Clear";
+
+      renderInsights();
       updatePlanner();
     }
 
-    function updateAIAndTransitInsights() {
-      const tag = document.getElementById("trafficTag");
-      const aiText = document.getElementById("aiCopilotText");
-      const transitRec = document.getElementById("transitRec");
-      const transitReason = document.getElementById("transitReason");
+    function renderInsights() {
+      document.getElementById("bufferPill").textContent = `${state.distanceKm} km · ${state.liveMins}m`;
+      document.getElementById("roadLabel").textContent = state.roadSummary;
 
-      document.getElementById("routeMetrics").innerHTML =
-        `<b>${routeState.distanceKm} km</b> • ~${routeState.liveMins}m`;
+      const tBadge = document.getElementById("trafficBadge");
+      tBadge.textContent = state.delayMins > 0 ? `${state.trafficLevel} (+${state.delayMins}m)` : "Clear Flow";
+      tBadge.style.color = state.trafficLevel === "Heavy" ? "var(--tint-red)" :
+                           state.trafficLevel === "Moderate" ? "var(--tint-amber)" : "var(--tint-green)";
 
-      // Update Traffic Tag & AI Route Briefing
-      if (routeState.trafficLevel === "HEAVY") {
-        tag.textContent = `HEAVY (+${routeState.delayMins}m)`;
-        tag.className = "traffic-tag heavy";
-        aiText.innerHTML = `<b>Heavy Congestion on ${routeState.roadSummary}:</b> ${routeState.distanceKm} km trip is taking <b>${routeState.liveMins} mins</b> (+${routeState.delayMins}m delay). Leave buffer auto-adjusted.`;
-      } else if (routeState.trafficLevel === "MODERATE") {
-        tag.textContent = `MODERATE (+${routeState.delayMins}m)`;
-        tag.className = "traffic-tag mod";
-        aiText.innerHTML = `<b>Moderate Flow via ${routeState.roadSummary}:</b> Expect <b>${routeState.liveMins} mins</b> travel time (${routeState.distanceKm} km) to Comcast.`;
+      document.getElementById("wxTemp").textContent = `${state.tempC}°C · ${state.rainProb}% Rain`;
+      document.getElementById("wxDesc").textContent = state.isRaining
+        ? "Wet road conditions detected. Added +20% transit buffer; covered transit advised."
+        : "Dry conditions along OMR. Standard road grip and clear visibility.";
+
+      const tTitle = document.getElementById("transitTitle");
+      const tReason = document.getElementById("transitReason");
+
+      if (state.isRaining) {
+        tTitle.textContent = "Chennai Metro Rail";
+        tReason.textContent = `Rain risk (${state.rainProb}%) makes two-wheelers unfavorable. Take covered Metro + short feeder.`;
+      } else if (state.distanceKm > 12 && state.trafficLevel === "Heavy") {
+        tTitle.textContent = "Metro + Last-Mile Rapido";
+        tReason.textContent = `Peak congestion (+${state.delayMins}m delay) across ${state.distanceKm} km. Metro bypasses main bottlenecks.`;
+      } else if (state.trafficLevel === "Heavy") {
+        tTitle.textContent = "Rapido Bike Taxi";
+        tReason.textContent = `Dry roads with heavy traffic (+${state.delayMins}m). Lane filtering saves ~${Math.round(state.delayMins * 0.5)}m.`;
       } else {
-        tag.textContent = "CLEAR FLOW";
-        tag.className = "traffic-tag";
-        aiText.innerHTML = `<b>Clear Route via ${routeState.roadSummary}:</b> Smooth ${routeState.distanceKm} km drive taking <b>${routeState.liveMins} mins</b>.`;
+        tTitle.textContent = "Rapido or Chennai Metro";
+        tReason.textContent = `Smooth ${state.liveMins}m travel window over ${state.distanceKm} km. Either option hits your schedule.`;
       }
+    }
 
-      // Smart Transit Rec driven by actual distance + live traffic delay
-      if (routeState.distanceKm <= 6 && routeState.trafficLevel !== "HEAVY") {
-        transitRec.textContent = "🏍️ Rapido Bike Taxi (Fastest Door-to-Door)";
-        transitReason.textContent = `Short ${routeState.distanceKm} km hop with low delay — bike taxi beats station walk/transfer times.`;
-      } else if (routeState.distanceKm > 12 && routeState.trafficLevel === "HEAVY") {
-        transitRec.textContent = "🚇 Chennai Metro Rail + Last-Mile Rapido";
-        transitReason.textContent = `Heavy road delay (+${routeState.delayMins}m over ${routeState.distanceKm} km). Bypass choke points via Metro (Little Mount/Alandur) + short bike feeder.`;
-      } else if (routeState.trafficLevel === "HEAVY") {
-        transitRec.textContent = "🏍️ Rapido Bike Taxi (Lane-Filtering Advantage)";
-        transitReason.textContent = `Bumper-to-bumper traffic (+${routeState.delayMins}m delay) on ${routeState.roadSummary} — two-wheeler cuts ${Math.round(routeState.delayMins * 0.5)}m off cab time.`;
-      } else {
-        transitRec.textContent = "🚇 Chennai Metro or 🏍️ Rapido (Both Optimal)";
-        transitReason.textContent = `${routeState.liveMins}m travel window across ${routeState.distanceKm} km — pick Metro for comfort or Rapido for direct gate drop.`;
-      }
+    function speakBriefing() {
+      if (!("speechSynthesis" in window)) return;
+      const leave = document.getElementById("leaveHome").textContent;
+      const mode = document.getElementById("transitTitle").textContent;
+      const msg = new SpeechSynthesisUtterance(
+        `Leave home by ${leave}. Estimated travel is ${state.liveMins} minutes via ${mode}.`
+      );
+      window.speechSynthesis.speak(msg);
     }
 
     function setPreset(val, el) {
       homeInput.value = val;
-      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
       if (el) el.classList.add("active");
       updatePlanner();
     }
@@ -449,7 +951,7 @@
     function updatePlanner() {
       const [h, m] = homeInput.value.split(":").map(Number);
       if (isNaN(h)) return;
-      const travelMs = routeState.liveMins * 60 * 1000;
+      const travelMs = state.liveMins * 60 * 1000;
       const back = new Date();
       back.setHours(h, m, 0, 0);
       const out = new Date(back.getTime() - travelMs);
@@ -460,10 +962,11 @@
       document.getElementById("officeIn").textContent = format12(inn);
       document.getElementById("officeOut").textContent = format12(out);
       document.getElementById("backHome").textContent = format12(back);
-      document.getElementById("bufferNote").textContent =
-        `Dynamic ${routeState.liveMins}m travel buffer each way (${routeState.distanceKm} km)`;
     }
-    homeInput.addEventListener("input", updatePlanner);
+    homeInput.addEventListener("input", () => {
+      document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      updatePlanner();
+    });
 
     function getDistanceMeters(lat1, lon1, lat2, lon2) {
       const R = 6371000;
@@ -494,12 +997,15 @@
     function resetShift() {
       localStorage.removeItem(todayKey());
       document.getElementById("countdown").textContent = "05:00:00";
-      document.getElementById("shiftInfo").textContent = "Shift reset. Waiting for arrival.";
+      document.getElementById("shiftInfo").textContent = "Awaiting arrival at Comcast";
+      document.getElementById("ringProgress").style.strokeDashoffset = CIRCUMFERENCE;
+      document.getElementById("pctLabel").textContent = "0%";
       renderStreak();
     }
 
     function requestGPS() {
-      const badge = document.getElementById("gpsBadge");
+      const dot = document.getElementById("gpsDot");
+      const lbl = document.getElementById("gpsLabel");
       if (!("geolocation" in navigator)) return;
       navigator.geolocation.watchPosition(
         (pos) => {
@@ -507,12 +1013,12 @@
             pos.coords.latitude, pos.coords.longitude, OFFICE.lat, OFFICE.lng
           ));
           if (dist <= RADIUS_M) {
-            badge.textContent = "At Comcast (" + dist + "m)";
-            badge.className = "badge ok";
+            dot.classList.remove("away");
+            lbl.textContent = "At Office";
             startShift(Date.now());
           } else {
-            badge.textContent = (dist / 1000).toFixed(1) + " km away";
-            badge.className = "badge";
+            dot.classList.add("away");
+            lbl.textContent = (dist / 1000).toFixed(1) + " km";
           }
         },
         () => {},
@@ -523,18 +1029,29 @@
     function renderStreak() {
       const bar = document.getElementById("streakBar");
       bar.innerHTML = "";
-      const labels = ["M", "T", "W", "T", "F", "S", "S"];
+      const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       const now = new Date();
-      const day = (now.getDay() + 6) % 7;
+      const todayIdx = (now.getDay() + 6) % 7;
+      let count = 0;
+
       for (let i = 0; i < 7; i++) {
         const d = new Date(now);
-        d.setDate(now.getDate() - (day - i));
+        d.setDate(now.getDate() - (todayIdx - i));
         const key = "lokiffce_in_" + d.toISOString().slice(0, 10);
-        const div = document.createElement("div");
-        div.className = "day-pill" + (localStorage.getItem(key) ? " done" : "");
-        div.textContent = labels[i];
-        bar.appendChild(div);
+        const isDone = Boolean(localStorage.getItem(key));
+        if (isDone) count++;
+
+        const cell = document.createElement("div");
+        cell.className = "day-cell" + (isDone ? " done" : "") + (i === todayIdx ? " today" : "");
+        cell.innerHTML = `
+          <span>${labels[i]}</span>
+          <div class="day-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        `;
+        bar.appendChild(cell);
       }
+      document.getElementById("streakCount").textContent = `${count} / 5 Days`;
     }
 
     setInterval(() => {
@@ -542,24 +1059,28 @@
       if (!saved) return;
       const inTime = Number(saved);
       const outTime = inTime + SHIFT_MS;
-      const homeTime = outTime + routeState.liveMins * 60000;
-      const rem = outTime - Date.now();
+      const rem = Math.max(0, outTime - Date.now());
+      const elapsed = Math.min(SHIFT_MS, Math.max(0, Date.now() - inTime));
+      const pct = Math.round((elapsed / SHIFT_MS) * 100);
 
+      document.getElementById("ringProgress").style.strokeDashoffset =
+        CIRCUMFERENCE - (CIRCUMFERENCE * pct) / 100;
+      document.getElementById("pctLabel").textContent = `${pct}%`;
       document.getElementById("shiftInfo").textContent =
-        "IN: " + format12(new Date(inTime)) + " • OUT: " + format12(new Date(outTime)) + " • Est. Home: " + format12(new Date(homeTime));
+        `In ${format12(new Date(inTime))} · Out ${format12(new Date(outTime))}`;
 
-      if (rem <= 0) {
+      if (rem === 0) {
         document.getElementById("countdown").textContent = "00:00:00";
       } else {
         const hrs = String(Math.floor(rem / 3600000)).padStart(2, "0");
         const mins = String(Math.floor((rem % 3600000) / 60000)).padStart(2, "0");
         const secs = String(Math.floor((rem % 60000) / 1000)).padStart(2, "0");
-        document.getElementById("countdown").textContent = hrs + ":" + mins + ":" + secs;
+        document.getElementById("countdown").textContent = `${hrs}:${mins}:${secs}`;
       }
     }, 1000);
 
     renderStreak();
-    refreshRouteAndTraffic();
+    refreshLiveIntel();
     requestGPS();
   </script>
 </body>
