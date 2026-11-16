@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "LOKIFFCE_CH", "LOKIFFCE Shift Alerts",
+                "LOKIFFICE_CH", "LOKIFFICE Shift Alerts",
                 NotificationManager.IMPORTANCE_HIGH
             )
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
@@ -128,7 +128,7 @@ class GeofenceReceiver : BroadcastReceiver() {
             val fmt = SimpleDateFormat("hh:mm a", Locale.US)
             sendNotification(
                 context, 1,
-                "LOKIFFCE: Checked In at Comcast",
+                "LOKIFFICE: Checked In at Comcast",
                 "Logged IN at ${fmt.format(Date(now))}. Leave at ${fmt.format(Date(outTime))}."
             )
 
@@ -147,7 +147,7 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         sendNotification(
             context, 2,
-            "5 Hours Complete! Time to Leave",
+            "LOKIFFICE: 5 Hours Complete",
             "Your 5-hour office shift at Comcast is complete."
         )
         try {
@@ -160,7 +160,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
 fun sendNotification(context: Context, id: Int, title: String, msg: String) {
     val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    val notif = NotificationCompat.Builder(context, "LOKIFFCE_CH")
+    val notif = NotificationCompat.Builder(context, "LOKIFFICE_CH")
         .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
         .setContentTitle(title)
         .setContentText(msg)

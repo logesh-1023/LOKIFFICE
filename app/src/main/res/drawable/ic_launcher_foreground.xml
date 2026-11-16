@@ -4,21 +4,18 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Outer 5-hour shift progress arc -->
     <path
         android:fillColor="#00000000"
-        android:strokeColor="#38BDF8"
+        android:strokeColor="#0A84FF"
         android:strokeWidth="4.5"
         android:strokeLineCap="round"
         android:pathData="M54,28 A26,26 0 1,1 31.5,67" />
-    <!-- Purple accent dot at the 5-hour target mark -->
     <path
-        android:fillColor="#A855F7"
+        android:fillColor="#30D158"
         android:pathData="M31.5,67m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
-    <!-- Stylized 'L' + clock hands in center -->
     <path
         android:fillColor="#00000000"
-        android:strokeColor="#F8FAFC"
+        android:strokeColor="#FFFFFF"
         android:strokeWidth="5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
