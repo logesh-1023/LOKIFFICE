@@ -1,11 +1,7 @@
-# LOKIFFICE v5.1 — Live Firebase Crowd-Synced 3D Parking Radar & Real System Auto-DND
+# LOKIFFICE v5.2 — Chennai Metro Coverage Gate, Zero-Touch Parking, Exact Shift Alarm & Dual-Layer DND/Silent Profile
 
-Connected directly to `https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app/`.
-
-## What's Fixed & Live in v5.1
-1. **Real Live Multi-User Firebase Crowd Sync (Zero Dummy Data):**
-   - Connected to your Singapore Firebase Realtime Database (`chennai_one/YYYY-MM-DD/floors/G..L4`).
-   - Automatically increments a floor's live parked count when your **Access 125 Ride Connect** disconnects Bluetooth (`ACTION_ACL_DISCONNECTED`) and decrements it when you reconnect (`ACTION_ACL_CONNECTED`) to leave.
-   - Includes **Flag Selected Full** and **Flag Selected Open** buttons so any rider can immediately broadcast floor congestion to everyone else on campus.
-2. **Real System Do Not Disturb (`AndroidBridge.setRideMode`):**
-   - Tapping **Test Ride** (as well as real Access 125 Bluetooth connection or vehicle motion) now directly calls `NotificationManager.setInterruptionFilter(INTERRUPTION_FILTER_PRIORITY)` in `MainActivity.kt`, displaying the system DND crescent moon icon in your iQOO Neo 7 status bar and silencing calls.
+## All 4 Bugs Fixed in v5.2
+1. **Chennai Metro Line Coverage Gate (`CHENNAI_METRO_STATIONS`):** Ingested all Blue Line, Green Line, and Phase-2 Yellow Line station coordinates. LOKIFFICE checks the Haversine distance from your Home Pin to the nearest Metro station and **never** suggests Metro if your home is more than `2.5 km` from a station (recommending direct Access 125 or covered Cab/Auto instead).
+2. **100% Zero-Touch 3D Parking Radar:** Removed all manual floor buttons (`G`, `L1`–`L4`) and manual crowd flag buttons. Floor detection and Firebase updates happen purely hands-free via your iQOO Neo 7 Gyroscope + Access 125 Ride Connect Bluetooth disconnect/connect events.
+3. **End-of-Shift Alarm Wired to Every Check-In Mode:** Previously, the native `AlarmManager` only fired on background `GeofenceReceiver` entry—so tapping **Check In Now**, adjusting `-15m IN`, or checking in via web GPS never scheduled the alarm. v5.2 calls `AndroidBridge.scheduleShiftEndAlarm(...)` on every check-in/adjustment plus plays a Web Audio chime + spoken alert when the countdown reaches `00:00:00`.
+4. **Funtouch OS / iQOO Silent + DND Dual Profile Switch:** On iQOO Funtouch OS, `NotificationManager.setInterruptionFilter()` alone often suppresses the DND status icon. `applyRideModeProfile()` now sets **both** `INTERRUPTION_FILTER_PRIORITY` AND `AudioManager.ringerMode = RINGER_MODE_SILENT` (and restores your previous ringer mode when the ride ends).

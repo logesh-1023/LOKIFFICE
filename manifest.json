@@ -1,7 +1,7 @@
 {
   "name": "LOKIFFICE",
   "short_name": "LOKIFFICE",
-  "description": "Live crowd-synced 3D parking radar, auto Ride-Mode DND, and shift timer.",
+  "description": "Zero-touch Chennai Metro & Access 125 commute copilot, 3D parking radar, and auto Ride-Mode DND.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",

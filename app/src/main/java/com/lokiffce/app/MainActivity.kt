@@ -10,6 +10,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.AudioManager
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -89,20 +90,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
             }
 
             @JavascriptInterface
+            fun scheduleShiftEndAlarm(outTimeMillis: Long) {
+                scheduleExactShiftAlarm(this@MainActivity, outTimeMillis)
+            }
+
+            @JavascriptInterface
+            fun cancelShiftEndAlarm() {
+                cancelExactShiftAlarm(this@MainActivity)
+            }
+
+            @JavascriptInterface
             fun setRideMode(active: Boolean) {
-                val prefs = getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
-                prefs.edit().putBoolean("ride_mode_active", active).apply()
-                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                if (nm.isNotificationPolicyAccessGranted) {
-                    nm.setInterruptionFilter(
-                        if (active) NotificationManager.INTERRUPTION_FILTER_PRIORITY
-                        else NotificationManager.INTERRUPTION_FILTER_ALL
-                    )
-                } else {
-                    val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                }
+                applyRideModeProfile(this@MainActivity, active)
             }
 
             @JavascriptInterface
@@ -132,12 +131,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
                 val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val dndGranted = nm.isNotificationPolicyAccessGranted
                 return "{\"floor\":\"$floor\",\"walkMeters\":$dist,\"walkDir\":\"$dir\",\"ts\":$ts,\"rideMode\":$rideActive,\"dndGranted\":$dndGranted}"
-            }
-
-            @JavascriptInterface
-            fun setManualParkingFloor(floor: String) {
-                getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
-                    .edit().putString("park_floor", floor).apply()
             }
 
             @JavascriptInterface
@@ -391,16 +384,78 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
                 "LOKIFFICE_CH", "LOKIFFICE Shift & Ride Alerts",
                 NotificationManager.IMPORTANCE_HIGH
             )
+            channel.enableVibration(true)
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
     }
+}
+
+/**
+ * Dual-Layer Ride Mode Profile Enforcer for Funtouch OS / iQOO Neo 7:
+ * 1. Sets NotificationManager DND Interruption Filter (PRIORITY / NONE -> ALL)
+ * 2. Forces AudioManager Ringer Mode (RINGER_MODE_SILENT / VIBRATE -> RINGER_MODE_NORMAL)
+ *    so the phone profile visually and audibly changes even on OEM skins that suppress DND icons.
+ */
+fun applyRideModeProfile(context: Context, active: Boolean) {
+    val prefs = context.getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
+    val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+    prefs.edit().putBoolean("ride_mode_active", active).apply()
+
+    if (!nm.isNotificationPolicyAccessGranted) {
+        val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+        return
+    }
+
+    try {
+        if (active) {
+            prefs.edit().putInt("prev_ringer_mode", am.ringerMode).apply()
+            nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+            am.ringerMode = AudioManager.RINGER_MODE_SILENT
+        } else {
+            nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+            val prev = prefs.getInt("prev_ringer_mode", AudioManager.RINGER_MODE_NORMAL)
+            am.ringerMode = prev
+        }
+    } catch (_: Exception) {}
+}
+
+fun scheduleExactShiftAlarm(context: Context, outTimeMillis: Long) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val alarmIntent = Intent(context, AlarmReceiver::class.java)
+    val pi = PendingIntent.getBroadcast(
+        context, 2, alarmIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    if (outTimeMillis <= System.currentTimeMillis()) return
+    try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, outTimeMillis, pi)
+        } else {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, outTimeMillis, pi)
+        }
+    } catch (_: Exception) {
+        alarmManager.set(AlarmManager.RTC_WAKEUP, outTimeMillis, pi)
+    }
+}
+
+fun cancelExactShiftAlarm(context: Context) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val alarmIntent = Intent(context, AlarmReceiver::class.java)
+    val pi = PendingIntent.getBroadcast(
+        context, 2, alarmIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    alarmManager.cancel(pi)
 }
 
 class RideAndParkReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         val prefs = context.getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
-        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val fbBase = prefs.getString("firebase_url", "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app")
             ?: "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app"
 
@@ -415,36 +470,27 @@ class RideAndParkReceiver : BroadcastReceiver() {
                 val name = device?.name?.uppercase(Locale.US) ?: ""
                 if (name.contains("SUZUKI") || name.contains("ACCESS") || name.contains("RIDE") || name.isEmpty()) {
                     val prevFloor = prefs.getString("park_floor", "") ?: ""
-                    prefs.edit().putBoolean("ride_mode_active", true).apply()
-                    if (nm.isNotificationPolicyAccessGranted) {
-                        nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-                    }
+                    applyRideModeProfile(context, true)
                     if (prevFloor.isNotEmpty()) {
                         pushCrowdDelta(fbBase, prevFloor, -1)
                     }
                     sendNotification(
                         context, 10,
                         "LOKIFFICE Ride Mode ON",
-                        "Access 125 connected. Calls silenced via Auto-DND for a safe ride."
+                        "Access 125 connected. Phone switched to Silent/DND profile."
                     )
                 }
             }
             BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
                 if (prefs.getBoolean("ride_mode_active", false)) {
                     val floor = prefs.getString("park_floor", "L1") ?: "L1"
-                    prefs.edit()
-                        .putBoolean("ride_mode_active", false)
-                        .putLong("park_ts", System.currentTimeMillis())
-                        .apply()
-
-                    if (nm.isNotificationPolicyAccessGranted) {
-                        nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-                    }
+                    prefs.edit().putLong("park_ts", System.currentTimeMillis()).apply()
+                    applyRideModeProfile(context, false)
                     pushCrowdDelta(fbBase, floor, 1)
                     sendNotification(
                         context, 11,
                         "Access 125 Parked · Floor $floor",
-                        "Ignition off detected. Ride Mode DND off & live floor synced."
+                        "Ignition off detected. Normal ringtone restored & floor synced."
                     )
                 }
             }
@@ -454,15 +500,9 @@ class RideAndParkReceiver : BroadcastReceiver() {
             val result = ActivityTransitionResult.extractResult(intent) ?: return
             for (event in result.transitionEvents) {
                 if (event.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                    prefs.edit().putBoolean("ride_mode_active", true).apply()
-                    if (nm.isNotificationPolicyAccessGranted) {
-                        nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-                    }
+                    applyRideModeProfile(context, true)
                 } else if (event.transitionType == ActivityTransition.ACTIVITY_TRANSITION_EXIT) {
-                    prefs.edit().putBoolean("ride_mode_active", false).apply()
-                    if (nm.isNotificationPolicyAccessGranted) {
-                        nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-                    }
+                    applyRideModeProfile(context, false)
                 }
             }
         }
@@ -512,14 +552,7 @@ class GeofenceReceiver : BroadcastReceiver() {
                 "LOKIFFICE: Checked In at Comcast",
                 "Logged IN at ${fmt.format(Date(now))}. Leave at ${fmt.format(Date(outTime))}."
             )
-
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val alarmIntent = Intent(context, AlarmReceiver::class.java)
-            val pi = PendingIntent.getBroadcast(
-                context, 2, alarmIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, outTime, pi)
+            scheduleExactShiftAlarm(context, outTime)
         }
     }
 }
@@ -528,8 +561,8 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         sendNotification(
             context, 2,
-            "LOKIFFICE: 5 Hours Complete",
-            "Your 5-hour office shift at Comcast is complete."
+            "LOKIFFICE: Shift Complete",
+            "Your mandatory office shift hours at Comcast are complete!"
         )
         try {
             val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
