@@ -159,7 +159,7 @@
     }
 
     .ride-banner.active {
-      background: linear-gradient(135deg, rgba(191, 90, 242, 0.32), rgba(255, 69, 58, 0.22));
+      background: linear-gradient(135deg, rgba(191, 90, 242, 0.35), rgba(255, 69, 58, 0.25));
       border-color: var(--tint-purple);
     }
 
@@ -259,11 +259,29 @@
       width: fit-content;
     }
 
+    .crowd-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .crowd-btn {
+      height: 30px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 0.5px solid var(--separator);
+      color: var(--label-soft);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
     .floor-pills {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 5px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .fp-btn {
@@ -632,54 +650,56 @@
       </div>
     </header>
 
+    <!-- Use Case 3: Real System DND Ride Mode -->
     <div class="ride-banner" id="rideBanner">
       <div class="ride-left">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <div>
           <div class="ride-title" id="rideStatusTitle">Ride Mode DND · Standby</div>
-          <div class="ride-sub" id="rideStatusSub">Auto-silences calls when Access 125 BLE or motion starts</div>
+          <div class="ride-sub" id="rideStatusSub">Silences phone calls on Access 125 BLE or Test Ride</div>
         </div>
       </div>
       <button class="pill-btn" style="height:30px; font-size:12px;" id="rideToggleBtn" onclick="toggleManualRideMode()">Test Ride</button>
     </div>
 
+    <!-- Use Case 1 & 2: Live Firebase Crowd-Synced 3D Parking Radar -->
     <section class="card">
       <div class="card-header">
-        <span class="section-label">3D Parking Radar · Access 125</span>
-        <span class="meta-badge" id="parkingAdviceBadge" style="color: var(--tint-green)">Go to L2</span>
+        <span class="section-label">Live 3D Parking Radar</span>
+        <span class="meta-badge" id="parkingAdviceBadge" style="color: var(--tint-green)">Syncing Live...</span>
       </div>
 
       <div class="parking-split">
         <div class="stack-3d" id="stack3d">
           <div class="floor-slab" data-floor="L4" onclick="selectParkedFloor('L4')">
             <span class="floor-name">Floor 4</span>
-            <span class="floor-tag cap-full" id="cap-L4">96% Full</span>
+            <span class="floor-tag cap-open" id="cap-L4">0 Parked</span>
           </div>
           <div class="floor-slab" data-floor="L3" onclick="selectParkedFloor('L3')">
             <span class="floor-name">Floor 3</span>
-            <span class="floor-tag cap-tight" id="cap-L3">84% Tight</span>
+            <span class="floor-tag cap-open" id="cap-L3">0 Parked</span>
           </div>
           <div class="floor-slab" data-floor="L2" onclick="selectParkedFloor('L2')">
             <span class="floor-name">Floor 2</span>
-            <span class="floor-tag cap-open" id="cap-L2">24 Open</span>
+            <span class="floor-tag cap-open" id="cap-L2">0 Parked</span>
           </div>
           <div class="floor-slab" data-floor="L1" onclick="selectParkedFloor('L1')">
             <span class="floor-name">Floor 1</span>
-            <span class="floor-tag cap-open" id="cap-L1">18 Open</span>
+            <span class="floor-tag cap-open" id="cap-L1">0 Parked</span>
           </div>
           <div class="floor-slab" data-floor="G" onclick="selectParkedFloor('G')">
             <span class="floor-name">Ground</span>
-            <span class="floor-tag cap-full" id="cap-G">Full</span>
+            <span class="floor-tag cap-open" id="cap-G">0 Parked</span>
           </div>
         </div>
 
         <div class="park-info-box">
           <span class="section-label" style="font-size:10px;">Your Scooter Pin</span>
           <div class="park-floor-big" id="parkedFloorDisplay">Floor 1</div>
-          <div class="park-vector" id="parkedVectorText">Auto-locks via Gyro + Access 125 BLE disconnect</div>
+          <div class="park-vector" id="parkedVectorText">Tap floor below or auto-lock via Access 125 BLE</div>
           <div class="compass-badge" id="parkedCompassBadge">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-            <span id="parkedWalkDist">Ready</span>
+            <span id="parkedWalkDist">Firebase Live</span>
           </div>
         </div>
       </div>
@@ -690,6 +710,11 @@
         <button class="fp-btn" data-fp="L2" onclick="selectParkedFloor('L2')">L2</button>
         <button class="fp-btn" data-fp="L3" onclick="selectParkedFloor('L3')">L3</button>
         <button class="fp-btn" data-fp="L4" onclick="selectParkedFloor('L4')">L4</button>
+      </div>
+
+      <div class="crowd-actions">
+        <button class="crowd-btn" style="color:var(--tint-red);" onclick="reportFloorCrowd('FULL')">Flag Selected Full</button>
+        <button class="crowd-btn" style="color:var(--tint-green);" onclick="reportFloorCrowd('OPEN')">Flag Selected Open</button>
       </div>
     </section>
 
@@ -831,7 +856,7 @@
     <div class="sheet">
       <div class="sheet-grabber"></div>
       <div class="sheet-header">
-        <h3>Campus Geofence & Ride Setup</h3>
+        <h3>Campus Geofence & Crowd Sync</h3>
         <button class="sheet-close" onclick="closeSheet()">✕</button>
       </div>
 
@@ -849,6 +874,9 @@
       <span class="sheet-label">Home Location</span>
       <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street name, landmark, or lat, lng" />
 
+      <span class="sheet-label">Firebase Crowd Sync Endpoint</span>
+      <input type="text" class="sheet-input" id="firebaseUrlInput" value="https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app" />
+
       <span class="sheet-label">Mandatory Office Shift Hours</span>
       <div class="segmented" style="margin-bottom:14px;" id="shiftHoursSeg">
         <button class="seg-btn active" onclick="setShiftHours(5, this)">5 Hours</button>
@@ -857,7 +885,7 @@
         <button class="seg-btn" onclick="setShiftHours(9, this)">9 Hours</button>
       </div>
 
-      <p class="sheet-hint">Sitting at your desk right now? Tap <b>Lock Current Desk as Office</b> to center the 400m campus fence directly on your wing.</p>
+      <p class="sheet-hint">Important: When you tap <b>Enable Auto-DND Ride Mode Access</b>, locate <b>LOKIFFICE</b> in Android settings and switch it ON so <b>Test Ride</b> and Access 125 Bluetooth can silence calls.</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
         <button class="btn-ios btn-primary" style="width:100%" onclick="saveSettings()">Save Settings</button>
         <button class="btn-ios btn-secondary" style="width:100%" onclick="lockCurrentDeskAsOffice()">Lock Current Desk as Office</button>
@@ -869,8 +897,11 @@
 
   <script>
     const DEFAULT_OFFICE = { lat: 12.946960, lng: 80.231400, label: "Chennai One SEZ" };
+    const DEFAULT_FIREBASE = "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app";
+
     let officeData = JSON.parse(localStorage.getItem("lokiffice_office") || "null") || DEFAULT_OFFICE;
     let homeData = JSON.parse(localStorage.getItem("lokiffice_home") || "null");
+    let firebaseUrl = (localStorage.getItem("lokiffice_fb_url") || DEFAULT_FIREBASE).replace(/\/+$/, "");
     let shiftHours = Number(localStorage.getItem("lokiffice_shift_hours") || "5");
     let radiusMeters = Number(localStorage.getItem("lokiffice_radius_m") || "400");
     let parkedFloor = localStorage.getItem("lokiffice_park_floor") || "L1";
@@ -878,7 +909,8 @@
 
     const SHIFT_MS = () => shiftHours * 60 * 60 * 1000;
     const CIRCUMFERENCE = 226.2;
-    const todayKey = () => "lokiffice_in_" + new Date().toISOString().slice(0, 10);
+    const todayIso = () => new Date().toISOString().slice(0, 10);
+    const todayKey = () => "lokiffice_in_" + todayIso();
 
     let state = {
       distanceKm: 17.0,
@@ -910,6 +942,7 @@
 
     function openSheet() {
       document.getElementById("officeAddressInput").value = `${officeData.lat}, ${officeData.lng}`;
+      document.getElementById("firebaseUrlInput").value = firebaseUrl;
       if (homeData) {
         document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
       }
@@ -927,8 +960,13 @@
     }
 
     function syncNativeGeofence() {
-      if (window.AndroidBridge && typeof window.AndroidBridge.updateOfficeGeofence === "function") {
-        window.AndroidBridge.updateOfficeGeofence(officeData.lat, officeData.lng, radiusMeters);
+      if (window.AndroidBridge) {
+        if (typeof window.AndroidBridge.updateOfficeGeofence === "function") {
+          window.AndroidBridge.updateOfficeGeofence(officeData.lat, officeData.lng, radiusMeters);
+        }
+        if (typeof window.AndroidBridge.setFirebaseUrl === "function") {
+          window.AndroidBridge.setFirebaseUrl(firebaseUrl);
+        }
       }
     }
 
@@ -942,6 +980,9 @@
 
     function toggleManualRideMode() {
       manualRideActive = !manualRideActive;
+      if (window.AndroidBridge && typeof window.AndroidBridge.setRideMode === "function") {
+        window.AndroidBridge.setRideMode(manualRideActive);
+      }
       renderRideBanner(manualRideActive);
     }
 
@@ -950,29 +991,107 @@
       const title = document.getElementById("rideStatusTitle");
       const sub = document.getElementById("rideStatusSub");
       const btn = document.getElementById("rideToggleBtn");
+
+      let dndHint = "Silences phone calls on Access 125 BLE or Test Ride";
+      if (window.AndroidBridge && typeof window.AndroidBridge.isDndAccessGranted === "function") {
+        if (!window.AndroidBridge.isDndAccessGranted()) {
+          dndHint = "Tap Setup → Enable Auto-DND Access to allow system DND";
+        }
+      }
+
       if (isActive) {
         banner.classList.add("active");
         title.textContent = "Ride Mode DND · ACTIVE";
-        sub.textContent = "Access 125 motion/BLE active · Incoming calls silenced";
+        sub.textContent = "System DND enabled · Incoming calls silenced";
         btn.textContent = "End Ride";
       } else {
         banner.classList.remove("active");
         title.textContent = "Ride Mode DND · Standby";
-        sub.textContent = "Auto-silences calls when Access 125 BLE or motion starts";
+        sub.textContent = dndHint;
         btn.textContent = "Test Ride";
       }
     }
 
-    function selectParkedFloor(floor) {
+    // Live Firebase Crowd Sync Functions
+    async function selectParkedFloor(floor) {
+      const previousFloor = parkedFloor;
       parkedFloor = floor;
       localStorage.setItem("lokiffice_park_floor", floor);
       if (window.AndroidBridge && typeof window.AndroidBridge.setManualParkingFloor === "function") {
         window.AndroidBridge.setManualParkingFloor(floor);
       }
-      renderParkingUI();
+      renderLocalParkCard();
+
+      // Update live Firebase crowd counts (decrement old floor if changed, increment new floor)
+      if (previousFloor && previousFloor !== floor) {
+        await patchFirebaseFloorDelta(previousFloor, -1, null);
+      }
+      await patchFirebaseFloorDelta(floor, 1, "OPEN");
+      await fetchFirebaseCrowdState();
     }
 
-    function renderParkingUI(walkMeters = 0, walkDir = "North") {
+    async function reportFloorCrowd(status) {
+      await patchFirebaseFloorDelta(parkedFloor, 0, status);
+      await fetchFirebaseCrowdState();
+    }
+
+    async function patchFirebaseFloorDelta(floor, delta, explicitStatus) {
+      try {
+        const floorEndpoint = `${firebaseUrl}/chennai_one/${todayIso()}/floors/${floor}.json`;
+        const res = await fetch(floorEndpoint);
+        const existing = (await res.json()) || { count: 0, status: "OPEN" };
+        const nextCount = Math.max(0, (Number(existing.count) || 0) + delta);
+        const nextStatus = explicitStatus || (nextCount >= 180 ? "FULL" : existing.status || "OPEN");
+
+        await fetch(floorEndpoint, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            count: nextCount,
+            status: nextStatus,
+            updatedAt: Date.now()
+          })
+        });
+      } catch (_e) {}
+    }
+
+    async function fetchFirebaseCrowdState() {
+      try {
+        const res = await fetch(`${firebaseUrl}/chennai_one/${todayIso()}/floors.json`);
+        const floors = (await res.json()) || {};
+        const order = ["L4", "L3", "L2", "L1", "G"];
+        let bestFloor = null;
+
+        order.forEach(f => {
+          const info = floors[f] || { count: 0, status: "OPEN" };
+          const count = Number(info.count) || 0;
+          const status = info.status || "OPEN";
+          const el = document.getElementById(`cap-${f}`);
+          if (!el) return;
+
+          if (status === "FULL" || count >= 180) {
+            el.textContent = `FULL (${count})`;
+            el.className = "floor-tag cap-full";
+          } else if (count >= 120) {
+            el.textContent = `${count} · Tight`;
+            el.className = "floor-tag cap-tight";
+            if (!bestFloor) bestFloor = f;
+          } else {
+            el.textContent = `${count} Parked`;
+            el.className = "floor-tag cap-open";
+            bestFloor = f;
+          }
+        });
+
+        const badge = document.getElementById("parkingAdviceBadge");
+        badge.textContent = bestFloor ? `Live · Go ${bestFloor}` : "All Floors Full";
+        badge.style.color = bestFloor ? "var(--tint-green)" : "var(--tint-red)";
+      } catch (_e) {
+        document.getElementById("parkingAdviceBadge").textContent = "Offline Mode";
+      }
+    }
+
+    function renderLocalParkCard(walkMeters = 0, walkDir = "North") {
       const floorNames = { G: "Ground", L1: "Floor 1", L2: "Floor 2", L3: "Floor 3", L4: "Floor 4" };
       document.getElementById("parkedFloorDisplay").textContent = floorNames[parkedFloor] || parkedFloor;
 
@@ -989,25 +1108,9 @@
         document.getElementById("parkedWalkDist").textContent = `${walkMeters}m ${walkDir}`;
       } else {
         document.getElementById("parkedVectorText").textContent =
-          `Locked on ${floorNames[parkedFloor]} via Gyro + Access 125 BLE`;
-        document.getElementById("parkedWalkDist").textContent = `${parkedFloor} Locked`;
+          `Synced to ${floorNames[parkedFloor]} · Tap a floor to update live`;
+        document.getElementById("parkedWalkDist").textContent = `${parkedFloor} Live`;
       }
-
-      const hr = new Date().getHours();
-      const cap = hr >= 9 && hr <= 11
-        ? { L4: ["98% Full", "cap-full"], L3: ["92% Tight", "cap-tight"], L2: ["16 Open", "cap-open"], L1: ["12 Open", "cap-open"], G: ["Full", "cap-full"], best: "Go to L2" }
-        : hr >= 12 && hr <= 16
-        ? { L4: ["Full", "cap-full"], L3: ["Full", "cap-full"], L2: ["88% Tight", "cap-tight"], L1: ["19 Open", "cap-open"], G: ["Full", "cap-full"], best: "Go to L1" }
-        : { L4: ["42% Open", "cap-open"], L3: ["35% Open", "cap-open"], L2: ["50% Open", "cap-open"], L1: ["48% Open", "cap-open"], G: ["22 Open", "cap-open"], best: "All Open" };
-
-      ["L4", "L3", "L2", "L1", "G"].forEach(f => {
-        const el = document.getElementById(`cap-${f}`);
-        if (el) {
-          el.textContent = cap[f][0];
-          el.className = `floor-tag ${cap[f][1]}`;
-        }
-      });
-      document.getElementById("parkingAdviceBadge").textContent = cap.best;
     }
 
     function pollNativeSensorState() {
@@ -1016,7 +1119,7 @@
           const data = JSON.parse(window.AndroidBridge.getAutoParkingJson());
           if (data.floor && data.ts > 0) {
             parkedFloor = data.floor;
-            renderParkingUI(data.walkMeters || 0, data.walkDir || "North");
+            renderLocalParkCard(data.walkMeters || 0, data.walkDir || "North");
           }
           if (!manualRideActive) {
             renderRideBanner(Boolean(data.rideMode));
@@ -1051,7 +1154,12 @@
     async function saveSettings() {
       const hVal = document.getElementById("homeAddressInput").value.trim();
       const oVal = document.getElementById("officeAddressInput").value.trim();
+      const fbVal = document.getElementById("firebaseUrlInput").value.trim();
       try {
+        if (fbVal) {
+          firebaseUrl = fbVal.replace(/\/+$/, "");
+          localStorage.setItem("lokiffice_fb_url", firebaseUrl);
+        }
         if (hVal) {
           const parsedH = await geocodeInput(hVal, "Home Pin");
           if (parsedH) {
@@ -1064,11 +1172,12 @@
           if (parsedO) {
             officeData = parsedO;
             localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
-            syncNativeGeofence();
           }
         }
+        syncNativeGeofence();
       } catch (e) {}
       closeSheet();
+      await fetchFirebaseCrowdState();
       await refreshLiveIntel();
     }
 
@@ -1368,11 +1477,16 @@
       }
     }, 1000);
 
+    // Poll Firebase every 20 seconds so multi-user parking counts update live
+    setInterval(fetchFirebaseCrowdState, 20000);
+
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
-    renderParkingUI();
+    renderLocalParkCard();
+    renderRideBanner(false);
+    fetchFirebaseCrowdState();
     renderStreak();
     refreshLiveIntel();
     requestGPS();

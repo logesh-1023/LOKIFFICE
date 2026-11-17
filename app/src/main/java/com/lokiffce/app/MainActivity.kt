@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -43,7 +45,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
     private var cumulativeYawDeg = 0.0
     private var detectedFloor = "L1"
     private var isTrackingWalk = false
-    private var walkStartTs = 0L
     private var stepCount = 0
     private var lastStepTs = 0L
     private var walkVectorX = 0.0
@@ -88,10 +89,29 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
             }
 
             @JavascriptInterface
+            fun setRideMode(active: Boolean) {
+                val prefs = getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("ride_mode_active", active).apply()
+                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                if (nm.isNotificationPolicyAccessGranted) {
+                    nm.setInterruptionFilter(
+                        if (active) NotificationManager.INTERRUPTION_FILTER_PRIORITY
+                        else NotificationManager.INTERRUPTION_FILTER_ALL
+                    )
+                } else {
+                    val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+            }
+
+            @JavascriptInterface
             fun requestDndPermission() {
                 val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 if (!nm.isNotificationPolicyAccessGranted) {
-                    startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+                    val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 }
             }
 
@@ -109,13 +129,21 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
                 val dir = prefs.getString("park_walk_dir", "North") ?: "North"
                 val ts = prefs.getLong("park_ts", 0L)
                 val rideActive = prefs.getBoolean("ride_mode_active", false)
-                return "{\"floor\":\"$floor\",\"walkMeters\":$dist,\"walkDir\":\"$dir\",\"ts\":$ts,\"rideMode\":$rideActive}"
+                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val dndGranted = nm.isNotificationPolicyAccessGranted
+                return "{\"floor\":\"$floor\",\"walkMeters\":$dist,\"walkDir\":\"$dir\",\"ts\":$ts,\"rideMode\":$rideActive,\"dndGranted\":$dndGranted}"
             }
 
             @JavascriptInterface
             fun setManualParkingFloor(floor: String) {
                 getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
                     .edit().putString("park_floor", floor).apply()
+            }
+
+            @JavascriptInterface
+            fun setFirebaseUrl(url: String) {
+                getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
+                    .edit().putString("firebase_url", url.trimEnd('/')).apply()
             }
         }, "AndroidBridge")
 
@@ -204,7 +232,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
                 if (!rideActive && parkTs > 0L && elapsedSincePark in 1000L..45000L) {
                     if (!isTrackingWalk) {
                         isTrackingWalk = true
-                        walkStartTs = parkTs
                         stepCount = 0
                         walkVectorX = 0.0
                         walkVectorY = 0.0
@@ -374,6 +401,8 @@ class RideAndParkReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val prefs = context.getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val fbBase = prefs.getString("firebase_url", "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app")
+            ?: "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app"
 
         when (intent.action) {
             BluetoothDevice.ACTION_ACL_CONNECTED -> {
@@ -385,9 +414,13 @@ class RideAndParkReceiver : BroadcastReceiver() {
                 }
                 val name = device?.name?.uppercase(Locale.US) ?: ""
                 if (name.contains("SUZUKI") || name.contains("ACCESS") || name.contains("RIDE") || name.isEmpty()) {
+                    val prevFloor = prefs.getString("park_floor", "") ?: ""
                     prefs.edit().putBoolean("ride_mode_active", true).apply()
                     if (nm.isNotificationPolicyAccessGranted) {
                         nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                    }
+                    if (prevFloor.isNotEmpty()) {
+                        pushCrowdDelta(fbBase, prevFloor, -1)
                     }
                     sendNotification(
                         context, 10,
@@ -407,10 +440,11 @@ class RideAndParkReceiver : BroadcastReceiver() {
                     if (nm.isNotificationPolicyAccessGranted) {
                         nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
                     }
+                    pushCrowdDelta(fbBase, floor, 1)
                     sendNotification(
                         context, 11,
                         "Access 125 Parked · Floor $floor",
-                        "Ignition off detected. Ride Mode DND off & parking floor locked."
+                        "Ignition off detected. Ride Mode DND off & live floor synced."
                     )
                 }
             }
@@ -432,6 +466,28 @@ class RideAndParkReceiver : BroadcastReceiver() {
                 }
             }
         }
+    }
+
+    private fun pushCrowdDelta(fbBase: String, floor: String, delta: Int) {
+        Thread {
+            try {
+                val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                val url = URL("$fbBase/chennai_one/$today/floors/$floor.json")
+                val getConn = url.openConnection() as HttpURLConnection
+                getConn.requestMethod = "GET"
+                val raw = getConn.inputStream.bufferedReader().readText()
+                val current = Regex("\"count\"\\s*:\\s*(\\d+)").find(raw)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+                val nextCount = (current + delta).coerceAtLeast(0)
+
+                val putConn = url.openConnection() as HttpURLConnection
+                putConn.requestMethod = "PATCH"
+                putConn.setRequestProperty("Content-Type", "application/json")
+                putConn.doOutput = true
+                val body = "{\"count\":$nextCount,\"updatedAt\":${System.currentTimeMillis()}}"
+                putConn.outputStream.use { it.write(body.toByteArray()) }
+                putConn.responseCode
+            } catch (_: Exception) {}
+        }.start()
     }
 }
 

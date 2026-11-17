@@ -1,18 +1,11 @@
-# LOKIFFICE v5.0 — Campus Geofence (400m), 3D Parking Radar & Auto Ride-Mode DND
+# LOKIFFICE v5.1 — Live Firebase Crowd-Synced 3D Parking Radar & Real System Auto-DND
 
-**LOKIFFICE** is a zero-cost (`$0.00`), cross-platform (**Android Native + iPhone PWA + Web**) utility engineered around a **Suzuki Access 125 Ride Connect** + **iQOO Neo 7 (5G)** daily commute to **Chennai One IT SEZ (Comcast North Block)**.
+Connected directly to `https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app/`.
 
----
-
-## Key Upgrades in v5.0
-
-1. **Chennai One IT SEZ Campus Geofence (`400m` Radius + 1-Tap Desk Lock):**
-   - Centered on **Chennai One IT SEZ North Block (`12.946960, 80.231400`)** with a **`400m` campus radius** (`RADIUS_M = 400f`) across both `index.html` and `MainActivity.kt` so entry triggers anywhere across the 20-acre campus.
-   - Includes a **Lock Current Desk as Office** button in the setup sheet that syncs your exact desk coordinates and chosen radius (`250m / 400m / 500m / 650m`) directly into the native Android `GeofencingClient` via `AndroidBridge.updateOfficeGeofence(...)`.
-2. **Use Case 1 — Zero-Photo "No-Touch" Floor & Bay Finder:**
-   - Uses your iQOO Neo 7's **Gyroscope (`TYPE_GYROSCOPE`) + Accelerometer (`TYPE_ACCELEROMETER`) + E-Compass (`TYPE_MAGNETIC_FIELD`)** (zero barometer and zero photos needed).
-   - Counts helical/switchback ramp turns during your ride up (`G` -> `L1` -> `L2` -> `L3` -> `L4`), freezes the floor the instant your **Access 125 Ride Connect** disconnects Bluetooth (`ACTION_ACL_DISCONNECTED`), and records your 45-second walk vector to the elevator lobby so you get a clear return distance + cardinal direction at the end of your shift.
-3. **Use Case 2 — "Skip-the-Ramp" 3D Multi-Floor Crowd Capacity Radar:**
-   - Interactive **3D Isometric 4-Floor Stack** (`L4` through `G`) with real-time congestion guidance (`Go to L2`, `Go to L1`, `All Open`) before you climb the spiral ramp.
-4. **Use Case 3 — Automatic "Ride Mode" (Auto-DND):**
-   - Listens to `BluetoothDevice.ACTION_ACL_CONNECTED` (when your Access 125 ignition turns on) and Google Play Services `ActivityRecognitionClient` (`IN_VEHICLE` / `ON_BICYCLE`), automatically switching Android into Priority Do Not Disturb (`INTERRUPTION_FILTER_PRIORITY`) while riding and restoring normal ringing (`INTERRUPTION_FILTER_ALL`) the moment you park.
+## What's Fixed & Live in v5.1
+1. **Real Live Multi-User Firebase Crowd Sync (Zero Dummy Data):**
+   - Connected to your Singapore Firebase Realtime Database (`chennai_one/YYYY-MM-DD/floors/G..L4`).
+   - Automatically increments a floor's live parked count when your **Access 125 Ride Connect** disconnects Bluetooth (`ACTION_ACL_DISCONNECTED`) and decrements it when you reconnect (`ACTION_ACL_CONNECTED`) to leave.
+   - Includes **Flag Selected Full** and **Flag Selected Open** buttons so any rider can immediately broadcast floor congestion to everyone else on campus.
+2. **Real System Do Not Disturb (`AndroidBridge.setRideMode`):**
+   - Tapping **Test Ride** (as well as real Access 125 Bluetooth connection or vehicle motion) now directly calls `NotificationManager.setInterruptionFilter(INTERRUPTION_FILTER_PRIORITY)` in `MainActivity.kt`, displaying the system DND crescent moon icon in your iQOO Neo 7 status bar and silencing calls.
