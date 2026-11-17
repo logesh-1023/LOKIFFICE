@@ -1,7 +1,7 @@
 {
   "name": "LOKIFFICE",
   "short_name": "LOKIFFICE",
-  "description": "Zero-touch hybrid office shift tracker and reverse-curfew commute planner.",
+  "description": "Zero-touch hybrid shift tracker, 3D parking radar, and auto Ride-Mode DND.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",

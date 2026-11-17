@@ -29,6 +29,7 @@
       --tint-green: #30D158;
       --tint-amber: #FF9F0A;
       --tint-red: #FF453A;
+      --tint-purple: #BF5AF2;
       --radius-card: 20px;
     }
 
@@ -65,10 +66,7 @@
       padding: 4px 2px 2px;
     }
 
-    .nav-title-group {
-      display: flex;
-      flex-direction: column;
-    }
+    .nav-title-group { display: flex; flex-direction: column; }
 
     .nav-subtitle {
       font-size: 11px;
@@ -87,11 +85,7 @@
       margin: 0;
     }
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
 
     .pill-btn {
       height: 34px;
@@ -109,10 +103,7 @@
       transition: background 0.18s ease, transform 0.12s ease;
     }
 
-    .pill-btn:active {
-      background: var(--bg-elevated);
-      transform: scale(0.97);
-    }
+    .pill-btn:active { background: var(--bg-elevated); transform: scale(0.97); }
 
     .status-dot {
       width: 7px;
@@ -157,6 +148,141 @@
       cursor: pointer;
     }
 
+    .ride-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(191, 90, 242, 0.16), rgba(10, 132, 255, 0.14));
+      border: 0.5px solid rgba(191, 90, 242, 0.35);
+    }
+
+    .ride-banner.active {
+      background: linear-gradient(135deg, rgba(191, 90, 242, 0.32), rgba(255, 69, 58, 0.22));
+      border-color: var(--tint-purple);
+    }
+
+    .ride-left { display: flex; align-items: center; gap: 10px; }
+    .ride-title { font-size: 14px; font-weight: 700; color: var(--label-primary); }
+    .ride-sub { font-size: 12px; color: var(--label-secondary); margin-top: 1px; }
+
+    .parking-split {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .stack-3d {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      perspective: 520px;
+      padding: 4px 0;
+    }
+
+    .floor-slab {
+      position: relative;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid rgba(255,255,255,0.08);
+      transform: rotateX(18deg) rotateZ(-4deg);
+      transform-style: preserve-3d;
+      box-shadow: 0 5px 0 rgba(0,0,0,0.65);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .floor-slab.parked-here {
+      border-color: var(--tint-blue);
+      background: rgba(10, 132, 255, 0.22);
+      transform: rotateX(14deg) rotateZ(-2deg) translateX(4px);
+    }
+
+    .floor-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--label-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .floor-tag {
+      font-size: 11px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cap-open { color: var(--tint-green); }
+    .cap-tight { color: var(--tint-amber); }
+    .cap-full { color: var(--tint-red); }
+
+    .park-info-box {
+      background: var(--bg-elevated);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .park-floor-big {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--label-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .park-vector {
+      font-size: 12px;
+      color: var(--label-secondary);
+      line-height: 1.35;
+    }
+
+    .compass-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--tint-green);
+      background: rgba(48, 209, 88, 0.14);
+      padding: 4px 8px;
+      border-radius: 7px;
+      width: fit-content;
+    }
+
+    .floor-pills {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .fp-btn {
+      height: 28px;
+      border-radius: 7px;
+      background: var(--bg-elevated);
+      border: 0.5px solid var(--separator);
+      color: var(--label-secondary);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .fp-btn.active {
+      background: var(--tint-blue);
+      color: #FFFFFF;
+      border-color: var(--tint-blue);
+    }
+
     .hero-departure {
       display: flex;
       justify-content: space-between;
@@ -181,9 +307,7 @@
       line-height: 1.05;
     }
 
-    .hero-right {
-      text-align: right;
-    }
+    .hero-right { text-align: right; }
 
     .buffer-pill {
       display: inline-block;
@@ -209,20 +333,11 @@
       gap: 8px;
     }
 
-    .timeline-cell {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+    .timeline-cell { display: flex; flex-direction: column; gap: 2px; }
     .timeline-cell:nth-child(2) { text-align: center; }
     .timeline-cell:nth-child(3) { text-align: right; }
 
-    .timeline-cell span {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--label-secondary);
-    }
-
+    .timeline-cell span { font-size: 11px; font-weight: 500; color: var(--label-secondary); }
     .timeline-cell strong {
       font-size: 15px;
       font-weight: 600;
@@ -239,17 +354,8 @@
       gap: 10px;
     }
 
-    .target-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .target-row span {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--label-soft);
-    }
+    .target-row { display: flex; justify-content: space-between; align-items: center; }
+    .target-row span { font-size: 14px; font-weight: 500; color: var(--label-soft); }
 
     input[type="time"] {
       background: var(--bg-elevated);
@@ -280,7 +386,6 @@
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .seg-btn.active {
@@ -312,10 +417,6 @@
       cursor: pointer;
     }
 
-    .launch-btn:active {
-      background: var(--bg-tertiary);
-    }
-
     .shift-layout {
       display: flex;
       align-items: center;
@@ -323,25 +424,9 @@
       gap: 14px;
     }
 
-    .ring-wrap {
-      position: relative;
-      width: 84px;
-      height: 84px;
-      flex-shrink: 0;
-    }
-
-    .ring-wrap svg {
-      transform: rotate(-90deg);
-      width: 84px;
-      height: 84px;
-    }
-
-    .ring-bg {
-      fill: none;
-      stroke: var(--bg-elevated);
-      stroke-width: 7;
-    }
-
+    .ring-wrap { position: relative; width: 84px; height: 84px; flex-shrink: 0; }
+    .ring-wrap svg { transform: rotate(-90deg); width: 84px; height: 84px; }
+    .ring-bg { fill: none; stroke: var(--bg-elevated); stroke-width: 7; }
     .ring-progress {
       fill: none;
       stroke: var(--tint-green);
@@ -360,26 +445,10 @@
       align-items: center;
       justify-content: center;
     }
+    .ring-center b { font-size: 15px; font-weight: 700; color: var(--label-primary); }
+    .ring-center small { font-size: 10px; font-weight: 600; color: var(--label-secondary); text-transform: uppercase; }
 
-    .ring-center b {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--label-primary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .ring-center small {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--label-secondary);
-      text-transform: uppercase;
-    }
-
-    .shift-details {
-      flex: 1;
-      min-width: 0;
-    }
-
+    .shift-details { flex: 1; min-width: 0; }
     .countdown-readout {
       font-size: 30px;
       font-weight: 700;
@@ -388,7 +457,6 @@
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
     }
-
     .shift-sub {
       font-size: 13px;
       color: var(--label-secondary);
@@ -416,23 +484,9 @@
       justify-content: center;
       gap: 6px;
       cursor: pointer;
-      transition: opacity 0.15s ease, transform 0.1s ease;
     }
-
-    .btn-ios:active {
-      opacity: 0.82;
-      transform: scale(0.985);
-    }
-
-    .btn-primary {
-      background: var(--tint-blue);
-      color: #FFFFFF;
-    }
-
-    .btn-secondary {
-      background: var(--bg-elevated);
-      color: var(--label-soft);
-    }
+    .btn-primary { background: var(--tint-blue); color: #FFFFFF; }
+    .btn-secondary { background: var(--bg-elevated); color: var(--label-soft); }
 
     .tweak-strip {
       display: grid;
@@ -452,18 +506,7 @@
       cursor: pointer;
     }
 
-    .tweak-btn:active {
-      background: var(--bg-elevated);
-      color: var(--label-primary);
-    }
-
-    .intel-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 10px 0;
-    }
-
+    .intel-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; }
     .intel-row:first-child { padding-top: 0; }
     .intel-row:last-child { padding-bottom: 0; }
     .intel-row + .intel-row { border-top: 0.5px solid var(--separator); }
@@ -477,49 +520,16 @@
       justify-content: center;
       flex-shrink: 0;
     }
-
     .icon-blue { background: rgba(10, 132, 255, 0.16); color: var(--tint-blue); }
     .icon-amber { background: rgba(255, 159, 10, 0.16); color: var(--tint-amber); }
 
-    .intel-body {
-      flex: 1;
-      min-width: 0;
-    }
+    .intel-body { flex: 1; min-width: 0; }
+    .intel-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .intel-title { font-size: 14px; font-weight: 600; color: var(--label-primary); }
+    .intel-tag { font-size: 12px; font-weight: 600; color: var(--label-secondary); }
+    .intel-desc { font-size: 13px; color: var(--label-secondary); line-height: 1.38; margin-top: 2px; }
 
-    .intel-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .intel-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--label-primary);
-    }
-
-    .intel-tag {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--label-secondary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .intel-desc {
-      font-size: 13px;
-      color: var(--label-secondary);
-      line-height: 1.38;
-      margin-top: 2px;
-    }
-
-    .streak-row {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin-top: 4px;
-    }
-
+    .streak-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 4px; }
     .day-cell {
       display: flex;
       flex-direction: column;
@@ -529,13 +539,7 @@
       border-radius: 12px;
       background: var(--bg-elevated);
     }
-
-    .day-cell span {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--label-secondary);
-    }
-
+    .day-cell span { font-size: 11px; font-weight: 600; color: var(--label-secondary); }
     .day-check {
       width: 22px;
       height: 22px;
@@ -546,16 +550,8 @@
       justify-content: center;
       color: transparent;
     }
-
-    .day-cell.done .day-check {
-      background: var(--tint-green);
-      border-color: var(--tint-green);
-      color: #000000;
-    }
-
-    .day-cell.today {
-      outline: 1px solid rgba(10, 132, 255, 0.5);
-    }
+    .day-cell.done .day-check { background: var(--tint-green); border-color: var(--tint-green); color: #000000; }
+    .day-cell.today { outline: 1px solid rgba(10, 132, 255, 0.5); }
 
     .sheet-backdrop {
       position: fixed;
@@ -567,7 +563,6 @@
       justify-content: center;
       z-index: 50;
     }
-
     .sheet-backdrop.open { display: flex; }
 
     .sheet {
@@ -578,36 +573,13 @@
       border-top-right-radius: 24px;
       padding: 12px 20px max(28px, env(safe-area-inset-bottom));
       border-top: 0.5px solid rgba(255, 255, 255, 0.15);
-      animation: slideUp 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .sheet-grabber {
-      width: 36px;
-      height: 5px;
-      border-radius: 3px;
-      background: var(--bg-tertiary);
-      margin: 0 auto 14px;
-    }
-
-    .sheet-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .sheet-header h3 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--label-primary);
-    }
-
+    .sheet-grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--bg-tertiary); margin: 0 auto 14px; }
+    .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .sheet-header h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--label-primary); }
     .sheet-close {
       background: var(--bg-elevated);
       border: none;
@@ -618,7 +590,6 @@
       font-size: 16px;
       cursor: pointer;
     }
-
     .sheet-label {
       display: block;
       font-size: 12px;
@@ -628,7 +599,6 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-
     .sheet-input {
       width: 100%;
       height: 44px;
@@ -641,20 +611,14 @@
       outline: none;
       margin-bottom: 12px;
     }
-
-    .sheet-hint {
-      font-size: 12px;
-      color: var(--label-secondary);
-      line-height: 1.4;
-      margin-bottom: 14px;
-    }
+    .sheet-hint { font-size: 12px; color: var(--label-secondary); line-height: 1.4; margin-bottom: 14px; }
   </style>
 </head>
 <body>
   <div class="app-shell">
     <header class="nav-bar">
       <div class="nav-title-group">
-        <span class="nav-subtitle" id="dateHeader">COMCAST PERUNGUDI</span>
+        <span class="nav-subtitle" id="dateHeader">CHENNAI ONE SEZ · COMCAST</span>
         <h1 class="nav-title">LOKIFFICE</h1>
       </div>
       <div class="nav-actions">
@@ -667,6 +631,67 @@
         </button>
       </div>
     </header>
+
+    <div class="ride-banner" id="rideBanner">
+      <div class="ride-left">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <div>
+          <div class="ride-title" id="rideStatusTitle">Ride Mode DND · Standby</div>
+          <div class="ride-sub" id="rideStatusSub">Auto-silences calls when Access 125 BLE or motion starts</div>
+        </div>
+      </div>
+      <button class="pill-btn" style="height:30px; font-size:12px;" id="rideToggleBtn" onclick="toggleManualRideMode()">Test Ride</button>
+    </div>
+
+    <section class="card">
+      <div class="card-header">
+        <span class="section-label">3D Parking Radar · Access 125</span>
+        <span class="meta-badge" id="parkingAdviceBadge" style="color: var(--tint-green)">Go to L2</span>
+      </div>
+
+      <div class="parking-split">
+        <div class="stack-3d" id="stack3d">
+          <div class="floor-slab" data-floor="L4" onclick="selectParkedFloor('L4')">
+            <span class="floor-name">Floor 4</span>
+            <span class="floor-tag cap-full" id="cap-L4">96% Full</span>
+          </div>
+          <div class="floor-slab" data-floor="L3" onclick="selectParkedFloor('L3')">
+            <span class="floor-name">Floor 3</span>
+            <span class="floor-tag cap-tight" id="cap-L3">84% Tight</span>
+          </div>
+          <div class="floor-slab" data-floor="L2" onclick="selectParkedFloor('L2')">
+            <span class="floor-name">Floor 2</span>
+            <span class="floor-tag cap-open" id="cap-L2">24 Open</span>
+          </div>
+          <div class="floor-slab" data-floor="L1" onclick="selectParkedFloor('L1')">
+            <span class="floor-name">Floor 1</span>
+            <span class="floor-tag cap-open" id="cap-L1">18 Open</span>
+          </div>
+          <div class="floor-slab" data-floor="G" onclick="selectParkedFloor('G')">
+            <span class="floor-name">Ground</span>
+            <span class="floor-tag cap-full" id="cap-G">Full</span>
+          </div>
+        </div>
+
+        <div class="park-info-box">
+          <span class="section-label" style="font-size:10px;">Your Scooter Pin</span>
+          <div class="park-floor-big" id="parkedFloorDisplay">Floor 1</div>
+          <div class="park-vector" id="parkedVectorText">Auto-locks via Gyro + Access 125 BLE disconnect</div>
+          <div class="compass-badge" id="parkedCompassBadge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            <span id="parkedWalkDist">Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor-pills">
+        <button class="fp-btn" data-fp="G" onclick="selectParkedFloor('G')">G</button>
+        <button class="fp-btn active" data-fp="L1" onclick="selectParkedFloor('L1')">L1</button>
+        <button class="fp-btn" data-fp="L2" onclick="selectParkedFloor('L2')">L2</button>
+        <button class="fp-btn" data-fp="L3" onclick="selectParkedFloor('L3')">L3</button>
+        <button class="fp-btn" data-fp="L4" onclick="selectParkedFloor('L4')">L4</button>
+      </div>
+    </section>
 
     <section class="card">
       <div class="card-header">
@@ -684,7 +709,7 @@
         </div>
         <div class="hero-right">
           <span class="buffer-pill" id="bufferPill">17.0 km · 55m</span>
-          <div class="route-caption" id="roadLabel">OMR Arterial Corridor</div>
+          <div class="route-caption" id="roadLabel">200 Feet Radial Rd</div>
         </div>
       </div>
 
@@ -772,7 +797,7 @@
         </div>
         <div class="intel-body">
           <div class="intel-top">
-            <span class="intel-title" id="transitTitle">Chennai Metro / Rapido</span>
+            <span class="intel-title" id="transitTitle">Access 125 / Metro</span>
             <span class="intel-tag" id="trafficBadge">Moderate</span>
           </div>
           <div class="intel-desc" id="transitReason">Analyzing live corridor congestion and distance.</div>
@@ -806,15 +831,23 @@
     <div class="sheet">
       <div class="sheet-grabber"></div>
       <div class="sheet-header">
-        <h3>Commute & Shift Setup</h3>
+        <h3>Campus Geofence & Ride Setup</h3>
         <button class="sheet-close" onclick="closeSheet()">✕</button>
+      </div>
+
+      <span class="sheet-label">Office Campus Center (Default: Chennai One SEZ)</span>
+      <input type="text" class="sheet-input" id="officeAddressInput" placeholder="12.946960, 80.231400" />
+
+      <span class="sheet-label">Campus Geofence Radius (Meters)</span>
+      <div class="segmented" style="margin-bottom:12px;" id="radiusSeg">
+        <button class="seg-btn" onclick="setRadiusPreset(250, this)">250m</button>
+        <button class="seg-btn active" onclick="setRadiusPreset(400, this)">400m</button>
+        <button class="seg-btn" onclick="setRadiusPreset(500, this)">500m</button>
+        <button class="seg-btn" onclick="setRadiusPreset(650, this)">650m</button>
       </div>
 
       <span class="sheet-label">Home Location</span>
       <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street name, landmark, or lat, lng" />
-
-      <span class="sheet-label">Office Location (Default: Comcast Perungudi)</span>
-      <input type="text" class="sheet-input" id="officeAddressInput" placeholder="12.947238, 80.229203 or office address" />
 
       <span class="sheet-label">Mandatory Office Shift Hours</span>
       <div class="segmented" style="margin-bottom:14px;" id="shiftHoursSeg">
@@ -824,21 +857,26 @@
         <button class="seg-btn" onclick="setShiftHours(9, this)">9 Hours</button>
       </div>
 
-      <p class="sheet-hint">Works on iPhone (Add to Home Screen + Apple Shortcuts), Web, and Android. Lock your current GPS while at home for exact door-to-door routing.</p>
+      <p class="sheet-hint">Sitting at your desk right now? Tap <b>Lock Current Desk as Office</b> to center the 400m campus fence directly on your wing.</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
         <button class="btn-ios btn-primary" style="width:100%" onclick="saveSettings()">Save Settings</button>
+        <button class="btn-ios btn-secondary" style="width:100%" onclick="lockCurrentDeskAsOffice()">Lock Current Desk as Office</button>
         <button class="btn-ios btn-secondary" style="width:100%" onclick="saveCurrentGPSAsHome()">Use Current GPS as Home</button>
+        <button class="btn-ios btn-secondary" style="width:100%; color:var(--tint-purple);" onclick="grantDndPermission()">Enable Auto-DND Ride Mode Access</button>
       </div>
     </div>
   </div>
 
   <script>
-    const DEFAULT_OFFICE = { lat: 12.947238, lng: 80.229203, label: "Comcast Perungudi" };
+    const DEFAULT_OFFICE = { lat: 12.946960, lng: 80.231400, label: "Chennai One SEZ" };
     let officeData = JSON.parse(localStorage.getItem("lokiffice_office") || "null") || DEFAULT_OFFICE;
     let homeData = JSON.parse(localStorage.getItem("lokiffice_home") || "null");
     let shiftHours = Number(localStorage.getItem("lokiffice_shift_hours") || "5");
+    let radiusMeters = Number(localStorage.getItem("lokiffice_radius_m") || "400");
+    let parkedFloor = localStorage.getItem("lokiffice_park_floor") || "L1";
+    let manualRideActive = false;
+
     const SHIFT_MS = () => shiftHours * 60 * 60 * 1000;
-    const RADIUS_M = 150;
     const CIRCUMFERENCE = 226.2;
     const todayKey = () => "lokiffice_in_" + new Date().toISOString().slice(0, 10);
 
@@ -848,7 +886,7 @@
       liveMins: 55,
       delayMins: 10,
       trafficLevel: "Moderate",
-      roadSummary: "OMR Arterial Corridor",
+      roadSummary: "200 Feet Radial Rd",
       tempC: 30,
       rainProb: 0,
       isRaining: false
@@ -880,6 +918,113 @@
     function closeSheet() { document.getElementById("sheetBackdrop").classList.remove("open"); }
     function closeSheetOnBg(e) { if (e.target.id === "sheetBackdrop") closeSheet(); }
 
+    function setRadiusPreset(r, el) {
+      radiusMeters = r;
+      localStorage.setItem("lokiffice_radius_m", String(r));
+      document.querySelectorAll("#radiusSeg .seg-btn").forEach(b => b.classList.remove("active"));
+      if (el) el.classList.add("active");
+      syncNativeGeofence();
+    }
+
+    function syncNativeGeofence() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.updateOfficeGeofence === "function") {
+        window.AndroidBridge.updateOfficeGeofence(officeData.lat, officeData.lng, radiusMeters);
+      }
+    }
+
+    function grantDndPermission() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.requestDndPermission === "function") {
+        window.AndroidBridge.requestDndPermission();
+      } else {
+        alert("On iPhone, enable Settings → Focus → Driving → Turn On Automatically → While Driving.");
+      }
+    }
+
+    function toggleManualRideMode() {
+      manualRideActive = !manualRideActive;
+      renderRideBanner(manualRideActive);
+    }
+
+    function renderRideBanner(isActive) {
+      const banner = document.getElementById("rideBanner");
+      const title = document.getElementById("rideStatusTitle");
+      const sub = document.getElementById("rideStatusSub");
+      const btn = document.getElementById("rideToggleBtn");
+      if (isActive) {
+        banner.classList.add("active");
+        title.textContent = "Ride Mode DND · ACTIVE";
+        sub.textContent = "Access 125 motion/BLE active · Incoming calls silenced";
+        btn.textContent = "End Ride";
+      } else {
+        banner.classList.remove("active");
+        title.textContent = "Ride Mode DND · Standby";
+        sub.textContent = "Auto-silences calls when Access 125 BLE or motion starts";
+        btn.textContent = "Test Ride";
+      }
+    }
+
+    function selectParkedFloor(floor) {
+      parkedFloor = floor;
+      localStorage.setItem("lokiffice_park_floor", floor);
+      if (window.AndroidBridge && typeof window.AndroidBridge.setManualParkingFloor === "function") {
+        window.AndroidBridge.setManualParkingFloor(floor);
+      }
+      renderParkingUI();
+    }
+
+    function renderParkingUI(walkMeters = 0, walkDir = "North") {
+      const floorNames = { G: "Ground", L1: "Floor 1", L2: "Floor 2", L3: "Floor 3", L4: "Floor 4" };
+      document.getElementById("parkedFloorDisplay").textContent = floorNames[parkedFloor] || parkedFloor;
+
+      document.querySelectorAll(".floor-slab").forEach(el => {
+        el.classList.toggle("parked-here", el.dataset.floor === parkedFloor);
+      });
+      document.querySelectorAll(".fp-btn").forEach(el => {
+        el.classList.toggle("active", el.dataset.fp === parkedFloor);
+      });
+
+      if (walkMeters > 0) {
+        document.getElementById("parkedVectorText").textContent =
+          `Parked on ${floorNames[parkedFloor]}. Walk ${walkMeters}m ${walkDir} from Lift Lobby.`;
+        document.getElementById("parkedWalkDist").textContent = `${walkMeters}m ${walkDir}`;
+      } else {
+        document.getElementById("parkedVectorText").textContent =
+          `Locked on ${floorNames[parkedFloor]} via Gyro + Access 125 BLE`;
+        document.getElementById("parkedWalkDist").textContent = `${parkedFloor} Locked`;
+      }
+
+      const hr = new Date().getHours();
+      const cap = hr >= 9 && hr <= 11
+        ? { L4: ["98% Full", "cap-full"], L3: ["92% Tight", "cap-tight"], L2: ["16 Open", "cap-open"], L1: ["12 Open", "cap-open"], G: ["Full", "cap-full"], best: "Go to L2" }
+        : hr >= 12 && hr <= 16
+        ? { L4: ["Full", "cap-full"], L3: ["Full", "cap-full"], L2: ["88% Tight", "cap-tight"], L1: ["19 Open", "cap-open"], G: ["Full", "cap-full"], best: "Go to L1" }
+        : { L4: ["42% Open", "cap-open"], L3: ["35% Open", "cap-open"], L2: ["50% Open", "cap-open"], L1: ["48% Open", "cap-open"], G: ["22 Open", "cap-open"], best: "All Open" };
+
+      ["L4", "L3", "L2", "L1", "G"].forEach(f => {
+        const el = document.getElementById(`cap-${f}`);
+        if (el) {
+          el.textContent = cap[f][0];
+          el.className = `floor-tag ${cap[f][1]}`;
+        }
+      });
+      document.getElementById("parkingAdviceBadge").textContent = cap.best;
+    }
+
+    function pollNativeSensorState() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.getAutoParkingJson === "function") {
+        try {
+          const data = JSON.parse(window.AndroidBridge.getAutoParkingJson());
+          if (data.floor && data.ts > 0) {
+            parkedFloor = data.floor;
+            renderParkingUI(data.walkMeters || 0, data.walkDir || "North");
+          }
+          if (!manualRideActive) {
+            renderRideBanner(Boolean(data.rideMode));
+          }
+        } catch (_e) {}
+      }
+    }
+
     function setShiftHours(hrs, el) {
       shiftHours = hrs;
       localStorage.setItem("lokiffice_shift_hours", String(hrs));
@@ -894,7 +1039,7 @@
       if (coordMatch) {
         return { lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), label: defaultLabel };
       }
-      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&lat=12.98&lon=80.22&limit=1`);
+      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&lat=12.95&lon=80.23&limit=1`);
       const data = await res.json();
       if (data.features && data.features.length > 0) {
         const [lng, lat] = data.features[0].geometry.coordinates;
@@ -919,11 +1064,27 @@
           if (parsedO) {
             officeData = parsedO;
             localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
+            syncNativeGeofence();
           }
         }
       } catch (e) {}
       closeSheet();
       await refreshLiveIntel();
+    }
+
+    function lockCurrentDeskAsOffice() {
+      if (!("geolocation" in navigator)) return;
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        officeData = {
+          lat: +pos.coords.latitude.toFixed(6),
+          lng: +pos.coords.longitude.toFixed(6),
+          label: "My Desk · Chennai One"
+        };
+        localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
+        syncNativeGeofence();
+        closeSheet();
+        await refreshLiveIntel();
+      }, () => {}, { enableHighAccuracy: true });
     }
 
     function saveCurrentGPSAsHome() {
@@ -966,7 +1127,7 @@
             const best = rData.routes[0];
             state.distanceKm = +(best.distance / 1000).toFixed(1);
             state.baseMins = Math.max(10, Math.round(best.duration / 60));
-            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "Primary Arterial Corridor";
+            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "200 Feet Radial Rd";
           }
         } catch (e) {}
       }
@@ -1016,22 +1177,19 @@
       document.getElementById("wxTemp").textContent = `${state.tempC}°C · ${state.rainProb}% Rain`;
       document.getElementById("wxDesc").textContent = state.isRaining
         ? "Wet road conditions detected. Added +20% transit buffer; covered transit advised."
-        : "Dry conditions along corridor. Standard road grip and clear visibility.";
+        : "Dry conditions along corridor. Standard road grip for Access 125.";
 
       const tTitle = document.getElementById("transitTitle");
       const tReason = document.getElementById("transitReason");
 
       if (state.isRaining) {
         tTitle.textContent = "Chennai Metro / Covered Cab";
-        tReason.textContent = `Rain risk (${state.rainProb}%) makes two-wheelers unfavorable. Take covered Metro + short feeder.`;
-      } else if (state.distanceKm > 12 && state.trafficLevel === "Heavy") {
-        tTitle.textContent = "Metro + Last-Mile Rapido";
-        tReason.textContent = `Peak congestion (+${state.delayMins}m delay) across ${state.distanceKm} km. Metro bypasses main bottlenecks.`;
+        tReason.textContent = `Rain risk (${state.rainProb}%) makes two-wheelers unfavorable. Take covered Metro + feeder.`;
       } else if (state.trafficLevel === "Heavy") {
-        tTitle.textContent = "Rapido Bike Taxi";
-        tReason.textContent = `Dry roads with heavy traffic (+${state.delayMins}m). Lane filtering saves ~${Math.round(state.delayMins * 0.5)}m.`;
+        tTitle.textContent = "Access 125 Ride Connect";
+        tReason.textContent = `Dry roads with peak traffic (+${state.delayMins}m). Two-wheeler saves ~${Math.round(state.delayMins * 0.5)}m.`;
       } else {
-        tTitle.textContent = "Rapido or Chennai Metro";
+        tTitle.textContent = "Access 125 or Chennai Metro";
         tReason.textContent = `Smooth ${state.liveMins}m travel window over ${state.distanceKm} km. Either option hits your schedule.`;
       }
     }
@@ -1039,8 +1197,12 @@
     function speakBriefing() {
       const leave = document.getElementById("leaveHome").textContent;
       const mode = document.getElementById("transitTitle").textContent;
-      const text = `LOKIFFICE briefing. Leave home by ${leave}. Estimated travel is ${state.liveMins} minutes via ${mode}.`;
+      const text = `LOKIFFICE briefing. Scooter parked on ${parkedFloor}. Leave home by ${leave}, estimated travel ${state.liveMins} minutes via ${mode}.`;
 
+      if (window.AndroidBridge && typeof window.AndroidBridge.speak === "function") {
+        window.AndroidBridge.speak(text);
+        return;
+      }
       if (window.AndroidTTS && typeof window.AndroidTTS.speak === "function") {
         window.AndroidTTS.speak(text);
         return;
@@ -1141,7 +1303,7 @@
           const dist = Math.round(getDistanceMeters(
             pos.coords.latitude, pos.coords.longitude, officeData.lat, officeData.lng
           ));
-          if (dist <= RADIUS_M) {
+          if (dist <= radiusMeters) {
             dot.classList.remove("away");
             lbl.textContent = "At Office";
             startShift(Date.now());
@@ -1181,6 +1343,7 @@
     }
 
     setInterval(() => {
+      pollNativeSensorState();
       const saved = localStorage.getItem(todayKey());
       if (!saved) return;
       const inTime = Number(saved);
@@ -1209,9 +1372,11 @@
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
+    renderParkingUI();
     renderStreak();
     refreshLiveIntel();
     requestGPS();
+    syncNativeGeofence();
   </script>
 </body>
 </html>
