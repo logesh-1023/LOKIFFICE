@@ -1,7 +1,7 @@
 {
   "name": "LOKIFFICE",
   "short_name": "LOKIFFICE",
-  "description": "Global Work-Life OS with Debit-Only SMS Analytics, Sci-Fi 3D XYZ Parking Matrix, and Auto Ride-Mode DND.",
+  "description": "Global Work-Life OS with Calendar-Month Masked SMS Analytics, Sci-Fi 3D XYZ Parking Matrix, and Offline WebGPU Copilot.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",

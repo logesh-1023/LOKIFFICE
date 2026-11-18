@@ -168,7 +168,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
 
             @JavascriptInterface
             fun scanDebitedSmsJson(daysBack: Int): String {
-                return SmsSpendAnalyzer.scanInbox(this@MainActivity, daysBack)
+                return SmsSpendAnalyzer.scanCurrentMonthInbox(this@MainActivity)
+            }
+
+            @JavascriptInterface
+            fun scanCurrentMonthSmsJson(): String {
+                return SmsSpendAnalyzer.scanCurrentMonthInbox(this@MainActivity)
             }
         }, "AndroidBridge")
 
@@ -429,8 +434,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
 }
 
 /**
- * Fix #1: Strict Debit-Only SMS Spend Analyzer
- * Filters OUT all credit/salary/refund/cashback messages and parses ONLY debited amounts.
+ * Calendar-Month Debit-Only SMS Spend Analyzer
+ * Filters from the 1st of the current calendar month (00:00:00.000) to now,
+ * excludes all credited/refund/salary messages, and extracts raw vendor + snippet
+ * so SmolLM2-360M can classify vendors semantically without generic "Other" buckets.
  */
 object SmsSpendAnalyzer {
     private val DEBIT_KEYWORDS = listOf(
@@ -444,31 +451,37 @@ object SmsSpendAnalyzer {
         RegexOption.IGNORE_CASE
     )
 
-    fun scanInbox(context: Context, daysBack: Int): String {
+    fun scanCurrentMonthInbox(context: Context): String {
         val result = JSONObject()
         val txArray = JSONArray()
         var totalDebited = 0.0
-        var commuteTotal = 0.0
-        var foodTotal = 0.0
-        var billsTotal = 0.0
-        var otherTotal = 0.0
+
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val monthStartMillis = cal.timeInMillis
+        val monthLabel = SimpleDateFormat("MMMM yyyy", Locale.US).format(Date())
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_SMS)
             != PackageManager.PERMISSION_GRANTED) {
             result.put("permissionGranted", false)
+            result.put("monthLabel", monthLabel)
             result.put("totalDebited", 0.0)
             result.put("transactions", txArray)
             return result.toString()
         }
 
-        val cutoff = System.currentTimeMillis() - daysBack * 24L * 60L * 60L * 1000L
         var cursor: Cursor? = null
         try {
             cursor = context.contentResolver.query(
                 Uri.parse("content://sms/inbox"),
                 arrayOf("address", "body", "date"),
                 "date >= ?",
-                arrayOf(cutoff.toString()),
+                arrayOf(monthStartMillis.toString()),
                 "date DESC"
             )
             while (cursor != null && cursor.moveToNext()) {
@@ -477,7 +490,6 @@ object SmsSpendAnalyzer {
                 val dateMs = cursor.getLong(2)
                 val lower = body.lowercase(Locale.US)
 
-                // Strict Debit-Only Gate: skip OTPs, promos, and any credited/refunded messages
                 if (lower.contains("otp") || lower.contains("verification code")) continue
                 if (CREDIT_EXCLUSIONS.any { lower.contains(it) }) continue
                 if (!DEBIT_KEYWORDS.any { lower.contains(it) }) continue
@@ -487,23 +499,18 @@ object SmsSpendAnalyzer {
                 val amt = amtStr.toDoubleOrNull() ?: continue
                 if (amt <= 0.0 || amt > 500000.0) continue
 
-                val category = classifyMerchant(lower)
-                val merchant = extractMerchantName(body, sender)
+                val vendor = extractVendorName(body, sender)
+                val heuristicCat = heuristicVendorCategory(lower, vendor.lowercase(Locale.US))
 
                 totalDebited += amt
-                when (category) {
-                    "Commute & Fuel" -> commuteTotal += amt
-                    "Office Food & Cafe" -> foodTotal += amt
-                    "Bills & Essentials" -> billsTotal += amt
-                    else -> otherTotal += amt
-                }
 
-                if (txArray.length() < 40) {
+                if (txArray.length() < 80) {
                     txArray.put(JSONObject().apply {
-                        put("merchant", merchant)
-                        put("category", category)
+                        put("merchant", vendor)
+                        put("category", heuristicCat)
                         put("amount", amt)
                         put("dateMs", dateMs)
+                        put("snippet", body.take(120))
                     })
                 }
             }
@@ -513,48 +520,67 @@ object SmsSpendAnalyzer {
         }
 
         result.put("permissionGranted", true)
+        result.put("monthLabel", monthLabel)
+        result.put("monthStartMillis", monthStartMillis)
         result.put("totalDebited", totalDebited)
-        result.put("commuteTotal", commuteTotal)
-        result.put("foodTotal", foodTotal)
-        result.put("billsTotal", billsTotal)
-        result.put("otherTotal", otherTotal)
         result.put("transactions", txArray)
         return result.toString()
     }
 
-    private fun classifyMerchant(lower: String): String {
-        val commuteKeys = listOf("rapido", "uber", "ola", "metro", "cmrl", "irctc", "petrol", "fuel", "shell", "hpcl", "bpcl", "indian oil", "iocl", "fastag", "parking", "cab", "auto")
-        val foodKeys = listOf("hungerbox", "zomato", "swiggy", "cafe", "coffee", "tea", "canteen", "restaurant", "bakery", "biryani", "food", "starbucks", "mcdonald", "kfc", "domino")
-        val billKeys = listOf("nobroker", "zepto", "bigbasket", "blinkit", "instamart", "airtel", "jio", "electricity", "eb ", "broadband", "amazon", "flipkart")
+    private fun heuristicVendorCategory(lowerBody: String, lowerVendor: String): String {
+        val text = "$lowerBody $lowerVendor"
+        val foodDining = listOf(
+            "hungerbox", "zomato", "swiggy", "cafe", "coffee", "tea", "chai", "canteen",
+            "restaurant", "hotel", "bhavan", "mess", "tiffin", "bakery", "biryani", "dosa",
+            "idli", "food", "eatery", "bistro", "kitchen", "starbucks", "mcdonald", "kfc",
+            "domino", "pizza", "burger", "sweets", "juice", "parotta", "udupi", "saravana", "a2b", "adyar"
+        )
+        val commuteFuel = listOf(
+            "rapido", "uber", "ola", "metro", "cmrl", "irctc", "petrol", "fuel", "shell",
+            "hpcl", "bpcl", "indian oil", "iocl", "fastag", "parking", "cab", "auto", "bunk", "diesel"
+        )
+        val groceriesBills = listOf(
+            "nobroker", "zepto", "bigbasket", "blinkit", "instamart", "supermarket", "mart",
+            "airtel", "jio", "electricity", "eb ", "broadband", "water", "rent", "maintenance", "pharmacy", "medical"
+        )
+        val shoppingRetail = listOf(
+            "amazon", "flipkart", "myntra", "ajio", "decathlon", "croma", "reliance", "mall", "store", "retail"
+        )
+        val peerTransfer = listOf(
+            "upi", "neft", "imps", "vpa", "paytm", "gpay", "phonepe"
+        )
 
         return when {
-            commuteKeys.any { lower.contains(it) } -> "Commute & Fuel"
-            foodKeys.any { lower.contains(it) } -> "Office Food & Cafe"
-            billKeys.any { lower.contains(it) } -> "Bills & Essentials"
-            else -> "Other Debits"
+            foodDining.any { text.contains(it) } -> "Food & Dining"
+            commuteFuel.any { text.contains(it) } -> "Commute & Fuel"
+            groceriesBills.any { text.contains(it) } -> "Groceries & Bills"
+            shoppingRetail.any { text.contains(it) } -> "Shopping & Retail"
+            peerTransfer.any { text.contains(it) } -> "UPI Merchant / Transfer"
+            else -> "Direct Card / Bank Debit"
         }
     }
 
-    private fun extractMerchantName(body: String, sender: String): String {
+    private fun extractVendorName(body: String, sender: String): String {
         val patterns = listOf(
-            Regex("""(?:to|at|towards|info:|vpa)\s+([A-Za-z0-9 ._-]{3,26})""", RegexOption.IGNORE_CASE)
+            Regex("""(?:to|at|towards|info:|vpa|merchant)\s+([A-Za-z0-9@._& -]{3,32})""", RegexOption.IGNORE_CASE),
+            Regex("""UPI/[A-Za-z0-9]+/([A-Za-z0-9 ._-]{3,28})""", RegexOption.IGNORE_CASE)
         )
         for (p in patterns) {
             val m = p.find(body)
             if (m != null) {
-                val cleaned = m.groupValues[1].trim().replace(Regex("""\s+"""), " ")
-                if (cleaned.length >= 3 && !cleaned.lowercase(Locale.US).startsWith("rs")) {
+                val cleaned = m.groupValues[1].trim()
+                    .replace(Regex("""\s+"""), " ")
+                    .replace(Regex("""^(?:rs|inr|upi|dr|cr)\b[:\s-]*""", RegexOption.IGNORE_CASE), "")
+                    .trim()
+                if (cleaned.length >= 3 && !cleaned.all { it.isDigit() }) {
                     return cleaned
                 }
             }
         }
-        return sender.ifEmpty { "UPI / Card Debit" }
+        return sender.replace(Regex("""^[A-Z]{2}-"""), "").ifEmpty { "Bank Debit" }
     }
 }
 
-/**
- * Fix #5: Dismissible Alarm Controller with Stop Action & 25-Second Auto-Cutoff
- */
 object AlarmController {
     private var activeRingtone: Ringtone? = null
     @Volatile var isRinging: Boolean = false
@@ -579,7 +605,6 @@ object AlarmController {
             activeRingtone = rt
             isRinging = true
 
-            // Safety auto-cutoff after 25 seconds so it never rings endlessly
             handler.postDelayed({ stopRingtone(context) }, 25000L)
         } catch (_: Exception) {}
     }
@@ -671,7 +696,6 @@ class RideAndParkReceiver : BroadcastReceiver() {
                     @Suppress("DEPRECATION")
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                 }
-                // Fix #4: Universal Vehicle / Audio Bluetooth Detection (not restricted to any single brand)
                 val majorClass = device?.bluetoothClass?.majorDeviceClass
                 val name = device?.name?.uppercase(Locale.US) ?: ""
                 val isVehicleOrHeadset = majorClass == BluetoothClass.Device.Major.AUDIO_VIDEO ||
