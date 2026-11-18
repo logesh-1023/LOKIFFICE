@@ -26,6 +26,7 @@
       --label-tertiary: rgba(235, 235, 245, 0.35);
       --separator: rgba(84, 84, 88, 0.45);
       --tint-blue: #0A84FF;
+      --tint-cyan: #64D2FF;
       --tint-green: #30D158;
       --tint-amber: #FF9F0A;
       --tint-red: #FF453A;
@@ -48,7 +49,6 @@
       justify-content: center;
       padding: max(16px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
     .app-shell {
@@ -67,7 +67,6 @@
     }
 
     .nav-title-group { display: flex; flex-direction: column; }
-
     .nav-subtitle {
       font-size: 11px;
       font-weight: 600;
@@ -100,17 +99,10 @@
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      transition: background 0.18s ease, transform 0.12s ease;
     }
-
     .pill-btn:active { background: var(--bg-elevated); transform: scale(0.97); }
 
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--tint-green);
-    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tint-green); }
     .status-dot.away { background: var(--tint-blue); }
 
     .card {
@@ -148,6 +140,22 @@
       cursor: pointer;
     }
 
+    .alarm-banner {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 69, 58, 0.32), rgba(255, 159, 10, 0.24));
+      border: 1px solid var(--tint-red);
+      animation: pulseAlarm 1.2s infinite alternate;
+    }
+    .alarm-banner.ringing { display: flex; }
+    @keyframes pulseAlarm {
+      from { box-shadow: 0 0 0 rgba(255, 69, 58, 0.2); }
+      to { box-shadow: 0 0 18px rgba(255, 69, 58, 0.65); }
+    }
+
     .ride-banner {
       display: flex;
       justify-content: space-between;
@@ -167,96 +175,288 @@
     .ride-title { font-size: 14px; font-weight: 700; color: var(--label-primary); }
     .ride-sub { font-size: 12px; color: var(--label-secondary); margin-top: 1px; }
 
-    .parking-split {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 12px;
-      align-items: center;
+    /* Offline WebGPU SmolLM2-360M AI Copilot Card */
+    .ai-card {
+      background: linear-gradient(160deg, rgba(10, 132, 255, 0.12) 0%, rgba(191, 90, 242, 0.10) 45%, #1C1C1E 100%);
+      border: 0.5px solid rgba(100, 210, 255, 0.28);
     }
 
-    .stack-3d {
+    .ai-download-box {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      perspective: 520px;
-      padding: 4px 0;
+      gap: 10px;
     }
 
-    .floor-slab {
-      position: relative;
-      padding: 8px 10px;
-      border-radius: 10px;
+    .ai-desc {
+      font-size: 13px;
+      color: var(--label-secondary);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .ai-progress-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ai-progress-wrap.visible { display: flex; }
+
+    .ai-progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
       background: var(--bg-elevated);
-      border: 1px solid rgba(255,255,255,0.08);
-      transform: rotateX(18deg) rotateZ(-4deg);
-      transform-style: preserve-3d;
-      box-shadow: 0 5px 0 rgba(0,0,0,0.65);
+      overflow: hidden;
+    }
+
+    .ai-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--tint-blue), var(--tint-cyan));
+      transition: width 0.25s ease;
+    }
+
+    .ai-progress-meta {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-    }
-
-    .floor-slab.parked-here {
-      border-color: var(--tint-blue);
-      background: rgba(10, 132, 255, 0.22);
-      transform: rotateX(14deg) rotateZ(-2deg) translateX(4px);
-    }
-
-    .floor-name {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--label-primary);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .floor-tag {
       font-size: 11px;
-      font-weight: 600;
+      color: var(--tint-cyan);
       font-variant-numeric: tabular-nums;
     }
 
-    .cap-open { color: var(--tint-green); }
-    .cap-tight { color: var(--tint-amber); }
-    .cap-full { color: var(--tint-red); }
-
-    .park-info-box {
-      background: var(--bg-elevated);
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
+    .ai-workspace {
+      display: none;
       flex-direction: column;
+      gap: 10px;
+    }
+    .ai-workspace.visible { display: flex; }
+
+    .ai-chip-row {
+      display: flex;
       gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .ai-chip-row::-webkit-scrollbar { display: none; }
+
+    .ai-chip {
+      flex-shrink: 0;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(100, 210, 255, 0.12);
+      border: 0.5px solid rgba(100, 210, 255, 0.3);
+      color: var(--tint-cyan);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .ai-chip:active { transform: scale(0.96); }
+
+    .ai-input-row {
+      display: flex;
+      gap: 8px;
     }
 
-    .park-floor-big {
-      font-size: 26px;
+    .ai-input {
+      flex: 1;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 0.5px solid var(--separator);
+      padding: 0 12px;
+      color: var(--label-primary);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .ai-send-btn {
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: var(--tint-blue);
+      border: none;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .ai-send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .ai-output {
+      background: rgba(0, 0, 0, 0.45);
+      border: 0.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--label-soft);
+      white-space: pre-wrap;
+      min-height: 44px;
+    }
+
+    /* Sci-Fi 3D Spatial Wireframe Parking Canvas (X, Y, Z) */
+    .scifi-card {
+      background: radial-gradient(circle at 50% 20%, #091829 0%, #111318 65%, #1C1C1E 100%);
+      border: 0.5px solid rgba(100, 210, 255, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scifi-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 235px;
+      border-radius: 14px;
+      background: rgba(3, 10, 18, 0.85);
+      border: 0.5px solid rgba(100, 210, 255, 0.2);
+      overflow: hidden;
+    }
+
+    #parking3dCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .hud-overlay-top {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      color: var(--tint-cyan);
+      letter-spacing: 0.04em;
+    }
+
+    .hud-overlay-bottom {
+      position: absolute;
+      bottom: 8px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      color: #E5F6FF;
+    }
+
+    .xyz-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .xyz-cell {
+      background: rgba(100, 210, 255, 0.08);
+      border: 0.5px solid rgba(100, 210, 255, 0.22);
+      border-radius: 10px;
+      padding: 7px 10px;
+      text-align: center;
+    }
+    .xyz-cell span {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--tint-cyan);
+      letter-spacing: 0.05em;
+    }
+    .xyz-cell strong {
+      font-size: 13px;
       font-weight: 700;
       color: var(--label-primary);
-      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Debit-Only SMS Spend Dashboard */
+    .spend-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 12px;
+      border-bottom: 0.5px solid var(--separator);
+    }
+
+    .spend-total {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--label-primary);
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
       line-height: 1.05;
     }
 
-    .park-vector {
-      font-size: 12px;
-      color: var(--label-secondary);
-      line-height: 1.35;
+    .spend-bar {
+      display: flex;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--bg-elevated);
+      margin: 12px 0;
+      gap: 2px;
     }
 
-    .compass-badge {
-      display: inline-flex;
+    .spend-seg { height: 100%; transition: width 0.4s ease; }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .cat-box {
+      background: var(--bg-elevated);
+      border-radius: 12px;
+      padding: 9px 11px;
+    }
+    .cat-top {
+      display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 12px;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--label-secondary);
       font-weight: 600;
-      color: var(--tint-green);
-      background: rgba(48, 209, 88, 0.14);
-      padding: 4px 8px;
-      border-radius: 7px;
-      width: fit-content;
+    }
+    .cat-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .cat-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--label-primary);
+      margin-top: 3px;
+      font-variant-numeric: tabular-nums;
     }
 
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 135px;
+      overflow-y: auto;
+    }
+
+    .tx-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .tx-name { font-weight: 600; color: var(--label-soft); }
+    .tx-meta { font-size: 10px; color: var(--label-secondary); }
+    .tx-amt { font-weight: 700; color: var(--tint-red); font-variant-numeric: tabular-nums; }
+
+    /* Commute Calculator */
     .hero-departure {
       display: flex;
       justify-content: space-between;
@@ -264,14 +464,7 @@
       padding-bottom: 14px;
       border-bottom: 0.5px solid var(--separator);
     }
-
-    .hero-left small {
-      display: block;
-      font-size: 13px;
-      color: var(--label-secondary);
-      margin-bottom: 2px;
-    }
-
+    .hero-left small { display: block; font-size: 13px; color: var(--label-secondary); margin-bottom: 2px; }
     .hero-time {
       font-size: 40px;
       font-weight: 700;
@@ -280,9 +473,7 @@
       font-variant-numeric: tabular-nums;
       line-height: 1.05;
     }
-
     .hero-right { text-align: right; }
-
     .buffer-pill {
       display: inline-block;
       padding: 4px 9px;
@@ -291,14 +482,8 @@
       color: var(--tint-blue);
       font-size: 12px;
       font-weight: 600;
-      font-variant-numeric: tabular-nums;
     }
-
-    .route-caption {
-      font-size: 12px;
-      color: var(--label-secondary);
-      margin-top: 5px;
-    }
+    .route-caption { font-size: 12px; color: var(--label-secondary); margin-top: 5px; }
 
     .timeline-row {
       display: grid;
@@ -306,18 +491,11 @@
       padding-top: 12px;
       gap: 8px;
     }
-
     .timeline-cell { display: flex; flex-direction: column; gap: 2px; }
     .timeline-cell:nth-child(2) { text-align: center; }
     .timeline-cell:nth-child(3) { text-align: right; }
-
     .timeline-cell span { font-size: 11px; font-weight: 500; color: var(--label-secondary); }
-    .timeline-cell strong {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--label-primary);
-      font-variant-numeric: tabular-nums;
-    }
+    .timeline-cell strong { font-size: 15px; font-weight: 600; color: var(--label-primary); }
 
     .target-controls {
       margin-top: 14px;
@@ -327,7 +505,6 @@
       flex-direction: column;
       gap: 10px;
     }
-
     .target-row { display: flex; justify-content: space-between; align-items: center; }
     .target-row span { font-size: 14px; font-weight: 500; color: var(--label-soft); }
 
@@ -339,7 +516,6 @@
       color: var(--label-primary);
       font-size: 15px;
       font-weight: 600;
-      font-variant-numeric: tabular-nums;
       outline: none;
     }
 
@@ -350,7 +526,6 @@
       padding: 2px;
       border-radius: 10px;
     }
-
     .seg-btn {
       height: 30px;
       border: none;
@@ -361,7 +536,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     .seg-btn.active {
       background: var(--bg-tertiary);
       color: var(--label-primary);
@@ -374,7 +548,6 @@
       gap: 8px;
       margin-top: 12px;
     }
-
     .launch-btn {
       height: 38px;
       border-radius: 11px;
@@ -391,13 +564,7 @@
       cursor: pointer;
     }
 
-    .shift-layout {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
+    .shift-layout { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
     .ring-wrap { position: relative; width: 84px; height: 84px; flex-shrink: 0; }
     .ring-wrap svg { transform: rotate(-90deg); width: 84px; height: 84px; }
     .ring-bg { fill: none; stroke: var(--bg-elevated); stroke-width: 7; }
@@ -410,7 +577,6 @@
       stroke-dashoffset: 226.2;
       transition: stroke-dashoffset 0.5s ease;
     }
-
     .ring-center {
       position: absolute;
       inset: 0;
@@ -431,22 +597,9 @@
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
     }
-    .shift-sub {
-      font-size: 13px;
-      color: var(--label-secondary);
-      margin-top: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .shift-sub { font-size: 13px; color: var(--label-secondary); margin-top: 4px; }
 
-    .action-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
     .btn-ios {
       height: 44px;
       border-radius: 12px;
@@ -462,13 +615,7 @@
     .btn-primary { background: var(--tint-blue); color: #FFFFFF; }
     .btn-secondary { background: var(--bg-elevated); color: var(--label-soft); }
 
-    .tweak-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin-top: 8px;
-    }
-
+    .tweak-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
     .tweak-btn {
       height: 32px;
       border-radius: 8px;
@@ -550,7 +697,6 @@
       max-height: 90vh;
       overflow-y: auto;
     }
-
     .sheet-grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--bg-tertiary); margin: 0 auto 14px; }
     .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .sheet-header h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--label-primary); }
@@ -592,7 +738,7 @@
   <div class="app-shell">
     <header class="nav-bar">
       <div class="nav-title-group">
-        <span class="nav-subtitle" id="dateHeader">CHENNAI ONE SEZ · COMCAST</span>
+        <span class="nav-subtitle" id="dateHeader">WORK-LIFE OS</span>
         <h1 class="nav-title">LOKIFFICE</h1>
       </div>
       <div class="nav-actions">
@@ -606,62 +752,141 @@
       </div>
     </header>
 
-    <!-- Fix #4: Real Silent/DND Profile Enforcer -->
+    <!-- Dismissible Shift-Complete Alarm Banner -->
+    <div class="alarm-banner" id="alarmBanner">
+      <div>
+        <div class="ride-title" style="color:#FFFFFF;">Shift Complete · Alarm Active</div>
+        <div class="ride-sub" style="color:#FFE5E5;">Mandatory office hours reached</div>
+      </div>
+      <button class="btn-ios" style="height:36px; padding:0 16px; background:#FFFFFF; color:#000000; font-weight:700;" onclick="dismissActiveAlarm()">OK · Stop</button>
+    </div>
+
+    <!-- Generic Vehicle / Commute Ride-Mode DND Banner -->
     <div class="ride-banner" id="rideBanner">
       <div class="ride-left">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <div>
           <div class="ride-title" id="rideStatusTitle">Ride Mode DND · Standby</div>
-          <div class="ride-sub" id="rideStatusSub">Switches phone to Silent/DND when Access 125 connects</div>
+          <div class="ride-sub" id="rideStatusSub">Silences calls on vehicle Bluetooth or motion</div>
         </div>
       </div>
       <button class="pill-btn" style="height:30px; font-size:12px;" id="rideToggleBtn" onclick="toggleManualRideMode()">Test Ride</button>
     </div>
 
-    <!-- Fix #2: 100% Zero-Touch 3D Parking Radar (No 1-Tap Buttons) -->
+    <!-- 5-Hour Shift Timer -->
     <section class="card">
       <div class="card-header">
-        <span class="section-label">Zero-Touch 3D Parking Radar</span>
-        <span class="meta-badge" id="parkingAdviceBadge" style="color: var(--tint-green)">Live Firebase</span>
+        <span class="section-label" id="shiftHeaderLabel">5-Hour Shift Timer</span>
+        <span class="meta-badge" style="color: var(--label-secondary)" onclick="refreshLiveIntel()">Sync</span>
       </div>
 
-      <div class="parking-split">
-        <div class="stack-3d" id="stack3d">
-          <div class="floor-slab" data-floor="L4">
-            <span class="floor-name">Floor 4</span>
-            <span class="floor-tag cap-open" id="cap-L4">0 Parked</span>
-          </div>
-          <div class="floor-slab" data-floor="L3">
-            <span class="floor-name">Floor 3</span>
-            <span class="floor-tag cap-open" id="cap-L3">0 Parked</span>
-          </div>
-          <div class="floor-slab" data-floor="L2">
-            <span class="floor-name">Floor 2</span>
-            <span class="floor-tag cap-open" id="cap-L2">0 Parked</span>
-          </div>
-          <div class="floor-slab" data-floor="L1">
-            <span class="floor-name">Floor 1</span>
-            <span class="floor-tag cap-open" id="cap-L1">0 Parked</span>
-          </div>
-          <div class="floor-slab" data-floor="G">
-            <span class="floor-name">Ground</span>
-            <span class="floor-tag cap-open" id="cap-G">0 Parked</span>
+      <div class="shift-layout">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 84 84">
+            <circle class="ring-bg" cx="42" cy="42" r="36" />
+            <circle class="ring-progress" id="ringProgress" cx="42" cy="42" r="36" />
+          </svg>
+          <div class="ring-center">
+            <b id="pctLabel">0%</b>
+            <small>Shift</small>
           </div>
         </div>
 
-        <div class="park-info-box">
-          <span class="section-label" style="font-size:10px;">Auto-Detected Bay</span>
-          <div class="park-floor-big" id="parkedFloorDisplay">Floor 1</div>
-          <div class="park-vector" id="parkedVectorText">Auto-detects floor via Gyroscope & Access 125 BLE off</div>
-          <div class="compass-badge" id="parkedCompassBadge">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-            <span id="parkedWalkDist">Hands-Free Active</span>
-          </div>
+        <div class="shift-details">
+          <div class="countdown-readout" id="countdown">05:00:00</div>
+          <div class="shift-sub" id="shiftInfo">Awaiting arrival at office</div>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <button class="btn-ios btn-primary" onclick="manualLogin()">Check In Now</button>
+        <button class="btn-ios btn-secondary" onclick="resetShift()">Reset Shift</button>
+      </div>
+
+      <div class="tweak-strip">
+        <button class="tweak-btn" onclick="adjustIn(-15)">-15m IN</button>
+        <button class="tweak-btn" onclick="adjustIn(-5)">-5m IN</button>
+        <button class="tweak-btn" onclick="adjustIn(5)">+5m IN</button>
+        <button class="tweak-btn" onclick="adjustIn(15)">+15m IN</button>
+      </div>
+    </section>
+
+    <!-- Offline Browser-Sandboxed WebGPU AI Copilot (SmolLM2-360M-Instruct) -->
+    <section class="card ai-card">
+      <div class="card-header">
+        <span class="section-label" style="color:var(--tint-cyan);">Offline Local AI · SmolLM2-360M</span>
+        <span class="meta-badge" id="aiBackendBadge" style="color:var(--label-secondary);">Browser Sandbox</span>
+      </div>
+
+      <div class="ai-download-box" id="aiDownloadBox">
+        <p class="ai-desc" id="aiIntroText">
+          Download <b>SmolLM2-360M-Instruct</b> (~270 MB) into your browser's isolated cache once. Runs 100% offline on WebGPU/WASM—your SMS spends and shift logs never leave your device.
+        </p>
+        <button class="btn-ios btn-primary" style="width:100%;" id="aiDownloadBtn" onclick="initOfflineWebGPUModel()">
+          Download Offline AI (270 MB)
+        </button>
+      </div>
+
+      <div class="ai-progress-wrap" id="aiProgressWrap">
+        <div class="ai-progress-meta">
+          <span id="aiProgressLabel">Initializing WebGPU runtime...</span>
+          <span id="aiProgressPct">0%</span>
+        </div>
+        <div class="ai-progress-track">
+          <div class="ai-progress-fill" id="aiProgressFill"></div>
+        </div>
+      </div>
+
+      <div class="ai-workspace" id="aiWorkspace">
+        <div class="ai-chip-row">
+          <button class="ai-chip" onclick="runQuickAiPrompt('spend')">Analyze My Debited Spends</button>
+          <button class="ai-chip" onclick="runQuickAiPrompt('briefing')">Smart Commute Briefing</button>
+          <button class="ai-chip" onclick="runQuickAiPrompt('parking')">Where Did I Park?</button>
+        </div>
+        <div class="ai-input-row">
+          <input type="text" class="ai-input" id="aiPromptInput" placeholder="Ask offline AI about shift, spends, or commute..." onkeydown="if(event.key==='Enter') askOfflineAI()" />
+          <button class="ai-send-btn" id="aiSendBtn" onclick="askOfflineAI()">Ask</button>
+        </div>
+        <div class="ai-output" id="aiOutputBox">SmolLM2-360M loaded in sandbox cache. Tap a quick chip or ask a question offline.</div>
+      </div>
+    </section>
+
+    <!-- Context-Aware Slot: Sci-Fi 3D XYZ Parking Matrix when Checked-In; Leave Calculator when Away -->
+    <section class="card scifi-card" id="scifiParkingCard" style="display:none;">
+      <div class="card-header">
+        <span class="section-label" style="color:var(--tint-cyan);">3D Spatial Parking Matrix · X·Y·Z</span>
+        <span class="meta-badge" id="parkingAdviceBadge" style="color: var(--tint-green)">Live Telemetry</span>
+      </div>
+
+      <div class="scifi-canvas-wrap">
+        <canvas id="parking3dCanvas"></canvas>
+        <div class="hud-overlay-top">
+          <span id="hudFloorTag">Z-LEVEL: FLOOR 1</span>
+          <span id="hudCrowdTag">BAY TELEMETRY: ACTIVE</span>
+        </div>
+        <div class="hud-overlay-bottom">
+          <span id="hudVectorTag">VECTOR: +12m X · +18m Y</span>
+          <span style="color:var(--tint-green);" id="hudBestFloor">OPTIMAL: L2</span>
+        </div>
+      </div>
+
+      <div class="xyz-strip">
+        <div class="xyz-cell">
+          <span>X-AXIS (LATERAL)</span>
+          <strong id="coordX">+12.0 m</strong>
+        </div>
+        <div class="xyz-cell">
+          <span>Y-AXIS (DEPTH)</span>
+          <strong id="coordY">+18.0 m</strong>
+        </div>
+        <div class="xyz-cell">
+          <span>Z-AXIS (FLOOR)</span>
+          <strong id="coordZ">L1 (+3.5m)</strong>
         </div>
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" id="leaveCalculatorCard">
       <div class="card-header">
         <span class="section-label">Reverse Curfew Schedule</span>
         <span class="meta-badge" onclick="openSheet()">
@@ -677,7 +902,7 @@
         </div>
         <div class="hero-right">
           <span class="buffer-pill" id="bufferPill">17.0 km · 55m</span>
-          <div class="route-caption" id="roadLabel">200 Feet Radial Rd</div>
+          <div class="route-caption" id="roadLabel">Primary Arterial Corridor</div>
         </div>
       </div>
 
@@ -721,44 +946,55 @@
       </div>
     </section>
 
+    <!-- Debit-Only SMS Spend Dashboard -->
     <section class="card">
       <div class="card-header">
-        <span class="section-label" id="shiftHeaderLabel">5-Hour Shift Timer</span>
-        <span class="meta-badge" style="color: var(--label-secondary)" onclick="refreshLiveIntel()">Sync</span>
+        <span class="section-label">Debited Spend Analytics (30D SMS)</span>
+        <span class="meta-badge" onclick="refreshSmsSpendDashboard()">Scan SMS</span>
       </div>
 
-      <div class="shift-layout">
-        <div class="ring-wrap">
-          <svg viewBox="0 0 84 84">
-            <circle class="ring-bg" cx="42" cy="42" r="36" />
-            <circle class="ring-progress" id="ringProgress" cx="42" cy="42" r="36" />
-          </svg>
-          <div class="ring-center">
-            <b id="pctLabel">0%</b>
-            <small>Shift</small>
-          </div>
+      <div class="spend-hero">
+        <div>
+          <small style="font-size:11px; color:var(--label-secondary); display:block;">Total Outflow (Credits Excluded)</small>
+          <div class="spend-total" id="spendTotalAmt">₹0</div>
         </div>
+        <span class="buffer-pill" style="background:rgba(255,69,58,0.16); color:var(--tint-red);" id="spendTxCount">0 Debits</span>
+      </div>
 
-        <div class="shift-details">
-          <div class="countdown-readout" id="countdown">05:00:00</div>
-          <div class="shift-sub" id="shiftInfo">Awaiting arrival at office</div>
+      <div class="spend-bar">
+        <div class="spend-seg" id="barCommute" style="width:25%; background:var(--tint-blue);"></div>
+        <div class="spend-seg" id="barFood" style="width:25%; background:var(--tint-amber);"></div>
+        <div class="spend-seg" id="barBills" style="width:25%; background:var(--tint-purple);"></div>
+        <div class="spend-seg" id="barOther" style="width:25%; background:var(--tint-green);"></div>
+      </div>
+
+      <div class="cat-grid">
+        <div class="cat-box">
+          <div class="cat-top"><span class="cat-dot" style="background:var(--tint-blue);"></span>Commute & Fuel</div>
+          <div class="cat-val" id="valCommute">₹0</div>
+        </div>
+        <div class="cat-box">
+          <div class="cat-top"><span class="cat-dot" style="background:var(--tint-amber);"></span>Office Food & Cafe</div>
+          <div class="cat-val" id="valFood">₹0</div>
+        </div>
+        <div class="cat-box">
+          <div class="cat-top"><span class="cat-dot" style="background:var(--tint-purple);"></span>Bills & Essentials</div>
+          <div class="cat-val" id="valBills">₹0</div>
+        </div>
+        <div class="cat-box">
+          <div class="cat-top"><span class="cat-dot" style="background:var(--tint-green);"></span>Other Debits</div>
+          <div class="cat-val" id="valOther">₹0</div>
         </div>
       </div>
 
-      <div class="action-grid">
-        <button class="btn-ios btn-primary" onclick="manualLogin()">Check In Now</button>
-        <button class="btn-ios btn-secondary" onclick="resetShift()">Reset Shift</button>
-      </div>
-
-      <div class="tweak-strip">
-        <button class="tweak-btn" onclick="adjustIn(-15)">-15m IN</button>
-        <button class="tweak-btn" onclick="adjustIn(-5)">-5m IN</button>
-        <button class="tweak-btn" onclick="adjustIn(5)">+5m IN</button>
-        <button class="tweak-btn" onclick="adjustIn(15)">+15m IN</button>
+      <div class="tx-list" id="txList">
+        <div class="tx-item">
+          <span class="tx-meta">On-device SMS parser active (reads debited transactions only)</span>
+        </div>
       </div>
     </section>
 
-    <!-- Fix #1: Real Chennai Metro Station Proximity & Connectivity Check -->
+    <!-- Transit & Weather Insights -->
     <section class="card">
       <div class="intel-row">
         <div class="icon-box icon-blue">
@@ -766,10 +1002,10 @@
         </div>
         <div class="intel-body">
           <div class="intel-top">
-            <span class="intel-title" id="transitTitle">Access 125 Ride Connect</span>
+            <span class="intel-title" id="transitTitle">Two-Wheeler / Personal Vehicle</span>
             <span class="intel-tag" id="trafficBadge">Moderate</span>
           </div>
-          <div class="intel-desc" id="transitReason">Checking home proximity to Chennai Metro Blue/Green/Yellow lines...</div>
+          <div class="intel-desc" id="transitReason">Checking home proximity to rapid transit / Metro lines...</div>
         </div>
       </div>
 
@@ -787,6 +1023,7 @@
       </div>
     </section>
 
+    <!-- Weekly Compliance -->
     <section class="card">
       <div class="card-header">
         <span class="section-label">Weekly Compliance</span>
@@ -796,15 +1033,16 @@
     </section>
   </div>
 
+  <!-- Setup Bottom Sheet -->
   <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSheetOnBg(event)">
     <div class="sheet">
       <div class="sheet-grabber"></div>
       <div class="sheet-header">
-        <h3>Campus Geofence & Metro Setup</h3>
+        <h3>Campus Geofence & System Setup</h3>
         <button class="sheet-close" onclick="closeSheet()">✕</button>
       </div>
 
-      <span class="sheet-label">Office Campus Center (Default: Chennai One SEZ)</span>
+      <span class="sheet-label">Office Campus Center</span>
       <input type="text" class="sheet-input" id="officeAddressInput" placeholder="12.946960, 80.231400" />
 
       <span class="sheet-label">Campus Geofence Radius (Meters)</span>
@@ -815,7 +1053,7 @@
         <button class="seg-btn" onclick="setRadiusPreset(650, this)">650m</button>
       </div>
 
-      <span class="sheet-label">Home Location (Checked against Chennai Metro Lines)</span>
+      <span class="sheet-label">Home Location</span>
       <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street name, landmark, or lat, lng" />
 
       <span class="sheet-label">Firebase Crowd Sync Endpoint</span>
@@ -829,22 +1067,94 @@
         <button class="seg-btn" onclick="setShiftHours(9, this)">9 Hours</button>
       </div>
 
-      <p class="sheet-hint">Metro routing only activates if your Home Pin is within <b>2.5 km</b> of a Chennai Metro station (Blue, Green, or Yellow line). Otherwise, LOKIFFICE routes exclusively via Access 125 / Cab.</p>
+      <p class="sheet-hint" id="dndStatusHint">Manage system Do Not Disturb & Silent Ride Mode permissions below.</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
         <button class="btn-ios btn-primary" style="width:100%" onclick="saveSettings()">Save Settings</button>
         <button class="btn-ios btn-secondary" style="width:100%" onclick="lockCurrentDeskAsOffice()">Lock Current Desk as Office</button>
         <button class="btn-ios btn-secondary" style="width:100%" onclick="saveCurrentGPSAsHome()">Use Current GPS as Home</button>
-        <button class="btn-ios btn-secondary" style="width:100%; color:var(--tint-purple);" onclick="grantDndPermission()">Enable Auto-DND & Silent Profile Access</button>
+        <button class="btn-ios btn-secondary" style="width:100%; color:var(--tint-purple);" id="dndSetupBtn" onclick="handleDndSetupButton()">Enable Auto-DND & Silent Profile Access</button>
+        <button class="btn-ios btn-secondary" style="width:100%; color:var(--tint-red);" onclick="purgeOfflineAiCache()">Clear Cached Offline AI Weights</button>
       </div>
     </div>
   </div>
 
+  <!-- Off-Main-Thread Web Worker Script for WebGPU Transformers.js + SmolLM2-360M-Instruct -->
+  <script id="ai-worker-code" type="javascript/worker">
+    import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.0";
+
+    env.allowLocalModels = false;
+    env.useBrowserCache = true;
+
+    const MODEL_ID = "HuggingFaceTB/SmolLM2-360M-Instruct";
+    let generator = null;
+    let activeDevice = "wasm";
+
+    self.onmessage = async (event) => {
+      const { type, messages, requestId } = event.data;
+
+      if (type === "LOAD") {
+        try {
+          const hasWebGPU = typeof navigator !== "undefined" && Boolean(navigator.gpu);
+          activeDevice = hasWebGPU ? "webgpu" : "wasm";
+          const dtype = hasWebGPU ? "q4" : "q8";
+
+          self.postMessage({
+            type: "STATUS",
+            text: hasWebGPU ? "WebGPU detected · Downloading SmolLM2-360M (q4)..." : "WebGPU unavailable · Using WASM (q8)...",
+            pct: 5
+          });
+
+          generator = await pipeline("text-generation", MODEL_ID, {
+            device: activeDevice,
+            dtype: dtype,
+            progress_callback: (info) => {
+              if (info && info.status === "progress" && info.total) {
+                const pct = Math.min(99, Math.round((info.loaded / info.total) * 100));
+                self.postMessage({
+                  type: "PROGRESS",
+                  file: info.file || "model weights",
+                  pct
+                });
+              }
+            }
+          });
+
+          self.postMessage({ type: "READY", device: activeDevice });
+        } catch (err) {
+          self.postMessage({ type: "ERROR", error: String(err && err.message ? err.message : err) });
+        }
+      }
+
+      if (type === "GENERATE") {
+        if (!generator) {
+          self.postMessage({ type: "ERROR", error: "Model not initialized yet.", requestId });
+          return;
+        }
+        try {
+          const out = await generator(messages, {
+            max_new_tokens: 160,
+            temperature: 0.35,
+            do_sample: true,
+            return_full_text: false
+          });
+          const generated = Array.isArray(out) && out[0] && out[0].generated_text
+            ? (typeof out[0].generated_text === "string"
+                ? out[0].generated_text
+                : (out[0].generated_text[out[0].generated_text.length - 1]?.content || ""))
+            : "";
+          self.postMessage({ type: "RESULT", text: generated.trim(), requestId });
+        } catch (err) {
+          self.postMessage({ type: "ERROR", error: String(err && err.message ? err.message : err), requestId });
+        }
+      }
+    };
+  </script>
+
   <script>
-    const DEFAULT_OFFICE = { lat: 12.946960, lng: 80.231400, label: "Chennai One SEZ" };
+    const DEFAULT_OFFICE = { lat: 12.946960, lng: 80.231400, label: "Office Campus" };
     const DEFAULT_FIREBASE = "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-    // Fix #1: Ingested Chennai Metro Network (Blue Line, Green Line, & Phase-2 Yellow Line)
-    const CHENNAI_METRO_STATIONS = [
+    const RAPID_TRANSIT_STATIONS = [
       { name: "Wimco Nagar", line: "Blue", lat: 13.1792, lng: 80.3078 },
       { name: "Tiruvottiyur", line: "Blue", lat: 13.1643, lng: 80.3001 },
       { name: "Tollgate", line: "Blue", lat: 13.1434, lng: 80.2952 },
@@ -892,8 +1202,129 @@
     let shiftHours = Number(localStorage.getItem("lokiffice_shift_hours") || "5");
     let radiusMeters = Number(localStorage.getItem("lokiffice_radius_m") || "400");
     let parkedFloor = localStorage.getItem("lokiffice_park_floor") || "L1";
+    let parkVecX = 12.0;
+    let parkVecY = 18.0;
+    let floorCounts = { G: 0, L1: 0, L2: 0, L3: 0, L4: 0 };
     let manualRideActive = false;
     let shiftAlarmFiredToday = false;
+    let webOscillator = null;
+    let latestSpendSummary = { totalDebited: 0, commuteTotal: 0, foodTotal: 0, billsTotal: 0, otherTotal: 0 };
+
+    // Offline WebGPU / Transformers.js Worker Manager
+    let aiWorker = null;
+    let aiModelReady = false;
+    let aiBusy = false;
+
+    function createAiWorker() {
+      if (aiWorker) return aiWorker;
+      const code = document.getElementById("ai-worker-code").textContent;
+      const blob = new Blob([code], { type: "application/javascript" });
+      aiWorker = new Worker(URL.createObjectURL(blob), { type: "module" });
+
+      aiWorker.onmessage = (e) => {
+        const msg = e.data;
+        if (msg.type === "STATUS") {
+          document.getElementById("aiProgressLabel").textContent = msg.text;
+          document.getElementById("aiProgressFill").style.width = `${msg.pct}%`;
+          document.getElementById("aiProgressPct").textContent = `${msg.pct}%`;
+        } else if (msg.type === "PROGRESS") {
+          document.getElementById("aiProgressLabel").textContent = `Caching ${msg.file}...`;
+          document.getElementById("aiProgressFill").style.width = `${msg.pct}%`;
+          document.getElementById("aiProgressPct").textContent = `${msg.pct}%`;
+        } else if (msg.type === "READY") {
+          aiModelReady = true;
+          localStorage.setItem("lokiffice_ai_cached", "1");
+          document.getElementById("aiProgressWrap").classList.remove("visible");
+          document.getElementById("aiDownloadBox").style.display = "none";
+          document.getElementById("aiWorkspace").classList.add("visible");
+          const badge = document.getElementById("aiBackendBadge");
+          badge.textContent = msg.device === "webgpu" ? "WebGPU Ready" : "WASM Ready";
+          badge.style.color = "var(--tint-green)";
+        } else if (msg.type === "RESULT") {
+          aiBusy = false;
+          document.getElementById("aiSendBtn").disabled = false;
+          document.getElementById("aiOutputBox").textContent = msg.text || "Done.";
+        } else if (msg.type === "ERROR") {
+          aiBusy = false;
+          document.getElementById("aiSendBtn").disabled = false;
+          document.getElementById("aiProgressWrap").classList.remove("visible");
+          document.getElementById("aiDownloadBox").style.display = "flex";
+          document.getElementById("aiDownloadBtn").disabled = false;
+          document.getElementById("aiDownloadBtn").textContent = "Retry Download (270 MB)";
+          document.getElementById("aiOutputBox").textContent = `Offline AI notice: ${msg.error}`;
+        }
+      };
+      return aiWorker;
+    }
+
+    function initOfflineWebGPUModel() {
+      document.getElementById("aiDownloadBtn").disabled = true;
+      document.getElementById("aiDownloadBox").style.display = "none";
+      document.getElementById("aiProgressWrap").classList.add("visible");
+      const worker = createAiWorker();
+      worker.postMessage({ type: "LOAD" });
+    }
+
+    async function purgeOfflineAiCache() {
+      localStorage.removeItem("lokiffice_ai_cached");
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(k => k.includes("transformers")).map(k => caches.delete(k)));
+      }
+      aiModelReady = false;
+      document.getElementById("aiWorkspace").classList.remove("visible");
+      document.getElementById("aiDownloadBox").style.display = "flex";
+      document.getElementById("aiDownloadBtn").disabled = false;
+      document.getElementById("aiDownloadBtn").textContent = "Download Offline AI (270 MB)";
+      document.getElementById("aiBackendBadge").textContent = "Browser Sandbox";
+      document.getElementById("aiBackendBadge").style.color = "var(--label-secondary)";
+      closeSheet();
+    }
+
+    function buildLocalContextPrompt(userQuery) {
+      const savedIn = localStorage.getItem(todayKey());
+      const shiftLine = savedIn
+        ? `Checked in at ${format12(new Date(Number(savedIn)))}, target exit ${format12(new Date(Number(savedIn) + SHIFT_MS()))}.`
+        : `Not checked in yet. Leave home by ${document.getElementById("leaveHome").textContent}.`;
+      const parkLine = `Vehicle parked on floor ${parkedFloor} at X=${parkVecX.toFixed(1)}m, Y=${parkVecY.toFixed(1)}m from elevator.`;
+      const spendLine = `Last 30 days debited spends: Total ₹${Math.round(latestSpendSummary.totalDebited)}, Commute ₹${Math.round(latestSpendSummary.commuteTotal)}, Food ₹${Math.round(latestSpendSummary.foodTotal)}, Bills ₹${Math.round(latestSpendSummary.billsTotal)}.`;
+      const weatherLine = `Weather ${state.tempC}C, rain risk ${state.rainProb}%, traffic ${state.trafficLevel}.`;
+
+      return [
+        {
+          role: "system",
+          content: "You are LOKIFFICE Offline Copilot. Answer concisely in 2-3 short sentences using ONLY the user's local device telemetry provided."
+        },
+        {
+          role: "user",
+          content: `Telemetry:\n- ${shiftLine}\n- ${parkLine}\n- ${spendLine}\n- ${weatherLine}\n\nQuestion: ${userQuery}`
+        }
+      ];
+    }
+
+    function askOfflineAI(overrideQuery) {
+      if (!aiModelReady || aiBusy) return;
+      const inputEl = document.getElementById("aiPromptInput");
+      const query = (overrideQuery || inputEl.value).trim();
+      if (!query) return;
+      if (!overrideQuery) inputEl.value = "";
+
+      aiBusy = true;
+      document.getElementById("aiSendBtn").disabled = true;
+      document.getElementById("aiOutputBox").textContent = "Thinking locally on GPU...";
+      const messages = buildLocalContextPrompt(query);
+      createAiWorker().postMessage({ type: "GENERATE", messages, requestId: Date.now() });
+    }
+
+    function runQuickAiPrompt(topic) {
+      if (topic === "spend") {
+        askOfflineAI("Summarize my debited spending breakdown and highlight my top expense category.");
+      } else if (topic === "briefing") {
+        askOfflineAI("Give me a quick status briefing on my shift schedule, weather, and commute.");
+      } else if (topic === "parking") {
+        askOfflineAI("Tell me clearly which floor and X/Y coordinates my vehicle is parked on.");
+      }
+    }
 
     const SHIFT_MS = () => shiftHours * 60 * 60 * 1000;
     const CIRCUMFERENCE = 226.2;
@@ -906,7 +1337,7 @@
       liveMins: 55,
       delayMins: 10,
       trafficLevel: "Moderate",
-      roadSummary: "200 Feet Radial Rd",
+      roadSummary: "Primary Arterial Corridor",
       tempC: 30,
       rainProb: 0,
       isRaining: false
@@ -928,12 +1359,175 @@
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
+    function updateContextWorkspace() {
+      const isCheckedIn = Boolean(localStorage.getItem(todayKey()));
+      document.getElementById("scifiParkingCard").style.display = isCheckedIn ? "block" : "none";
+      document.getElementById("leaveCalculatorCard").style.display = isCheckedIn ? "none" : "block";
+    }
+
+    let rotAngle = 0.55;
+    function renderSciFi3DParking() {
+      const canvas = document.getElementById("parking3dCanvas");
+      if (!canvas) return;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0) {
+        requestAnimationFrame(renderSciFi3DParking);
+        return;
+      }
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+
+      const W = rect.width;
+      const H = rect.height;
+      ctx.clearRect(0, 0, W, H);
+
+      rotAngle += 0.008;
+      const cosA = Math.cos(rotAngle);
+      const sinA = Math.sin(rotAngle);
+
+      function project3D(x, y, z) {
+        const rx = x * cosA - y * sinA;
+        const ry = x * sinA + y * cosA;
+        const isoX = W * 0.5 + rx * 1.45;
+        const isoY = H * 0.76 - z * 28 + ry * 0.55;
+        return { x: isoX, y: isoY };
+      }
+
+      const levels = [
+        { id: "G", z: 0, label: "G" },
+        { id: "L1", z: 1, label: "L1" },
+        { id: "L2", z: 2, label: "L2" },
+        { id: "L3", z: 3, label: "L3" },
+        { id: "L4", z: 4, label: "L4" }
+      ];
+
+      const o = project3D(-55, -55, 0);
+      const axX = project3D(65, -55, 0);
+      const axY = project3D(-55, 65, 0);
+      const axZ = project3D(-55, -55, 4.6);
+
+      ctx.strokeStyle = "rgba(100, 210, 255, 0.35)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(o.x, o.y); ctx.lineTo(axX.x, axX.y);
+      ctx.moveTo(o.x, o.y); ctx.lineTo(axY.x, axY.y);
+      ctx.moveTo(o.x, o.y); ctx.lineTo(axZ.x, axZ.y);
+      ctx.stroke();
+
+      ctx.fillStyle = "#64D2FF";
+      ctx.font = "600 9px monospace";
+      ctx.fillText("X", axX.x + 4, axX.y);
+      ctx.fillText("Y", axY.x + 4, axY.y);
+      ctx.fillText("Z", axZ.x - 3, axZ.y - 4);
+
+      const half = 48;
+      levels.forEach(lvl => {
+        const isActive = lvl.id === parkedFloor;
+        const cnt = floorCounts[lvl.id] || 0;
+        const p1 = project3D(-half, -half, lvl.z);
+        const p2 = project3D(half, -half, lvl.z);
+        const p3 = project3D(half, half, lvl.z);
+        const p4 = project3D(-half, half, lvl.z);
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.lineTo(p3.x, p3.y);
+        ctx.lineTo(p4.x, p4.y);
+        ctx.closePath();
+
+        if (isActive) {
+          ctx.fillStyle = "rgba(10, 132, 255, 0.24)";
+          ctx.strokeStyle = "#64D2FF";
+          ctx.lineWidth = 1.8;
+        } else if (cnt >= 160) {
+          ctx.fillStyle = "rgba(255, 69, 58, 0.12)";
+          ctx.strokeStyle = "rgba(255, 69, 58, 0.45)";
+          ctx.lineWidth = 1;
+        } else {
+          ctx.fillStyle = "rgba(48, 209, 88, 0.08)";
+          ctx.strokeStyle = "rgba(100, 210, 255, 0.25)";
+          ctx.lineWidth = 1;
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isActive ? "#FFFFFF" : "rgba(235,235,245,0.65)";
+        ctx.font = isActive ? "bold 10px monospace" : "9px monospace";
+        ctx.fillText(`${lvl.label} [${cnt}]`, p2.x + 6, p2.y + 3);
+
+        if (isActive) {
+          const clampedX = Math.max(-38, Math.min(38, parkVecX));
+          const clampedY = Math.max(-38, Math.min(38, parkVecY));
+          const liftPt = project3D(0, 0, lvl.z);
+          const bayPt = project3D(clampedX, clampedY, lvl.z);
+
+          ctx.strokeStyle = "#30D158";
+          ctx.setLineDash([3, 3]);
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(liftPt.x, liftPt.y);
+          ctx.lineTo(bayPt.x, bayPt.y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = "#0A84FF";
+          ctx.beginPath();
+          ctx.arc(liftPt.x, liftPt.y, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          const pulse = 5 + Math.sin(rotAngle * 5) * 2;
+          ctx.fillStyle = "rgba(48, 209, 88, 0.35)";
+          ctx.beginPath();
+          ctx.arc(bayPt.x, bayPt.y, pulse, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = "#30D158";
+          ctx.beginPath();
+          ctx.arc(bayPt.x, bayPt.y, 3.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      requestAnimationFrame(renderSciFi3DParking);
+    }
+
+    function updateDndSetupButtonState() {
+      const btn = document.getElementById("dndSetupBtn");
+      const hint = document.getElementById("dndStatusHint");
+      let granted = false;
+      if (window.AndroidBridge && typeof window.AndroidBridge.isDndAccessGranted === "function") {
+        granted = window.AndroidBridge.isDndAccessGranted();
+      }
+      if (granted) {
+        btn.textContent = "DND Access Granted · Tap to Disable in Settings";
+        btn.style.color = "var(--tint-green)";
+        hint.textContent = "System DND & Silent profile control is active. Tap below if you want to revoke it in Android Settings.";
+      } else {
+        btn.textContent = "Enable Auto-DND & Silent Profile Access";
+        btn.style.color = "var(--tint-purple)";
+        hint.textContent = "Grant Do Not Disturb access once so LOKIFFICE can silence calls automatically while commuting.";
+      }
+    }
+
+    function handleDndSetupButton() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.openDndPolicySettings === "function") {
+        window.AndroidBridge.openDndPolicySettings();
+      } else {
+        alert("On iPhone, configure Settings → Focus → Driving → Turn On Automatically → While Driving.");
+      }
+    }
+
     function openSheet() {
       document.getElementById("officeAddressInput").value = `${officeData.lat}, ${officeData.lng}`;
       document.getElementById("firebaseUrlInput").value = firebaseUrl;
       if (homeData) {
         document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
       }
+      updateDndSetupButtonState();
       document.getElementById("sheetBackdrop").classList.add("open");
     }
     function closeSheet() { document.getElementById("sheetBackdrop").classList.remove("open"); }
@@ -958,14 +1552,6 @@
       }
     }
 
-    function grantDndPermission() {
-      if (window.AndroidBridge && typeof window.AndroidBridge.requestDndPermission === "function") {
-        window.AndroidBridge.requestDndPermission();
-      } else {
-        alert("On iPhone, enable Settings → Focus → Driving → Turn On Automatically → While Driving.");
-      }
-    }
-
     function toggleManualRideMode() {
       manualRideActive = !manualRideActive;
       if (window.AndroidBridge && typeof window.AndroidBridge.setRideMode === "function") {
@@ -980,13 +1566,6 @@
       const sub = document.getElementById("rideStatusSub");
       const btn = document.getElementById("rideToggleBtn");
 
-      let dndHint = "Switches phone to Silent/DND when Access 125 connects";
-      if (window.AndroidBridge && typeof window.AndroidBridge.isDndAccessGranted === "function") {
-        if (!window.AndroidBridge.isDndAccessGranted()) {
-          dndHint = "Tap Setup → Enable Auto-DND & Silent Profile Access";
-        }
-      }
-
       if (isActive) {
         banner.classList.add("active");
         title.textContent = "Ride Mode DND · SILENT ON";
@@ -995,64 +1574,83 @@
       } else {
         banner.classList.remove("active");
         title.textContent = "Ride Mode DND · Standby";
-        sub.textContent = dndHint;
+        sub.textContent = "Silences calls on vehicle Bluetooth or motion";
         btn.textContent = "Test Ride";
       }
     }
 
+    function refreshSmsSpendDashboard() {
+      if (!window.AndroidBridge || typeof window.AndroidBridge.scanDebitedSmsJson !== "function") {
+        return;
+      }
+      try {
+        const raw = window.AndroidBridge.scanDebitedSmsJson(30);
+        const data = JSON.parse(raw);
+        if (!data.permissionGranted) return;
+
+        const total = Number(data.totalDebited) || 0;
+        const commute = Number(data.commuteTotal) || 0;
+        const food = Number(data.foodTotal) || 0;
+        const bills = Number(data.billsTotal) || 0;
+        const other = Number(data.otherTotal) || 0;
+        const txs = data.transactions || [];
+
+        latestSpendSummary = { totalDebited: total, commuteTotal: commute, foodTotal: food, billsTotal: bills, otherTotal: other };
+
+        document.getElementById("spendTotalAmt").textContent = `₹${Math.round(total).toLocaleString("en-IN")}`;
+        document.getElementById("spendTxCount").textContent = `${txs.length} Debits`;
+        document.getElementById("valCommute").textContent = `₹${Math.round(commute).toLocaleString("en-IN")}`;
+        document.getElementById("valFood").textContent = `₹${Math.round(food).toLocaleString("en-IN")}`;
+        document.getElementById("valBills").textContent = `₹${Math.round(bills).toLocaleString("en-IN")}`;
+        document.getElementById("valOther").textContent = `₹${Math.round(other).toLocaleString("en-IN")}`;
+
+        const denom = total > 0 ? total : 1;
+        document.getElementById("barCommute").style.width = `${(commute / denom) * 100}%`;
+        document.getElementById("barFood").style.width = `${(food / denom) * 100}%`;
+        document.getElementById("barBills").style.width = `${(bills / denom) * 100}%`;
+        document.getElementById("barOther").style.width = `${(other / denom) * 100}%`;
+
+        const listEl = document.getElementById("txList");
+        listEl.innerHTML = "";
+        if (txs.length === 0) {
+          listEl.innerHTML = `<div class="tx-item"><span class="tx-meta">No debited bank/UPI SMS found in last 30 days.</span></div>`;
+          return;
+        }
+        txs.slice(0, 12).forEach(tx => {
+          const d = new Date(tx.dateMs).toLocaleDateString([], { month: "short", day: "numeric" });
+          const row = document.createElement("div");
+          row.className = "tx-item";
+          row.innerHTML = `
+            <div>
+              <div class="tx-name">${tx.merchant}</div>
+              <div class="tx-meta">${tx.category} · ${d}</div>
+            </div>
+            <div class="tx-amt">-₹${Math.round(tx.amount).toLocaleString("en-IN")}</div>
+          `;
+          listEl.appendChild(row);
+        });
+      } catch (_e) {}
+    }
+
     async function fetchFirebaseCrowdState() {
       try {
-        const res = await fetch(`${firebaseUrl}/chennai_one/${todayIso()}/floors.json`);
+        const res = await fetch(`${firebaseUrl}/campus_parking/${todayIso()}/floors.json`);
         const floors = (await res.json()) || {};
         const order = ["L4", "L3", "L2", "L1", "G"];
-        let bestFloor = null;
+        let bestFloor = "L2";
+        let minCount = Infinity;
 
         order.forEach(f => {
-          const info = floors[f] || { count: 0, status: "OPEN" };
+          const info = floors[f] || { count: 0 };
           const count = Number(info.count) || 0;
-          const status = info.status || "OPEN";
-          const el = document.getElementById(`cap-${f}`);
-          if (!el) return;
-
-          if (status === "FULL" || count >= 180) {
-            el.textContent = `FULL (${count})`;
-            el.className = "floor-tag cap-full";
-          } else if (count >= 120) {
-            el.textContent = `${count} · Tight`;
-            el.className = "floor-tag cap-tight";
-            if (!bestFloor) bestFloor = f;
-          } else {
-            el.textContent = `${count} Parked`;
-            el.className = "floor-tag cap-open";
+          floorCounts[f] = count;
+          if (count < minCount) {
+            minCount = count;
             bestFloor = f;
           }
         });
-
-        const badge = document.getElementById("parkingAdviceBadge");
-        badge.textContent = bestFloor ? `Live · Go ${bestFloor}` : "All Floors Full";
-        badge.style.color = bestFloor ? "var(--tint-green)" : "var(--tint-red)";
-      } catch (_e) {
-        document.getElementById("parkingAdviceBadge").textContent = "Live Firebase";
-      }
-    }
-
-    function renderLocalParkCard(walkMeters = 0, walkDir = "North") {
-      const floorNames = { G: "Ground", L1: "Floor 1", L2: "Floor 2", L3: "Floor 3", L4: "Floor 4" };
-      document.getElementById("parkedFloorDisplay").textContent = floorNames[parkedFloor] || parkedFloor;
-
-      document.querySelectorAll(".floor-slab").forEach(el => {
-        el.classList.toggle("parked-here", el.dataset.floor === parkedFloor);
-      });
-
-      if (walkMeters > 0) {
-        document.getElementById("parkedVectorText").textContent =
-          `Parked on ${floorNames[parkedFloor]}. Walk ${walkMeters}m ${walkDir} from Lift Lobby.`;
-        document.getElementById("parkedWalkDist").textContent = `${walkMeters}m ${walkDir}`;
-      } else {
-        document.getElementById("parkedVectorText").textContent =
-          `Auto-detects floor via Gyroscope & Access 125 BLE off`;
-        document.getElementById("parkedWalkDist").textContent = `Hands-Free Active`;
-      }
+        document.getElementById("hudBestFloor").textContent = `OPTIMAL: ${bestFloor}`;
+      } catch (_e) {}
     }
 
     function pollNativeSensorState() {
@@ -1061,12 +1659,34 @@
           const data = JSON.parse(window.AndroidBridge.getAutoParkingJson());
           if (data.floor && data.ts > 0) {
             parkedFloor = data.floor;
-            renderLocalParkCard(data.walkMeters || 0, data.walkDir || "North");
+            parkVecX = Number(data.vecX) || 12.0;
+            parkVecY = Number(data.vecY) || 18.0;
+            const zMeters = { G: "0.0m", L1: "+3.5m", L2: "+7.0m", L3: "+10.5m", L4: "+14.0m" }[parkedFloor] || "+3.5m";
+            document.getElementById("hudFloorTag").textContent = `Z-LEVEL: ${parkedFloor}`;
+            document.getElementById("hudVectorTag").textContent = `VECTOR: ${parkVecX >= 0 ? "+" : ""}${parkVecX.toFixed(0)}m X · ${parkVecY >= 0 ? "+" : ""}${parkVecY.toFixed(0)}m Y`;
+            document.getElementById("coordX").textContent = `${parkVecX >= 0 ? "+" : ""}${parkVecX.toFixed(1)} m`;
+            document.getElementById("coordY").textContent = `${parkVecY >= 0 ? "+" : ""}${parkVecY.toFixed(1)} m`;
+            document.getElementById("coordZ").textContent = `${parkedFloor} (${zMeters})`;
           }
           if (!manualRideActive) {
             renderRideBanner(Boolean(data.rideMode));
           }
+          const banner = document.getElementById("alarmBanner");
+          if (data.alarmRinging) {
+            banner.classList.add("ringing");
+          }
         } catch (_e) {}
+      }
+    }
+
+    function dismissActiveAlarm() {
+      document.getElementById("alarmBanner").classList.remove("ringing");
+      if (webOscillator) {
+        try { webOscillator.stop(); } catch (_e) {}
+        webOscillator = null;
+      }
+      if (window.AndroidBridge && typeof window.AndroidBridge.stopActiveAlarm === "function") {
+        window.AndroidBridge.stopActiveAlarm();
       }
     }
 
@@ -1089,7 +1709,7 @@
       if (coordMatch) {
         return { lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), label: defaultLabel };
       }
-      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&lat=12.95&lon=80.23&limit=1`);
+      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=1`);
       const data = await res.json();
       if (data.features && data.features.length > 0) {
         const [lng, lat] = data.features[0].geometry.coordinates;
@@ -1134,7 +1754,7 @@
         officeData = {
           lat: +pos.coords.latitude.toFixed(6),
           lng: +pos.coords.longitude.toFixed(6),
-          label: "My Desk · Chennai One"
+          label: "My Desk"
         };
         localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
         syncNativeGeofence();
@@ -1157,11 +1777,11 @@
       });
     }
 
-    function findNearestMetroToHome() {
+    function findNearestTransitToHome() {
       if (!homeData) return null;
       let nearest = null;
       let minMeters = Infinity;
-      CHENNAI_METRO_STATIONS.forEach(st => {
+      RAPID_TRANSIT_STATIONS.forEach(st => {
         const d = getDistanceMeters(homeData.lat, homeData.lng, st.lat, st.lng);
         if (d < minMeters) {
           minMeters = d;
@@ -1175,11 +1795,11 @@
       const destOffice = `${officeData.lat},${officeData.lng}`;
       const originHome = homeData ? `&origin=${homeData.lat},${homeData.lng}` : "";
       document.getElementById("gmapsToOffice").href =
-        `https://www.google.com/maps/dir/?api=1${originHome}&destination=${destOffice}&travelmode=two-wheeler`;
+        `https://www.google.com/maps/dir/?api=1${originHome}&destination=${destOffice}&travelmode=driving`;
 
       const destHome = homeData ? `${homeData.lat},${homeData.lng}` : "";
       document.getElementById("gmapsToHome").href = destHome
-        ? `https://www.google.com/maps/dir/?api=1&origin=${destOffice}&destination=${destHome}&travelmode=two-wheeler`
+        ? `https://www.google.com/maps/dir/?api=1&origin=${destOffice}&destination=${destHome}&travelmode=driving`
         : `https://www.google.com/maps/search/?api=1&query=Home`;
     }
 
@@ -1197,7 +1817,7 @@
             const best = rData.routes[0];
             state.distanceKm = +(best.distance / 1000).toFixed(1);
             state.baseMins = Math.max(10, Math.round(best.duration / 60));
-            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "200 Feet Radial Rd";
+            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "Primary Arterial Corridor";
           }
         } catch (e) {}
       }
@@ -1246,37 +1866,36 @@
 
       document.getElementById("wxTemp").textContent = `${state.tempC}°C · ${state.rainProb}% Rain`;
       document.getElementById("wxDesc").textContent = state.isRaining
-        ? "Wet road conditions detected. Added +20% transit buffer; covered cab/auto advised."
-        : "Dry conditions along corridor. Standard road grip for Access 125.";
+        ? "Wet road conditions detected. Added +20% transit buffer; covered transit advised."
+        : "Dry conditions along corridor. Standard road grip and clear visibility.";
 
       const tTitle = document.getElementById("transitTitle");
       const tReason = document.getElementById("transitReason");
 
-      // Fix #1: Real Metro Line Connectivity Gate (<= 2.5 km from home to nearest CMRL station)
-      const nearestMetro = findNearestMetroToHome();
+      const nearestMetro = findNearestTransitToHome();
       const hasMetroAccess = nearestMetro && nearestMetro.distKm <= 2.5;
 
       if (!homeData) {
-        tTitle.textContent = "Access 125 Ride Connect";
-        tReason.textContent = "Set your Home Pin in Setup to verify Chennai Metro Blue/Green/Yellow line coverage.";
+        tTitle.textContent = "Personal Vehicle / Two-Wheeler";
+        tReason.textContent = "Set your Home Pin in Setup to check rapid transit / Metro coverage.";
       } else if (!hasMetroAccess) {
         if (state.isRaining) {
-          tTitle.textContent = "Covered Cab / Auto (No Metro at Home)";
-          tReason.textContent = `Nearest Metro (${nearestMetro.name} · ${nearestMetro.line}) is ${nearestMetro.distKm} km from home—too far for walk/feeder in rain (${state.rainProb}%).`;
+          tTitle.textContent = "Covered Cab / Car (No Metro Nearby)";
+          tReason.textContent = `Nearest rapid transit (${nearestMetro.name}) is ${nearestMetro.distKm} km from home—too far for walk/feeder in rain (${state.rainProb}%).`;
         } else {
-          tTitle.textContent = "Access 125 Direct Route (No Metro at Home)";
-          tReason.textContent = `Nearest station (${nearestMetro.name} · ${nearestMetro.line} Line) is ${nearestMetro.distKm} km away. Direct Access 125 ride is fastest (${state.liveMins}m).`;
+          tTitle.textContent = "Personal Vehicle Direct Route";
+          tReason.textContent = `Nearest station (${nearestMetro.name}) is ${nearestMetro.distKm} km away. Direct road commute is fastest (${state.liveMins}m).`;
         }
       } else {
         if (state.isRaining) {
-          tTitle.textContent = `Chennai Metro (${nearestMetro.line} Line)`;
-          tReason.textContent = `Rain risk (${state.rainProb}%). ${nearestMetro.name} Metro is ${nearestMetro.distKm} km from home—use Metro + last-mile feeder.`;
+          tTitle.textContent = `Rapid Transit / Metro (${nearestMetro.line} Line)`;
+          tReason.textContent = `Rain risk (${state.rainProb}%). ${nearestMetro.name} station is ${nearestMetro.distKm} km from home—use rail + feeder.`;
         } else if (state.trafficLevel === "Heavy") {
-          tTitle.textContent = `Access 125 or ${nearestMetro.name} Metro`;
-          tReason.textContent = `Peak congestion (+${state.delayMins}m). ${nearestMetro.name} (${nearestMetro.line} Line, ${nearestMetro.distKm} km away) bypasses road traffic.`;
+          tTitle.textContent = `Two-Wheeler or ${nearestMetro.name} Metro`;
+          tReason.textContent = `Peak congestion (+${state.delayMins}m). ${nearestMetro.name} (${nearestMetro.distKm} km away) bypasses road gridlock.`;
         } else {
-          tTitle.textContent = `Access 125 Ride Connect`;
-          tReason.textContent = `Smooth ${state.liveMins}m ride (${nearestMetro.name} Metro ${nearestMetro.distKm} km away available as backup).`;
+          tTitle.textContent = "Personal Vehicle / Two-Wheeler";
+          tReason.textContent = `Smooth ${state.liveMins}m commute (${nearestMetro.name} station ${nearestMetro.distKm} km away available as backup).`;
         }
       }
     }
@@ -1284,20 +1903,18 @@
     function speakBriefing() {
       const leave = document.getElementById("leaveHome").textContent;
       const mode = document.getElementById("transitTitle").textContent;
-      const text = `LOKIFFICE briefing. Scooter parked on ${parkedFloor}. Leave home by ${leave}, estimated travel ${state.liveMins} minutes via ${mode}.`;
+      const isCheckedIn = Boolean(localStorage.getItem(todayKey()));
+      const text = isCheckedIn
+        ? `LOKIFFICE briefing. You are checked in at the office. Vehicle parked on ${parkedFloor}.`
+        : `LOKIFFICE briefing. Leave home by ${leave}, estimated travel ${state.liveMins} minutes via ${mode}.`;
 
       if (window.AndroidBridge && typeof window.AndroidBridge.speak === "function") {
         window.AndroidBridge.speak(text);
         return;
       }
-      if (window.AndroidTTS && typeof window.AndroidTTS.speak === "function") {
-        window.AndroidTTS.speak(text);
-        return;
-      }
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
-        window.speechSynthesis.speak(msg);
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
       }
     }
 
@@ -1338,7 +1955,6 @@
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    // Fix #3: Schedule Native Exact Alarm + Web Notification on EVERY Check-In / Adjustment
     function startShift(ts) {
       if (!localStorage.getItem(todayKey())) {
         localStorage.setItem(todayKey(), String(ts));
@@ -1349,6 +1965,7 @@
         if (window.AndroidBridge && typeof window.AndroidBridge.scheduleShiftEndAlarm === "function") {
           window.AndroidBridge.scheduleShiftEndAlarm(ts + SHIFT_MS());
         }
+        updateContextWorkspace();
         renderStreak();
       }
     }
@@ -1364,12 +1981,14 @@
       if (window.AndroidBridge && typeof window.AndroidBridge.scheduleShiftEndAlarm === "function") {
         window.AndroidBridge.scheduleShiftEndAlarm(updated + SHIFT_MS());
       }
+      updateContextWorkspace();
       renderStreak();
     }
 
     function resetShift() {
       localStorage.removeItem(todayKey());
       shiftAlarmFiredToday = false;
+      dismissActiveAlarm();
       if (window.AndroidBridge && typeof window.AndroidBridge.cancelShiftEndAlarm === "function") {
         window.AndroidBridge.cancelShiftEndAlarm();
       }
@@ -1378,42 +1997,27 @@
       document.getElementById("shiftInfo").textContent = "Awaiting arrival at office";
       document.getElementById("ringProgress").style.strokeDashoffset = CIRCUMFERENCE;
       document.getElementById("pctLabel").textContent = "0%";
+      updateContextWorkspace();
       renderStreak();
     }
 
     function triggerShiftCompleteChime() {
       if (shiftAlarmFiredToday) return;
       shiftAlarmFiredToday = true;
+      document.getElementById("alarmBanner").classList.add("ringing");
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
         osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 1.2);
+        webOscillator = osc;
+        setTimeout(() => { try { osc.stop(); } catch (_e) {} }, 15000);
       } catch (_e) {}
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("LOKIFFICE: Shift Complete", {
-          body: `Your ${shiftHours}-hour office shift is complete!`
-        });
-      }
-      speakBriefingComplete();
-    }
-
-    function speakBriefingComplete() {
-      const text = `LOKIFFICE alert. Your ${shiftHours} hour office shift is complete. Scooter is parked on ${parkedFloor}.`;
-      if (window.AndroidBridge && typeof window.AndroidBridge.speak === "function") {
-        window.AndroidBridge.speak(text);
-        return;
-      }
-      if ("speechSynthesis" in window) {
-        const msg = new SpeechSynthesisUtterance(text);
-        window.speechSynthesis.speak(msg);
-      }
     }
 
     function exportCompliance() {
@@ -1509,14 +2113,22 @@
     }, 1000);
 
     setInterval(fetchFirebaseCrowdState, 20000);
+    window.addEventListener("focus", updateDndSetupButtonState);
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
-    renderLocalParkCard();
+    // Auto-restore cached SmolLM2-360M if user already downloaded it in a prior session
+    if (localStorage.getItem("lokiffice_ai_cached") === "1") {
+      initOfflineWebGPUModel();
+    }
+
+    updateContextWorkspace();
+    renderSciFi3DParking();
     renderRideBanner(false);
     fetchFirebaseCrowdState();
+    refreshSmsSpendDashboard();
     renderStreak();
     refreshLiveIntel();
     requestGPS();

@@ -3,18 +3,24 @@ package com.lokiffce.app
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
+import android.bluetooth.BluetoothClass
 import android.bluetooth.BluetoothDevice
 import android.content.*
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.AudioAttributes
 import android.media.AudioManager
+import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.webkit.*
@@ -22,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -41,7 +49,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
     private var ttsReady = false
     private val liveAppUrl = "https://logesh-1023.github.io/LOKIFFICE/"
 
-    // IMU Ramp Floor & Walking Vector State (iQOO Neo 7 Accelerometer + Gyroscope + E-Compass)
+    // IMU Ramp Floor & Walking Vector State (Accelerometer + Gyroscope + E-Compass)
     private var lastGyroTs = 0L
     private var cumulativeYawDeg = 0.0
     private var detectedFloor = "L1"
@@ -100,18 +108,25 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
             }
 
             @JavascriptInterface
+            fun stopActiveAlarm() {
+                AlarmController.stopRingtone(this@MainActivity)
+            }
+
+            @JavascriptInterface
+            fun isAlarmRinging(): Boolean {
+                return AlarmController.isRinging
+            }
+
+            @JavascriptInterface
             fun setRideMode(active: Boolean) {
                 applyRideModeProfile(this@MainActivity, active)
             }
 
             @JavascriptInterface
-            fun requestDndPermission() {
-                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                if (!nm.isNotificationPolicyAccessGranted) {
-                    val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                }
+            fun openDndPolicySettings() {
+                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
 
             @JavascriptInterface
@@ -126,17 +141,34 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
                 val floor = prefs.getString("park_floor", "L1") ?: "L1"
                 val dist = prefs.getInt("park_walk_m", 0)
                 val dir = prefs.getString("park_walk_dir", "North") ?: "North"
+                val vecX = prefs.getFloat("park_vec_x", 12f)
+                val vecY = prefs.getFloat("park_vec_y", 18f)
                 val ts = prefs.getLong("park_ts", 0L)
                 val rideActive = prefs.getBoolean("ride_mode_active", false)
                 val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val dndGranted = nm.isNotificationPolicyAccessGranted
-                return "{\"floor\":\"$floor\",\"walkMeters\":$dist,\"walkDir\":\"$dir\",\"ts\":$ts,\"rideMode\":$rideActive,\"dndGranted\":$dndGranted}"
+                return JSONObject().apply {
+                    put("floor", floor)
+                    put("walkMeters", dist)
+                    put("walkDir", dir)
+                    put("vecX", vecX.toDouble())
+                    put("vecY", vecY.toDouble())
+                    put("ts", ts)
+                    put("rideMode", rideActive)
+                    put("dndGranted", dndGranted)
+                    put("alarmRinging", AlarmController.isRinging)
+                }.toString()
             }
 
             @JavascriptInterface
             fun setFirebaseUrl(url: String) {
                 getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
                     .edit().putString("firebase_url", url.trimEnd('/')).apply()
+            }
+
+            @JavascriptInterface
+            fun scanDebitedSmsJson(daysBack: Int): String {
+                return SmsSpendAnalyzer.scanInbox(this@MainActivity, daysBack)
             }
         }, "AndroidBridge")
 
@@ -243,6 +275,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
                         prefs.edit()
                             .putInt("park_walk_m", totalDist)
                             .putString("park_walk_dir", dirLabel)
+                            .putFloat("park_vec_x", (-walkVectorX).toFloat())
+                            .putFloat("park_vec_y", (-walkVectorY).toFloat())
                             .apply()
                     }
                 } else {
@@ -288,7 +322,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
     private fun requestPermissionsAndRegisterGeofence() {
         val perms = mutableListOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             perms.add(Manifest.permission.POST_NOTIFICATIONS)
@@ -299,9 +335,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             perms.add(Manifest.permission.ACTIVITY_RECOGNITION)
         }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, perms.toTypedArray(), 100)
+        val missing = perms.filter {
+            ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (missing.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missing.toTypedArray(), 100)
         } else {
             registerOfficeGeofence()
             registerActivityTransitions()
@@ -310,7 +348,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
 
     override fun onRequestPermissionsResult(rc: Int, p: Array<out String>, res: IntArray) {
         super.onRequestPermissionsResult(rc, p, res)
-        if (rc == 100 && res.isNotEmpty() && res[0] == PackageManager.PERMISSION_GRANTED) {
+        if (rc == 100) {
             registerOfficeGeofence()
             registerActivityTransitions()
         }
@@ -324,7 +362,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
         val radius = prefs.getFloat("office_radius", 400f)
 
         val geofence = Geofence.Builder()
-            .setRequestId("COMCAST_OFFICE")
+            .setRequestId("OFFICE_CAMPUS")
             .setCircularRegion(lat, lng, radius)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL)
@@ -391,11 +429,172 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEve
 }
 
 /**
- * Dual-Layer Ride Mode Profile Enforcer for Funtouch OS / iQOO Neo 7:
- * 1. Sets NotificationManager DND Interruption Filter (PRIORITY / NONE -> ALL)
- * 2. Forces AudioManager Ringer Mode (RINGER_MODE_SILENT / VIBRATE -> RINGER_MODE_NORMAL)
- *    so the phone profile visually and audibly changes even on OEM skins that suppress DND icons.
+ * Fix #1: Strict Debit-Only SMS Spend Analyzer
+ * Filters OUT all credit/salary/refund/cashback messages and parses ONLY debited amounts.
  */
+object SmsSpendAnalyzer {
+    private val DEBIT_KEYWORDS = listOf(
+        "debited", "spent", "paid", "sent", "withdrawn", "purchase", "txn of", "charged", "auto-debit", "upi/"
+    )
+    private val CREDIT_EXCLUSIONS = listOf(
+        "credited", "received", "deposited", "refund", "cashback", "reversed", "salary", "added to", "cr to"
+    )
+    private val AMOUNT_REGEX = Regex(
+        """(?:rs\.?|inr|₹|\$|€|£)\s*([0-9,]+(?:\.[0-9]{1,2})?)""",
+        RegexOption.IGNORE_CASE
+    )
+
+    fun scanInbox(context: Context, daysBack: Int): String {
+        val result = JSONObject()
+        val txArray = JSONArray()
+        var totalDebited = 0.0
+        var commuteTotal = 0.0
+        var foodTotal = 0.0
+        var billsTotal = 0.0
+        var otherTotal = 0.0
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_SMS)
+            != PackageManager.PERMISSION_GRANTED) {
+            result.put("permissionGranted", false)
+            result.put("totalDebited", 0.0)
+            result.put("transactions", txArray)
+            return result.toString()
+        }
+
+        val cutoff = System.currentTimeMillis() - daysBack * 24L * 60L * 60L * 1000L
+        var cursor: Cursor? = null
+        try {
+            cursor = context.contentResolver.query(
+                Uri.parse("content://sms/inbox"),
+                arrayOf("address", "body", "date"),
+                "date >= ?",
+                arrayOf(cutoff.toString()),
+                "date DESC"
+            )
+            while (cursor != null && cursor.moveToNext()) {
+                val sender = cursor.getString(0) ?: ""
+                val body = cursor.getString(1) ?: ""
+                val dateMs = cursor.getLong(2)
+                val lower = body.lowercase(Locale.US)
+
+                // Strict Debit-Only Gate: skip OTPs, promos, and any credited/refunded messages
+                if (lower.contains("otp") || lower.contains("verification code")) continue
+                if (CREDIT_EXCLUSIONS.any { lower.contains(it) }) continue
+                if (!DEBIT_KEYWORDS.any { lower.contains(it) }) continue
+
+                val match = AMOUNT_REGEX.find(body) ?: continue
+                val amtStr = match.groupValues[1].replace(",", "")
+                val amt = amtStr.toDoubleOrNull() ?: continue
+                if (amt <= 0.0 || amt > 500000.0) continue
+
+                val category = classifyMerchant(lower)
+                val merchant = extractMerchantName(body, sender)
+
+                totalDebited += amt
+                when (category) {
+                    "Commute & Fuel" -> commuteTotal += amt
+                    "Office Food & Cafe" -> foodTotal += amt
+                    "Bills & Essentials" -> billsTotal += amt
+                    else -> otherTotal += amt
+                }
+
+                if (txArray.length() < 40) {
+                    txArray.put(JSONObject().apply {
+                        put("merchant", merchant)
+                        put("category", category)
+                        put("amount", amt)
+                        put("dateMs", dateMs)
+                    })
+                }
+            }
+        } catch (_: Exception) {
+        } finally {
+            cursor?.close()
+        }
+
+        result.put("permissionGranted", true)
+        result.put("totalDebited", totalDebited)
+        result.put("commuteTotal", commuteTotal)
+        result.put("foodTotal", foodTotal)
+        result.put("billsTotal", billsTotal)
+        result.put("otherTotal", otherTotal)
+        result.put("transactions", txArray)
+        return result.toString()
+    }
+
+    private fun classifyMerchant(lower: String): String {
+        val commuteKeys = listOf("rapido", "uber", "ola", "metro", "cmrl", "irctc", "petrol", "fuel", "shell", "hpcl", "bpcl", "indian oil", "iocl", "fastag", "parking", "cab", "auto")
+        val foodKeys = listOf("hungerbox", "zomato", "swiggy", "cafe", "coffee", "tea", "canteen", "restaurant", "bakery", "biryani", "food", "starbucks", "mcdonald", "kfc", "domino")
+        val billKeys = listOf("nobroker", "zepto", "bigbasket", "blinkit", "instamart", "airtel", "jio", "electricity", "eb ", "broadband", "amazon", "flipkart")
+
+        return when {
+            commuteKeys.any { lower.contains(it) } -> "Commute & Fuel"
+            foodKeys.any { lower.contains(it) } -> "Office Food & Cafe"
+            billKeys.any { lower.contains(it) } -> "Bills & Essentials"
+            else -> "Other Debits"
+        }
+    }
+
+    private fun extractMerchantName(body: String, sender: String): String {
+        val patterns = listOf(
+            Regex("""(?:to|at|towards|info:|vpa)\s+([A-Za-z0-9 ._-]{3,26})""", RegexOption.IGNORE_CASE)
+        )
+        for (p in patterns) {
+            val m = p.find(body)
+            if (m != null) {
+                val cleaned = m.groupValues[1].trim().replace(Regex("""\s+"""), " ")
+                if (cleaned.length >= 3 && !cleaned.lowercase(Locale.US).startsWith("rs")) {
+                    return cleaned
+                }
+            }
+        }
+        return sender.ifEmpty { "UPI / Card Debit" }
+    }
+}
+
+/**
+ * Fix #5: Dismissible Alarm Controller with Stop Action & 25-Second Auto-Cutoff
+ */
+object AlarmController {
+    private var activeRingtone: Ringtone? = null
+    @Volatile var isRinging: Boolean = false
+    private val handler = Handler(Looper.getMainLooper())
+
+    fun startRingtone(context: Context) {
+        stopRingtone(context)
+        try {
+            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val rt = RingtoneManager.getRingtone(context.applicationContext, uri)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                rt.isLooping = true
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                rt.audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            }
+            rt.play()
+            activeRingtone = rt
+            isRinging = true
+
+            // Safety auto-cutoff after 25 seconds so it never rings endlessly
+            handler.postDelayed({ stopRingtone(context) }, 25000L)
+        } catch (_: Exception) {}
+    }
+
+    fun stopRingtone(context: Context) {
+        try {
+            activeRingtone?.stop()
+        } catch (_: Exception) {}
+        activeRingtone = null
+        isRinging = false
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.cancel(2)
+    }
+}
+
 fun applyRideModeProfile(context: Context, active: Boolean) {
     val prefs = context.getSharedPreferences("lokiffce", Context.MODE_PRIVATE)
     val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -425,7 +624,9 @@ fun applyRideModeProfile(context: Context, active: Boolean) {
 
 fun scheduleExactShiftAlarm(context: Context, outTimeMillis: Long) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val alarmIntent = Intent(context, AlarmReceiver::class.java)
+    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+        action = "com.lokiffce.app.ACTION_SHIFT_ALARM"
+    }
     val pi = PendingIntent.getBroadcast(
         context, 2, alarmIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -443,8 +644,11 @@ fun scheduleExactShiftAlarm(context: Context, outTimeMillis: Long) {
 }
 
 fun cancelExactShiftAlarm(context: Context) {
+    AlarmController.stopRingtone(context)
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val alarmIntent = Intent(context, AlarmReceiver::class.java)
+    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+        action = "com.lokiffce.app.ACTION_SHIFT_ALARM"
+    }
     val pi = PendingIntent.getBroadcast(
         context, 2, alarmIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -467,8 +671,17 @@ class RideAndParkReceiver : BroadcastReceiver() {
                     @Suppress("DEPRECATION")
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                 }
+                // Fix #4: Universal Vehicle / Audio Bluetooth Detection (not restricted to any single brand)
+                val majorClass = device?.bluetoothClass?.majorDeviceClass
                 val name = device?.name?.uppercase(Locale.US) ?: ""
-                if (name.contains("SUZUKI") || name.contains("ACCESS") || name.contains("RIDE") || name.isEmpty()) {
+                val isVehicleOrHeadset = majorClass == BluetoothClass.Device.Major.AUDIO_VIDEO ||
+                    name.contains("CAR") || name.contains("BIKE") || name.contains("RIDE") ||
+                    name.contains("BT") || name.contains("SUZUKI") || name.contains("HONDA") ||
+                    name.contains("YAMAHA") || name.contains("TVS") || name.contains("HERO") ||
+                    name.contains("BMW") || name.contains("TOYOTA") || name.contains("HYUNDAI") ||
+                    name.isEmpty()
+
+                if (isVehicleOrHeadset) {
                     val prevFloor = prefs.getString("park_floor", "") ?: ""
                     applyRideModeProfile(context, true)
                     if (prevFloor.isNotEmpty()) {
@@ -477,7 +690,7 @@ class RideAndParkReceiver : BroadcastReceiver() {
                     sendNotification(
                         context, 10,
                         "LOKIFFICE Ride Mode ON",
-                        "Access 125 connected. Phone switched to Silent/DND profile."
+                        "Vehicle Bluetooth connected. Phone switched to Silent/DND profile."
                     )
                 }
             }
@@ -489,8 +702,8 @@ class RideAndParkReceiver : BroadcastReceiver() {
                     pushCrowdDelta(fbBase, floor, 1)
                     sendNotification(
                         context, 11,
-                        "Access 125 Parked · Floor $floor",
-                        "Ignition off detected. Normal ringtone restored & floor synced."
+                        "Vehicle Parked · Floor $floor",
+                        "Ignition off detected. Normal ringtone restored & 3D spatial pin locked."
                     )
                 }
             }
@@ -512,7 +725,7 @@ class RideAndParkReceiver : BroadcastReceiver() {
         Thread {
             try {
                 val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-                val url = URL("$fbBase/chennai_one/$today/floors/$floor.json")
+                val url = URL("$fbBase/campus_parking/$today/floors/$floor.json")
                 val getConn = url.openConnection() as HttpURLConnection
                 getConn.requestMethod = "GET"
                 val raw = getConn.inputStream.bufferedReader().readText()
@@ -549,7 +762,7 @@ class GeofenceReceiver : BroadcastReceiver() {
             val fmt = SimpleDateFormat("hh:mm a", Locale.US)
             sendNotification(
                 context, 1,
-                "LOKIFFICE: Checked In at Comcast",
+                "LOKIFFICE: Checked In at Office",
                 "Logged IN at ${fmt.format(Date(now))}. Leave at ${fmt.format(Date(outTime))}."
             )
             scheduleExactShiftAlarm(context, outTime)
@@ -559,16 +772,40 @@ class GeofenceReceiver : BroadcastReceiver() {
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        sendNotification(
-            context, 2,
-            "LOKIFFICE: Shift Complete",
-            "Your mandatory office shift hours at Comcast are complete!"
+        if (intent.action == "com.lokiffce.app.ACTION_DISMISS_ALARM") {
+            AlarmController.stopRingtone(context)
+            return
+        }
+
+        AlarmController.startRingtone(context)
+
+        val dismissIntent = Intent(context, AlarmReceiver::class.java).apply {
+            action = "com.lokiffce.app.ACTION_DISMISS_ALARM"
+        }
+        val dismissPi = PendingIntent.getBroadcast(
+            context, 99, dismissIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        try {
-            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            val ringtone = RingtoneManager.getRingtone(context, uri)
-            ringtone.play()
-        } catch (_: Exception) {}
+
+        val openIntent = Intent(context, MainActivity::class.java)
+        val openPi = PendingIntent.getActivity(
+            context, 98, openIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notif = NotificationCompat.Builder(context, "LOKIFFICE_CH")
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle("LOKIFFICE: Shift Complete")
+            .setContentText("Your mandatory office shift is complete. Tap OK to stop alarm.")
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setContentIntent(openPi)
+            .setDeleteIntent(dismissPi)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "OK · Stop Alarm", dismissPi)
+            .setAutoCancel(true)
+            .build()
+        nm.notify(2, notif)
     }
 }
 

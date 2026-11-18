@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lokiffice-v5-2';
+const CACHE_NAME = 'lokiffice-v6-0';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', (e) => {
