@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>LOKIFFICE</title>
-  <meta name="theme-color" content="#000000" />
+  <title>LOKIFFICE · J.A.R.V.I.S. OS</title>
+  <meta name="theme-color" content="#05070B" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LOKIFFICE" />
@@ -13,585 +13,223 @@
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-canvas: #000000;
-      --bg-grouped: #1C1C1E;
-      --bg-elevated: #2C2C2E;
-      --bg-tertiary: #3A3A3C;
-      --label-primary: #FFFFFF;
-      --label-soft: #EBEBF5;
-      --label-secondary: rgba(235, 235, 245, 0.6);
-      --label-tertiary: rgba(235, 235, 245, 0.35);
-      --separator: rgba(84, 84, 88, 0.45);
-      --tint-blue: #0A84FF;
-      --tint-cyan: #64D2FF;
-      --tint-green: #30D158;
-      --tint-amber: #FF9F0A;
-      --tint-red: #FF453A;
-      --tint-purple: #BF5AF2;
-      --radius-card: 20px;
+      --bg: #05070B;
+      --surface: #0E131D;
+      --surface-2: #161D2B;
+      --surface-3: #1F293B;
+      --border: rgba(148, 184, 255, 0.14);
+      --border-strong: rgba(56, 189, 248, 0.38);
+      --text: #F8FAFC;
+      --text-soft: #CBD5E1;
+      --text-muted: #7C8BA1;
+      --cyan: #38BDF8;
+      --blue: #3B82F6;
+      --emerald: #34D399;
+      --amber: #FBBF24;
+      --rose: #FB7185;
+      --violet: #A78BFA;
+      --radius: 22px;
     }
 
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background-color: var(--bg-canvas);
-      color: var(--label-soft);
+      background: radial-gradient(circle at 50% -10%, #0D1B2E 0%, #05070B 52%);
+      color: var(--text);
       display: flex;
       justify-content: center;
-      padding: max(16px, env(safe-area-inset-top)) 16px max(88px, env(safe-area-inset-bottom));
+      padding: max(14px, env(safe-area-inset-top)) 14px max(96px, env(safe-area-inset-bottom));
       -webkit-font-smoothing: antialiased;
     }
 
-    .app-shell {
+    .shell {
       width: 100%;
-      max-width: 414px;
+      max-width: 420px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .nav-bar {
+    /* Top Jarvis Header */
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 2px 2px;
+      padding: 4px 2px;
     }
 
-    .nav-title-group { display: flex; flex-direction: column; }
-    .nav-subtitle {
+    .brand-col { display: flex; flex-direction: column; gap: 2px; }
+    .live-greeting {
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--label-secondary);
+      color: var(--cyan);
     }
-
-    .nav-title {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--label-primary);
-      line-height: 1.15;
+    .brand-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .nav-actions { display: flex; align-items: center; gap: 8px; }
-
-    .pill-btn {
-      height: 34px;
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-pill {
+      height: 36px;
       padding: 0 12px;
       border-radius: 999px;
-      background: var(--bg-grouped);
-      border: 0.5px solid var(--separator);
-      color: var(--label-soft);
-      font-size: 13px;
-      font-weight: 500;
+      background: rgba(22, 29, 43, 0.85);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
     }
-    .pill-btn:active { background: var(--bg-elevated); transform: scale(0.97); }
+    .icon-pill:active { transform: scale(0.96); }
 
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tint-green); }
-    .status-dot.away { background: var(--tint-blue); }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+    }
+    .pulse-dot.away { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
 
-    .card {
-      background: var(--bg-grouped);
-      border-radius: var(--radius-card);
-      padding: 16px;
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
+    /* Views (Tab Switching) */
+    .tab-view { display: none; flex-direction: column; gap: 14px; }
+    .tab-view.active { display: flex; }
+
+    /* High-Tech Glass Cards */
+    .glass-card {
+      background: linear-gradient(165deg, rgba(22, 29, 43, 0.88) 0%, rgba(14, 19, 29, 0.94) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      backdrop-filter: blur(14px);
+    }
+    .glass-card.accent {
+      background: linear-gradient(155deg, rgba(14, 34, 58, 0.92) 0%, rgba(14, 19, 29, 0.96) 75%);
+      border-color: var(--border-strong);
     }
 
-    .card-header {
+    .card-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
-    .section-label {
-      font-size: 12px;
-      font-weight: 600;
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--label-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--text-muted);
     }
+    .eyebrow.cyan { color: var(--cyan); }
 
-    .meta-badge {
+    .chip-action {
       font-size: 12px;
       font-weight: 600;
-      color: var(--tint-blue);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      color: var(--cyan);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
       cursor: pointer;
     }
 
+    /* Jarvis Proactive Insight Strip */
+    .jarvis-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(167, 139, 250, 0.12));
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      cursor: pointer;
+    }
+    .jarvis-orb {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #7DD3FC, #0284C7 65%, #312E81);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
+      flex-shrink: 0;
+    }
+    .jarvis-strip-text { font-size: 13px; line-height: 1.4; color: var(--text); flex: 1; }
+    .jarvis-strip-text b { color: var(--cyan); }
+
+    /* Alarm Banner */
     .alarm-banner {
       display: none;
       justify-content: space-between;
       align-items: center;
       padding: 14px 16px;
       border-radius: 18px;
-      background: linear-gradient(135deg, rgba(255, 69, 58, 0.32), rgba(255, 159, 10, 0.24));
-      border: 1px solid var(--tint-red);
-      animation: pulseAlarm 1.2s infinite alternate;
+      background: linear-gradient(135deg, rgba(251, 113, 133, 0.3), rgba(245, 158, 11, 0.22));
+      border: 1px solid var(--rose);
+      animation: alarmPulse 1.1s infinite alternate;
     }
     .alarm-banner.ringing { display: flex; }
-    @keyframes pulseAlarm {
-      from { box-shadow: 0 0 0 rgba(255, 69, 58, 0.2); }
-      to { box-shadow: 0 0 18px rgba(255, 69, 58, 0.65); }
+    @keyframes alarmPulse {
+      from { box-shadow: 0 0 0 rgba(251, 113, 133, 0.2); }
+      to { box-shadow: 0 0 22px rgba(251, 113, 133, 0.65); }
     }
 
-    .ride-banner {
+    /* Drive Shield Status Strip */
+    .shield-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px 14px;
       border-radius: 16px;
-      background: linear-gradient(135deg, rgba(191, 90, 242, 0.16), rgba(10, 132, 255, 0.14));
-      border: 0.5px solid rgba(191, 90, 242, 0.35);
+      background: var(--surface);
+      border: 1px solid var(--border);
     }
+    .shield-bar.active {
+      background: linear-gradient(135deg, rgba(167, 139, 250, 0.24), rgba(56, 189, 248, 0.16));
+      border-color: var(--violet);
+    }
+    .shield-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .shield-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-    .ride-banner.active {
-      background: linear-gradient(135deg, rgba(191, 90, 242, 0.38), rgba(255, 69, 58, 0.28));
-      border-color: var(--tint-purple);
-    }
-
-    .ride-left { display: flex; align-items: center; gap: 10px; }
-    .ride-title { font-size: 14px; font-weight: 700; color: var(--label-primary); }
-    .ride-sub { font-size: 12px; color: var(--label-secondary); margin-top: 1px; }
-
-    /* Offline WebGPU SmolLM2-360M AI Copilot Card */
-    .ai-card {
-      background: linear-gradient(160deg, rgba(10, 132, 255, 0.12) 0%, rgba(191, 90, 242, 0.10) 45%, #1C1C1E 100%);
-      border: 0.5px solid rgba(100, 210, 255, 0.28);
-    }
-
-    .ai-download-box {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .ai-desc {
-      font-size: 13px;
-      color: var(--label-secondary);
-      line-height: 1.4;
-      margin: 0;
-    }
-
-    .ai-progress-wrap {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .ai-progress-wrap.visible { display: flex; }
-
-    .ai-progress-track {
-      width: 100%;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--bg-elevated);
-      overflow: hidden;
-    }
-
-    .ai-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--tint-blue), var(--tint-cyan));
-      transition: width 0.25s ease;
-    }
-
-    .ai-progress-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--tint-cyan);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .ai-workspace {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .ai-workspace.visible { display: flex; }
-
-    .ai-chip-row {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-      scrollbar-width: none;
-    }
-    .ai-chip-row::-webkit-scrollbar { display: none; }
-
-    .ai-chip {
-      flex-shrink: 0;
-      height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: rgba(100, 210, 255, 0.12);
-      border: 0.5px solid rgba(100, 210, 255, 0.3);
-      color: var(--tint-cyan);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .ai-chip:active { transform: scale(0.96); }
-
-    .ai-input-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .ai-input {
-      flex: 1;
-      height: 40px;
-      border-radius: 12px;
-      background: var(--bg-elevated);
-      border: 0.5px solid var(--separator);
-      padding: 0 12px;
-      color: var(--label-primary);
-      font-size: 14px;
-      outline: none;
-    }
-
-    .ai-send-btn {
-      height: 40px;
-      padding: 0 14px;
-      border-radius: 12px;
-      background: var(--tint-blue);
-      border: none;
-      color: #FFFFFF;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .ai-send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    .ai-output {
-      background: rgba(0, 0, 0, 0.45);
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 13px;
-      line-height: 1.45;
-      color: var(--label-soft);
-      white-space: pre-wrap;
-      min-height: 44px;
-    }
-
-    /* Sci-Fi 3D Spatial Wireframe Parking Canvas (X, Y, Z) */
-    .scifi-card {
-      background: radial-gradient(circle at 50% 20%, #091829 0%, #111318 65%, #1C1C1E 100%);
-      border: 0.5px solid rgba(100, 210, 255, 0.28);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .scifi-canvas-wrap {
-      position: relative;
-      width: 100%;
-      height: 235px;
-      border-radius: 14px;
-      background: rgba(3, 10, 18, 0.85);
-      border: 0.5px solid rgba(100, 210, 255, 0.2);
-      overflow: hidden;
-    }
-
-    #parking3dCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .hud-overlay-top {
-      position: absolute;
-      top: 10px;
-      left: 12px;
-      right: 12px;
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 10px;
-      color: var(--tint-cyan);
-      letter-spacing: 0.04em;
-    }
-
-    .hud-overlay-bottom {
-      position: absolute;
-      bottom: 8px;
-      left: 12px;
-      right: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 11px;
-      color: #E5F6FF;
-    }
-
-    .xyz-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .xyz-cell {
-      background: rgba(100, 210, 255, 0.08);
-      border: 0.5px solid rgba(100, 210, 255, 0.22);
-      border-radius: 10px;
-      padding: 7px 10px;
-      text-align: center;
-    }
-    .xyz-cell span {
-      display: block;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--tint-cyan);
-      letter-spacing: 0.05em;
-    }
-    .xyz-cell strong {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--label-primary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Calendar-Month Debit-Only SMS Spend Dashboard with Privacy Eye Toggle */
-    .spend-hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding-bottom: 12px;
-      border-bottom: 0.5px solid var(--separator);
-    }
-
-    .spend-total {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--label-primary);
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.05;
-    }
-
-    .eye-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--bg-elevated);
-      border: 0.5px solid var(--separator);
-      color: var(--label-soft);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .eye-btn:active { transform: scale(0.94); }
-
-    .spend-bar {
-      display: flex;
-      height: 8px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: var(--bg-elevated);
-      margin: 12px 0;
-      gap: 2px;
-    }
-
-    .spend-seg { height: 100%; transition: width 0.4s ease; }
-
-    .cat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .cat-box {
-      background: var(--bg-elevated);
-      border-radius: 12px;
-      padding: 9px 11px;
-    }
-    .cat-top {
+    /* Hero Shift Ring */
+    .shift-hero {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--label-secondary);
-      font-weight: 600;
+      gap: 16px;
     }
-    .cat-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .cat-val {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--label-primary);
-      margin-top: 3px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .tx-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 155px;
-      overflow-y: auto;
-    }
-
-    .tx-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      padding: 7px 9px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.03);
-    }
-    .tx-name { font-weight: 600; color: var(--label-soft); }
-    .tx-meta { font-size: 10px; color: var(--label-secondary); margin-top: 1px; }
-    .tx-amt { font-weight: 700; color: var(--tint-red); font-variant-numeric: tabular-nums; }
-
-    /* Commute Calculator */
-    .hero-departure {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding-bottom: 14px;
-      border-bottom: 0.5px solid var(--separator);
-    }
-    .hero-left small { display: block; font-size: 13px; color: var(--label-secondary); margin-bottom: 2px; }
-    .hero-time {
-      font-size: 40px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      color: var(--label-primary);
-      font-variant-numeric: tabular-nums;
-      line-height: 1.05;
-    }
-    .hero-right { text-align: right; }
-    .buffer-pill {
-      display: inline-block;
-      padding: 4px 9px;
-      border-radius: 8px;
-      background: rgba(10, 132, 255, 0.14);
-      color: var(--tint-blue);
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .route-caption { font-size: 12px; color: var(--label-secondary); margin-top: 5px; }
-
-    .timeline-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      padding-top: 12px;
-      gap: 8px;
-    }
-    .timeline-cell { display: flex; flex-direction: column; gap: 2px; }
-    .timeline-cell:nth-child(2) { text-align: center; }
-    .timeline-cell:nth-child(3) { text-align: right; }
-    .timeline-cell span { font-size: 11px; font-weight: 500; color: var(--label-secondary); }
-    .timeline-cell strong { font-size: 15px; font-weight: 600; color: var(--label-primary); }
-
-    .target-controls {
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 0.5px solid var(--separator);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .target-row { display: flex; justify-content: space-between; align-items: center; }
-    .target-row span { font-size: 14px; font-weight: 500; color: var(--label-soft); }
-
-    input[type="time"] {
-      background: var(--bg-elevated);
-      border: none;
-      border-radius: 9px;
-      padding: 6px 10px;
-      color: var(--label-primary);
-      font-size: 15px;
-      font-weight: 600;
-      outline: none;
-    }
-
-    .segmented {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: var(--bg-elevated);
-      padding: 2px;
-      border-radius: 10px;
-    }
-    .seg-btn {
-      height: 30px;
-      border: none;
-      background: transparent;
-      color: var(--label-secondary);
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .seg-btn.active {
-      background: var(--bg-tertiary);
-      color: var(--label-primary);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-    }
-
-    .launcher-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .launch-btn {
-      height: 38px;
-      border-radius: 11px;
-      background: var(--bg-elevated);
-      border: 0.5px solid var(--separator);
-      color: var(--label-soft);
-      font-size: 13px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .shift-layout { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-    .ring-wrap { position: relative; width: 84px; height: 84px; flex-shrink: 0; }
-    .ring-wrap svg { transform: rotate(-90deg); width: 84px; height: 84px; }
-    .ring-bg { fill: none; stroke: var(--bg-elevated); stroke-width: 7; }
-    .ring-progress {
+    .ring-box { position: relative; width: 92px; height: 92px; flex-shrink: 0; }
+    .ring-box svg { width: 92px; height: 92px; transform: rotate(-90deg); }
+    .ring-track { fill: none; stroke: var(--surface-3); stroke-width: 7; }
+    .ring-fill {
       fill: none;
-      stroke: var(--tint-green);
+      stroke: url(#ringGrad);
       stroke-width: 7;
       stroke-linecap: round;
-      stroke-dasharray: 226.2;
-      stroke-dashoffset: 226.2;
-      transition: stroke-dashoffset 0.5s ease;
+      stroke-dasharray: 245;
+      stroke-dashoffset: 245;
+      transition: stroke-dashoffset 0.6s ease;
     }
-    .ring-center {
+    .ring-label {
       position: absolute;
       inset: 0;
       display: flex;
@@ -599,26 +237,24 @@
       align-items: center;
       justify-content: center;
     }
-    .ring-center b { font-size: 15px; font-weight: 700; color: var(--label-primary); }
-    .ring-center small { font-size: 10px; font-weight: 600; color: var(--label-secondary); text-transform: uppercase; }
+    .ring-label strong { font-size: 18px; font-weight: 800; }
+    .ring-label span { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
 
-    .shift-details { flex: 1; min-width: 0; }
-    .countdown-readout {
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--label-primary);
+    .hero-big {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
-      line-height: 1.1;
+      line-height: 1.05;
     }
-    .shift-sub { font-size: 13px; color: var(--label-secondary); margin-top: 4px; }
+    .hero-sub { font-size: 13px; color: var(--text-soft); margin-top: 5px; }
 
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-    .btn-ios {
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .btn {
       height: 44px;
-      border-radius: 12px;
+      border-radius: 13px;
       border: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
@@ -626,602 +262,827 @@
       gap: 6px;
       cursor: pointer;
     }
-    .btn-primary { background: var(--tint-blue); color: #FFFFFF; }
-    .btn-secondary { background: var(--bg-elevated); color: var(--label-soft); }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: linear-gradient(135deg, var(--blue), #0284C7); color: #FFFFFF; }
+    .btn-ghost { background: var(--surface-2); color: var(--text-soft); border: 1px solid var(--border); }
 
-    .tweak-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
-    .tweak-btn {
+    .tweak-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+    .tweak-pill {
       height: 32px;
-      border-radius: 8px;
+      border-radius: 9px;
       background: transparent;
-      border: 0.5px solid var(--separator);
-      color: var(--label-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .intel-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; }
-    .intel-row:first-child { padding-top: 0; }
-    .intel-row:last-child { padding-bottom: 0; }
-    .intel-row + .intel-row { border-top: 0.5px solid var(--separator); }
+    /* Human-Friendly Parking Architectural Stack (Zero Math Jargon in UI) */
+    .park-hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 14px;
+      align-items: center;
+    }
 
-    .icon-box {
-      width: 34px;
-      height: 34px;
+    .floor-tower {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tower-lvl {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 11px;
+      border-radius: 11px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tower-lvl.parked {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(52, 211, 153, 0.16));
+      border-color: var(--cyan);
+      color: #FFFFFF;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
+    }
+
+    .lvl-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+    }
+    .tower-lvl.parked .lvl-badge {
+      background: var(--emerald);
+      color: #04130D;
+    }
+
+    .park-narrative {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .park-floor-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      line-height: 1.1;
+    }
+    .park-english {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+    .park-meta {
+      font-size: 11px;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Commute Calculator (Shown Only When Away From Office) */
+    .dep-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dep-time {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .pill-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tri-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tri-cell {
+      background: var(--surface-2);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+    .tri-cell span { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .tri-cell strong { display: block; font-size: 14px; font-weight: 700; margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--surface-2);
+      padding: 3px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+    .seg-btn {
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
       border-radius: 9px;
+      cursor: pointer;
+    }
+    .seg-btn.active { background: var(--surface-3); color: #FFFFFF; }
+
+    /* Conditions & Compliance */
+    .intel-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+    }
+    .intel-line + .intel-line { border-top: 1px solid var(--border); }
+    .intel-ico {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--cyan);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .icon-blue { background: rgba(10, 132, 255, 0.16); color: var(--tint-blue); }
-    .icon-amber { background: rgba(255, 159, 10, 0.16); color: var(--tint-amber); }
+    .intel-ico.amber { background: rgba(251, 191, 36, 0.14); color: var(--amber); }
 
-    .intel-body { flex: 1; min-width: 0; }
-    .intel-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .intel-title { font-size: 14px; font-weight: 600; color: var(--label-primary); }
-    .intel-tag { font-size: 12px; font-weight: 600; color: var(--label-secondary); }
-    .intel-desc { font-size: 13px; color: var(--label-secondary); line-height: 1.38; margin-top: 2px; }
-
-    .streak-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 4px; }
-    .day-cell {
+    .streak-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .day-pill {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      padding: 8px 0;
+      padding: 9px 0;
       border-radius: 12px;
-      background: var(--bg-elevated);
+      background: var(--surface-2);
     }
-    .day-cell span { font-size: 11px; font-weight: 600; color: var(--label-secondary); }
-    .day-check {
-      width: 22px;
-      height: 22px;
+    .day-pill span { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+    .day-dot {
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      border: 1.5px solid var(--label-tertiary);
+      border: 1.5px solid var(--surface-3);
       display: flex;
       align-items: center;
       justify-content: center;
       color: transparent;
     }
-    .day-cell.done .day-check { background: var(--tint-green); border-color: var(--tint-green); color: #000000; }
-    .day-cell.today { outline: 1px solid rgba(10, 132, 255, 0.5); }
+    .day-pill.done .day-dot { background: var(--emerald); border-color: var(--emerald); color: #05130E; }
+    .day-pill.today { border: 1px solid var(--cyan); }
 
-    /* Floating Bot FAB */
-    .bot-fab {
-      position: fixed;
-      right: 18px;
-      bottom: max(20px, env(safe-area-inset-bottom));
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0A84FF, #BF5AF2);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 8px 24px rgba(10, 132, 255, 0.45);
-      color: #FFFFFF;
+    /* TAB 2: PRO SPENDS DASHBOARD */
+    .spend-total-row {
       display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .spend-big {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .eye-toggle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 45;
-      transition: transform 0.16s ease;
     }
-    .bot-fab:active { transform: scale(0.92); }
 
-    /* Full-Screen Dedicated Offline AI Assistant Drawer */
-    .bot-modal {
-      position: fixed;
-      inset: 0;
-      background: #000000;
-      z-index: 60;
-      display: none;
-      flex-direction: column;
-      padding: max(14px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    .bar-stack {
+      display: flex;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--surface-2);
+      margin: 14px 0;
+      gap: 2px;
     }
-    .bot-modal.open { display: flex; }
+    .bar-seg { height: 100%; transition: width 0.4s ease; }
 
-    .bot-header {
+    .cat-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cat-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 11px 12px;
+    }
+    .cat-head { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .cat-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .cat-amt { font-size: 16px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+    .tx-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 0.5px solid var(--separator);
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .tx-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .tx-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .tx-right { text-align: right; display: flex; align-items: center; gap: 8px; }
+    .tx-val { font-size: 14px; font-weight: 700; color: var(--rose); font-variant-numeric: tabular-nums; }
+    .tx-hide-btn {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 7px;
+      border-radius: 7px;
+      background: rgba(251, 113, 133, 0.14);
+      border: none;
+      color: var(--rose);
+      cursor: pointer;
     }
 
-    .bot-messages {
+    /* TAB 3: FULL JARVIS INTELLIGENCE CONSOLE */
+    .jarvis-chat-wrap {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 172px);
+      min-height: 460px;
+    }
+
+    .ai-model-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .chat-stream {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 14px 0;
+      gap: 12px;
+      padding: 4px 2px 12px;
     }
 
-    .msg-bubble {
-      max-width: 86%;
-      padding: 11px 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.45;
+    .bubble {
+      max-width: 90%;
+      padding: 12px 14px;
+      border-radius: 18px;
+      font-size: 13.5px;
+      line-height: 1.48;
       white-space: pre-wrap;
     }
-    .msg-user {
+    .bubble.user {
       align-self: flex-end;
-      background: var(--tint-blue);
+      background: linear-gradient(135deg, var(--blue), #0284C7);
       color: #FFFFFF;
       border-bottom-right-radius: 4px;
     }
-    .msg-bot {
+    .bubble.bot {
       align-self: flex-start;
-      background: var(--bg-grouped);
-      border: 0.5px solid rgba(100, 210, 255, 0.25);
-      color: var(--label-soft);
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
       border-bottom-left-radius: 4px;
     }
 
-    .bot-chart-card {
-      margin-top: 8px;
-      background: rgba(0, 0, 0, 0.45);
-      border: 0.5px solid rgba(100, 210, 255, 0.25);
-      border-radius: 12px;
-      padding: 10px;
+    .inline-widget {
+      margin-top: 10px;
+      background: rgba(5, 7, 11, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
     }
-
-    .bot-bar-row {
+    .w-bar-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 6px 0;
+      margin: 7px 0;
       font-size: 11px;
     }
-    .bot-bar-label { width: 105px; color: var(--label-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .bot-bar-track { flex: 1; height: 8px; border-radius: 999px; background: var(--bg-elevated); overflow: hidden; }
-    .bot-bar-fill { height: 100%; background: linear-gradient(90deg, var(--tint-blue), var(--tint-cyan)); }
-    .bot-bar-val { width: 54px; text-align: right; font-weight: 700; color: var(--label-primary); font-variant-numeric: tabular-nums; }
+    .w-label { width: 106px; color: var(--text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .w-track { flex: 1; height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+    .w-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .w-val { width: 62px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-    .bot-footer {
+    .prompt-chips {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-top: 10px;
-      border-top: 0.5px solid var(--separator);
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .prompt-chips::-webkit-scrollbar { display: none; }
+    .p-chip {
+      flex-shrink: 0;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
-    .sheet-backdrop {
+    .chat-composer {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0 14px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+    }
+    .chat-send {
+      height: 44px;
+      padding: 0 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border: none;
+      color: #04101D;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Bottom Floating Navigation Dock */
+    .bottom-dock {
+      position: fixed;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 396px;
+      height: 62px;
+      border-radius: 999px;
+      background: rgba(14, 19, 29, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 184, 255, 0.2);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 5px;
+      z-index: 40;
+    }
+    .dock-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 999px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dock-btn.active {
+      background: rgba(56, 189, 248, 0.16);
+      color: var(--cyan);
+    }
+
+    /* Setup Bottom Sheet */
+    .sheet-bg {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(6px);
+      background: rgba(0, 0, 0, 0.74);
+      backdrop-filter: blur(8px);
       display: none;
       align-items: flex-end;
       justify-content: center;
-      z-index: 50;
+      z-index: 60;
     }
-    .sheet-backdrop.open { display: flex; }
-
-    .sheet {
+    .sheet-bg.open { display: flex; }
+    .sheet-box {
       width: 100%;
       max-width: 430px;
-      background: var(--bg-grouped);
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      padding: 12px 20px max(28px, env(safe-area-inset-bottom));
-      border-top: 0.5px solid rgba(255, 255, 255, 0.15);
+      background: var(--surface);
+      border-top: 1px solid var(--border-strong);
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      padding: 14px 20px max(28px, env(safe-area-inset-bottom));
       max-height: 90vh;
       overflow-y: auto;
-    }
-    .sheet-grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--bg-tertiary); margin: 0 auto 14px; }
-    .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .sheet-header h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--label-primary); }
-    .sheet-close {
-      background: var(--bg-elevated);
-      border: none;
-      color: var(--label-secondary);
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .sheet-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--label-secondary);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
     }
     .sheet-input {
       width: 100%;
       height: 44px;
       border-radius: 12px;
-      background: var(--bg-elevated);
-      border: 0.5px solid var(--separator);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
       padding: 0 14px;
-      color: var(--label-primary);
-      font-size: 15px;
+      color: #FFFFFF;
+      font-size: 14px;
       outline: none;
       margin-bottom: 12px;
     }
-    .sheet-hint { font-size: 12px; color: var(--label-secondary); line-height: 1.4; margin-bottom: 14px; }
+    .bt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .bt-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .bt-item.selected { border-color: var(--emerald); background: rgba(52, 211, 153, 0.12); }
+    .bt-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--surface-3); color: var(--text-muted); }
+    .bt-item.selected .bt-tag { background: var(--emerald); color: #05130E; }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="nav-bar">
-      <div class="nav-title-group">
-        <span class="nav-subtitle" id="dateHeader">WORK-LIFE OS</span>
-        <h1 class="nav-title">LOKIFFICE</h1>
+  <div class="shell">
+    <!-- Top Header -->
+    <header class="topbar">
+      <div class="brand-col">
+        <span class="live-greeting" id="greetingSub">GOOD MORNING · READY</span>
+        <h1 class="brand-title">LOKIFFICE</h1>
       </div>
-      <div class="nav-actions">
-        <button class="pill-btn" onclick="speakBriefing()" aria-label="Audio Briefing">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <div class="top-actions">
+        <button class="icon-pill" onclick="speakBriefing()" aria-label="Voice Briefing">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </button>
-        <button class="pill-btn" onclick="openSheet()">
-          <span class="status-dot" id="gpsDot"></span>
+        <button class="icon-pill" onclick="openSheet()">
+          <span class="pulse-dot" id="gpsDot"></span>
           <span id="gpsLabel">Setup</span>
         </button>
       </div>
     </header>
 
-    <!-- Dismissible Shift-Complete Alarm Banner -->
+    <!-- Dismissible Shift-End Alarm Banner -->
     <div class="alarm-banner" id="alarmBanner">
       <div>
-        <div class="ride-title" style="color:#FFFFFF;">Shift Complete · Alarm Active</div>
-        <div class="ride-sub" style="color:#FFE5E5;">Mandatory office hours reached</div>
+        <div style="font-size:14px; font-weight:800;">Shift Complete</div>
+        <div style="font-size:12px; color:#FFE4E6;">Tap OK to silence alarm</div>
       </div>
-      <button class="btn-ios" style="height:36px; padding:0 16px; background:#FFFFFF; color:#000000; font-weight:700;" onclick="dismissActiveAlarm()">OK · Stop</button>
+      <button class="btn" style="height:36px; padding:0 16px; background:#FFFFFF; color:#05070B; font-weight:800;" onclick="dismissActiveAlarm()">OK · Stop</button>
     </div>
 
-    <!-- Generic Vehicle / Commute Ride-Mode DND Banner -->
-    <div class="ride-banner" id="rideBanner">
-      <div class="ride-left">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        <div>
-          <div class="ride-title" id="rideStatusTitle">Ride Mode DND · Standby</div>
-          <div class="ride-sub" id="rideStatusSub">Silences calls on vehicle Bluetooth or motion</div>
+    <!-- ==================== TAB 1: TODAY (ADAPTIVE JARVIS HUD) ==================== -->
+    <main class="tab-view active" id="tab-today">
+      <!-- Proactive Context Briefing Strip -->
+      <div class="jarvis-strip" onclick="switchTab('jarvis')">
+        <div class="jarvis-orb"></div>
+        <div class="jarvis-strip-text" id="jarvisBriefingStrip">
+          <b>J.A.R.V.I.S.</b> Syncing live office weather, commute route, and monthly spends...
         </div>
       </div>
-      <button class="pill-btn" style="height:30px; font-size:12px;" id="rideToggleBtn" onclick="toggleManualRideMode()">Test Ride</button>
-    </div>
 
-    <!-- 5-Hour Shift Timer -->
-    <section class="card">
-      <div class="card-header">
-        <span class="section-label" id="shiftHeaderLabel">5-Hour Shift Timer</span>
-        <span class="meta-badge" style="color: var(--label-secondary)" onclick="refreshLiveIntel()">Sync</span>
+      <!-- Drive Shield Status (Vehicle BT + Moving Dual Gate) -->
+      <div class="shield-bar" id="shieldBar">
+        <div>
+          <div class="shield-title" id="shieldTitle">Drive Shield · Standby</div>
+          <div class="shield-sub" id="shieldSub">DND activates only when Vehicle BT is connected & moving</div>
+        </div>
+        <button class="chip-action" id="shieldToggleBtn" onclick="toggleManualRideMode()">Test</button>
       </div>
 
-      <div class="shift-layout">
-        <div class="ring-wrap">
-          <svg viewBox="0 0 84 84">
-            <circle class="ring-bg" cx="42" cy="42" r="36" />
-            <circle class="ring-progress" id="ringProgress" cx="42" cy="42" r="36" />
-          </svg>
-          <div class="ring-center">
-            <b id="pctLabel">0%</b>
-            <small>Shift</small>
+      <!-- Context-Aware Hero A: Shift Active + Natural-Language Parking Locator (Shown AT OFFICE) -->
+      <section class="glass-card accent" id="atOfficeCard" style="display:none;">
+        <div class="card-head">
+          <span class="eyebrow cyan" id="shiftHeaderLabel">Active Office Shift</span>
+          <span class="chip-action" onclick="resetShift()">End / Reset</span>
+        </div>
+
+        <div class="shift-hero">
+          <div class="ring-box">
+            <svg viewBox="0 0 92 92">
+              <defs>
+                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38BDF8"/>
+                  <stop offset="100%" stop-color="#34D399"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-track" cx="46" cy="46" r="39" />
+              <circle class="ring-fill" id="ringProgress" cx="46" cy="46" r="39" />
+            </svg>
+            <div class="ring-label">
+              <strong id="pctLabel">0%</strong>
+              <span>Done</span>
+            </div>
+          </div>
+
+          <div style="flex:1; min-width:0;">
+            <div class="hero-big" id="countdown">05:00:00</div>
+            <div class="hero-sub" id="shiftInfo">Checked in · Calculating exit time</div>
           </div>
         </div>
 
-        <div class="shift-details">
-          <div class="countdown-readout" id="countdown">05:00:00</div>
-          <div class="shift-sub" id="shiftInfo">Awaiting arrival at office</div>
+        <div class="tweak-row">
+          <button class="tweak-pill" onclick="adjustIn(-15)">-15m</button>
+          <button class="tweak-pill" onclick="adjustIn(-5)">-5m</button>
+          <button class="tweak-pill" onclick="adjustIn(5)">+5m</button>
+          <button class="tweak-pill" onclick="adjustIn(15)">+15m</button>
         </div>
-      </div>
+      </section>
 
-      <div class="action-grid">
-        <button class="btn-ios btn-primary" onclick="manualLogin()">Check In Now</button>
-        <button class="btn-ios btn-secondary" onclick="resetShift()">Reset Shift</button>
-      </div>
+      <!-- Natural-Language Architectural Parking Locator (ZERO X/Y/Z math shown in UI!) -->
+      <section class="glass-card" id="parkingCard" style="display:none;">
+        <div class="card-head">
+          <span class="eyebrow cyan">Vehicle Parking Locator</span>
+          <span class="chip-action" id="parkSourceChip" onclick="triggerSensorTrack()">Auto Sensor</span>
+        </div>
 
-      <div class="tweak-strip">
-        <button class="tweak-btn" onclick="adjustIn(-15)">-15m IN</button>
-        <button class="tweak-btn" onclick="adjustIn(-5)">-5m IN</button>
-        <button class="tweak-btn" onclick="adjustIn(5)">+5m IN</button>
-        <button class="tweak-btn" onclick="adjustIn(15)">+15m IN</button>
-      </div>
-    </section>
+        <div class="park-hero-grid">
+          <div class="floor-tower" id="floorTower">
+            <div class="tower-lvl" data-floor="L4" onclick="correctParkingFloor('L4')"><span>4th Floor</span><span class="lvl-badge" id="cnt-L4">0</span></div>
+            <div class="tower-lvl" data-floor="L3" onclick="correctParkingFloor('L3')"><span>3rd Floor</span><span class="lvl-badge" id="cnt-L3">0</span></div>
+            <div class="tower-lvl" data-floor="L2" onclick="correctParkingFloor('L2')"><span>2nd Floor</span><span class="lvl-badge" id="cnt-L2">0</span></div>
+            <div class="tower-lvl" data-floor="L1" onclick="correctParkingFloor('L1')"><span>1st Floor</span><span class="lvl-badge" id="cnt-L1">0</span></div>
+            <div class="tower-lvl" data-floor="G" onclick="correctParkingFloor('G')"><span>Ground</span><span class="lvl-badge" id="cnt-G">0</span></div>
+          </div>
 
-    <!-- Offline Browser-Sandboxed WebGPU AI Copilot Card (Preserved on Home Screen) -->
-    <section class="card ai-card">
-      <div class="card-header">
-        <span class="section-label" style="color:var(--tint-cyan);">Offline Local AI · SmolLM2-360M</span>
-        <span class="meta-badge" id="aiBackendBadge" style="color:var(--label-secondary);">Browser Sandbox</span>
-      </div>
+          <div class="park-narrative">
+            <div class="eyebrow">Your Vehicle</div>
+            <div class="park-floor-title" id="parkFloorEnglish">Ground Floor</div>
+            <div class="park-english" id="parkDirectionsEnglish">
+              Auto-tracks ramp climbs as you enter campus. Tap any floor on the left if you want to adjust it manually.
+            </div>
+            <div class="park-meta" id="parkTimestampEnglish">Tap a floor to pin or let sensors auto-lock</div>
+          </div>
+        </div>
+      </section>
 
-      <div class="ai-download-box" id="aiDownloadBox">
-        <p class="ai-desc" id="aiIntroText">
-          Download <b>SmolLM2-360M-Instruct</b> (~270 MB) into your browser's isolated cache once. Runs 100% offline on WebGPU/WASM—your SMS spends and shift logs never leave your device.
-        </p>
-        <button class="btn-ios btn-primary" style="width:100%;" id="aiDownloadBtn" onclick="initOfflineWebGPUModel()">
-          Download Offline AI (270 MB)
-        </button>
-      </div>
+      <!-- Context-Aware Hero B: Pre-Commute Departure HUD (Shown ONLY when AWAY from Office) -->
+      <section class="glass-card accent" id="preCommuteCard">
+        <div class="card-head">
+          <span class="eyebrow cyan">Smart Departure Planner</span>
+          <span class="chip-action" onclick="manualLogin()">Check In Now</span>
+        </div>
 
-      <div class="ai-progress-wrap" id="aiProgressWrap">
-        <div class="ai-progress-meta">
-          <span id="aiProgressLabel">Initializing WebGPU runtime...</span>
-          <span id="aiProgressPct">0%</span>
+        <div class="dep-row">
+          <div>
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Leave Home By</div>
+            <div class="dep-time" id="leaveHome">--:--</div>
+          </div>
+          <div style="text-align:right;">
+            <span class="pill-tag" id="bufferPill">17.0 km · 55m</span>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:6px;" id="roadLabel">Primary Corridor</div>
+          </div>
         </div>
-        <div class="ai-progress-track">
-          <div class="ai-progress-fill" id="aiProgressFill"></div>
-        </div>
-      </div>
 
-      <div class="ai-workspace" id="aiWorkspace">
-        <div class="ai-chip-row">
-          <button class="ai-chip" onclick="runQuickAiPrompt('spend')">Analyze Month Spends</button>
-          <button class="ai-chip" onclick="runQuickAiPrompt('briefing')">Smart Commute Briefing</button>
-          <button class="ai-chip" onclick="runQuickAiPrompt('parking')">Where Did I Park?</button>
+        <div class="tri-stats">
+          <div class="tri-cell"><span>Office IN</span><strong id="officeIn">--:--</strong></div>
+          <div class="tri-cell"><span>Office OUT</span><strong id="officeOut">--:--</strong></div>
+          <div class="tri-cell"><span>Home By</span><strong id="backHome">--:--</strong></div>
         </div>
-        <div class="ai-input-row">
-          <input type="text" class="ai-input" id="aiPromptInput" placeholder="Ask offline AI about shift, spends, or commute..." onkeydown="if(event.key==='Enter') askOfflineAI()" />
-          <button class="ai-send-btn" id="aiSendBtn" onclick="askOfflineAI()">Ask</button>
-        </div>
-        <div class="ai-output" id="aiOutputBox">SmolLM2-360M loaded in sandbox cache. Tap a quick chip, ask inline, or tap the floating bot icon for full chat & charts.</div>
-      </div>
-    </section>
 
-    <!-- Context-Aware Slot: Sci-Fi 3D XYZ Parking Matrix when Checked-In; Leave Calculator when Away -->
-    <section class="card scifi-card" id="scifiParkingCard" style="display:none;">
-      <div class="card-header">
-        <span class="section-label" style="color:var(--tint-cyan);">3D Spatial Parking Matrix · X·Y·Z</span>
-        <span class="meta-badge" id="parkingAdviceBadge" style="color: var(--tint-green)">Live Telemetry</span>
-      </div>
-
-      <div class="scifi-canvas-wrap">
-        <canvas id="parking3dCanvas"></canvas>
-        <div class="hud-overlay-top">
-          <span id="hudFloorTag">Z-LEVEL: FLOOR 1</span>
-          <span id="hudCrowdTag">BAY TELEMETRY: ACTIVE</span>
-        </div>
-        <div class="hud-overlay-bottom">
-          <span id="hudVectorTag">VECTOR: +12m X · +18m Y</span>
-          <span style="color:var(--tint-green);" id="hudBestFloor">OPTIMAL: L2</span>
-        </div>
-      </div>
-
-      <div class="xyz-strip">
-        <div class="xyz-cell">
-          <span>X-AXIS (LATERAL)</span>
-          <strong id="coordX">+12.0 m</strong>
-        </div>
-        <div class="xyz-cell">
-          <span>Y-AXIS (DEPTH)</span>
-          <strong id="coordY">+18.0 m</strong>
-        </div>
-        <div class="xyz-cell">
-          <span>Z-AXIS (FLOOR)</span>
-          <strong id="coordZ">L1 (+3.5m)</strong>
-        </div>
-      </div>
-    </section>
-
-    <section class="card" id="leaveCalculatorCard">
-      <div class="card-header">
-        <span class="section-label">Reverse Curfew Schedule</span>
-        <span class="meta-badge" onclick="openSheet()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span id="homeLabel">Set Home</span>
-        </span>
-      </div>
-
-      <div class="hero-departure">
-        <div class="hero-left">
-          <small>Leave Home By</small>
-          <div class="hero-time" id="leaveHome">--:--</div>
-        </div>
-        <div class="hero-right">
-          <span class="buffer-pill" id="bufferPill">17.0 km · 55m</span>
-          <div class="route-caption" id="roadLabel">Primary Arterial Corridor</div>
-        </div>
-      </div>
-
-      <div class="timeline-row">
-        <div class="timeline-cell">
-          <span>Office IN</span>
-          <strong id="officeIn">--:--</strong>
-        </div>
-        <div class="timeline-cell">
-          <span>Office OUT</span>
-          <strong id="officeOut">--:--</strong>
-        </div>
-        <div class="timeline-cell">
-          <span>Back Home</span>
-          <strong id="backHome">--:--</strong>
-        </div>
-      </div>
-
-      <div class="target-controls">
-        <div class="target-row">
-          <span>Target Home Arrival</span>
-          <input type="time" id="homeBy" value="18:00" />
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+          <span style="font-size:13px; color:var(--text-soft); font-weight:500;">Target Home Arrival</span>
+          <input type="time" id="homeBy" value="18:00" style="background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:6px 10px; color:#fff; font-weight:700;" />
         </div>
         <div class="segmented">
-          <button class="seg-btn" onclick="setPreset('17:00', this)">5:00 PM</button>
-          <button class="seg-btn active" onclick="setPreset('18:00', this)">6:00 PM</button>
-          <button class="seg-btn" onclick="setPreset('19:00', this)">7:00 PM</button>
-          <button class="seg-btn" onclick="setPreset('20:00', this)">8:00 PM</button>
+          <button class="seg-btn" onclick="setPreset('17:00', this)">5 PM</button>
+          <button class="seg-btn active" onclick="setPreset('18:00', this)">6 PM</button>
+          <button class="seg-btn" onclick="setPreset('19:00', this)">7 PM</button>
+          <button class="seg-btn" onclick="setPreset('20:00', this)">8 PM</button>
         </div>
-      </div>
 
-      <div class="launcher-row">
-        <a class="launch-btn" id="gmapsToOffice" href="#" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          Route to Office
-        </a>
-        <a class="launch-btn" id="gmapsToHome" href="#" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Route Home
-        </a>
-      </div>
-    </section>
-
-    <!-- Calendar-Month Debit-Only SMS Spend Dashboard with Bank-Style Eye Privacy Toggle -->
-    <section class="card">
-      <div class="card-header">
-        <span class="section-label" id="spendMonthHeader">This Month Debits (Calendar)</span>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <button class="eye-btn" id="spendEyeBtn" onclick="toggleSpendMask()" aria-label="Toggle Spend Visibility" title="Show/Hide Amounts">
-            <svg id="eyeIconSvg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
-            </svg>
-          </button>
-          <span class="meta-badge" onclick="refreshSmsSpendDashboard(true)">AI Classify</span>
+        <div class="btn-row">
+          <a class="btn btn-primary" id="gmapsToOffice" href="#" target="_blank" style="text-decoration:none;">Navigate Office</a>
+          <a class="btn btn-ghost" id="gmapsToHome" href="#" target="_blank" style="text-decoration:none;">Navigate Home</a>
         </div>
-      </div>
+      </section>
 
-      <div class="spend-hero">
-        <div>
-          <small style="font-size:11px; color:var(--label-secondary); display:block;" id="spendRangeSub">1st of Month to Today · Credits Excluded</small>
-          <div class="spend-total" id="spendTotalAmt">₹XXXX</div>
+      <!-- Live Conditions (Weather + Transit Verdict) -->
+      <section class="glass-card">
+        <div class="card-head">
+          <span class="eyebrow">Live Conditions</span>
+          <span class="chip-action" onclick="refreshLiveIntel()">Refresh</span>
         </div>
-        <span class="buffer-pill" style="background:rgba(255,69,58,0.16); color:var(--tint-red);" id="spendTxCount">0 Debits</span>
-      </div>
 
-      <div class="spend-bar" id="dynamicSpendBar">
-        <div class="spend-seg" style="width:100%; background:var(--tint-blue);"></div>
-      </div>
-
-      <!-- Dynamic Vendor-Specific Categories (Zero Generic "Other" Bucket) -->
-      <div class="cat-grid" id="dynamicCatGrid"></div>
-
-      <div class="tx-list" id="txList">
-        <div class="tx-item">
-          <span class="tx-meta">Scanning calendar-month debited SMS messages...</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Transit & Weather Insights -->
-    <section class="card">
-      <div class="intel-row">
-        <div class="icon-box icon-blue">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/></svg>
-        </div>
-        <div class="intel-body">
-          <div class="intel-top">
-            <span class="intel-title" id="transitTitle">Two-Wheeler / Personal Vehicle</span>
-            <span class="intel-tag" id="trafficBadge">Moderate</span>
+        <div class="intel-line">
+          <div class="intel-ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/></svg>
           </div>
-          <div class="intel-desc" id="transitReason">Checking home proximity to rapid transit / Metro lines...</div>
-        </div>
-      </div>
-
-      <div class="intel-row">
-        <div class="icon-box icon-amber">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-        </div>
-        <div class="intel-body">
-          <div class="intel-top">
-            <span class="intel-title">Live Weather Radar</span>
-            <span class="intel-tag" id="wxTemp">--°C</span>
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:14px;" id="transitTitle">Personal Vehicle</strong>
+              <span style="font-size:12px; font-weight:700;" id="trafficBadge">Moderate</span>
+            </div>
+            <div style="font-size:12.5px; color:var(--text-muted); margin-top:3px; line-height:1.4;" id="transitReason">Checking rapid transit proximity...</div>
           </div>
-          <div class="intel-desc" id="wxDesc">Fetching live precipitation probability for your return trip.</div>
+        </div>
+
+        <div class="intel-line">
+          <div class="intel-ico amber">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:14px;">Office Weather Radar</strong>
+              <span style="font-size:12px; font-weight:700; color:var(--amber);" id="wxTemp">--°C</span>
+            </div>
+            <div style="font-size:12.5px; color:var(--text-muted); margin-top:3px; line-height:1.4;" id="wxDesc">Loading live temperature & rain probability...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly Attendance Streak -->
+      <section class="glass-card">
+        <div class="card-head">
+          <span class="eyebrow">Weekly Attendance</span>
+          <span class="chip-action" onclick="exportCompliance()">Export CSV</span>
+        </div>
+        <div class="streak-grid" id="streakBar"></div>
+      </section>
+    </main>
+
+    <!-- ==================== TAB 2: PRO CALENDAR-MONTH SPENDS (₹) ==================== -->
+    <main class="tab-view" id="tab-spends">
+      <section class="glass-card accent">
+        <div class="card-head">
+          <span class="eyebrow cyan" id="spendMonthHeader">This Month Debits</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="eye-toggle" id="spendEyeBtn" onclick="toggleSpendMask()" aria-label="Show or hide amounts">
+              <svg id="eyeIconSvg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+            <span class="chip-action" onclick="refreshSmsSpendDashboard(true)">Rescan</span>
+          </div>
+        </div>
+
+        <div class="spend-total-row">
+          <div>
+            <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;" id="spendRangeSub">1st of Month to Today · Debits Only (₹)</div>
+            <div class="spend-big" id="spendTotalAmt">₹••••</div>
+          </div>
+          <span class="pill-tag" style="background:rgba(251,113,133,0.16); color:var(--rose);" id="spendTxCount">0 Debits</span>
+        </div>
+
+        <div class="bar-stack" id="dynamicSpendBar"></div>
+        <div class="cat-cards" id="dynamicCatGrid"></div>
+      </section>
+
+      <section class="glass-card">
+        <div class="card-head">
+          <span class="eyebrow">Verified Debit Ledger (Tap to Inspect)</span>
+          <span class="chip-action" id="restoreHiddenBtn" style="display:none;" onclick="restoreIgnoredTxs()">Restore Ignored</span>
+        </div>
+        <div id="txList">
+          <div style="font-size:12px; color:var(--text-muted);">Scanning calendar-month bank/UPI debit SMS...</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== TAB 3: J.A.R.V.I.S. INTELLIGENCE CONSOLE ==================== -->
+    <main class="tab-view" id="tab-jarvis">
+      <div class="jarvis-chat-wrap">
+        <!-- Offline Model Status Bar -->
+        <div class="ai-model-bar">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--text);" id="aiStatusTitle">J.A.R.V.I.S. Local Engine · Ready</div>
+            <div style="font-size:11px; color:var(--text-muted);" id="aiStatusSub">Instant local analytics active · Optional SmolLM2-360M offline LLM</div>
+          </div>
+          <button class="chip-action" id="aiDownloadBtn" onclick="initOfflineWebGPUModel()">Get LLM (270MB)</button>
+        </div>
+
+        <div id="aiProgressWrap" style="display:none; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--cyan); margin-bottom:4px;">
+            <span id="aiProgressLabel">Caching SmolLM2-360M...</span>
+            <span id="aiProgressPct">0%</span>
+          </div>
+          <div style="height:6px; border-radius:999px; background:var(--surface-2); overflow:hidden;">
+            <div id="aiProgressFill" style="height:100%; width:0%; background:linear-gradient(90deg, var(--blue), var(--cyan));"></div>
+          </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-stream" id="chatStream">
+          <div class="bubble bot">I'm online and synced with your local shift timer, parking sensors, live office weather, and calendar-month ₹ debit ledger. Ask me anything—I can build live spend dashboards, tell you where you parked, or update your floor.</div>
+        </div>
+
+        <!-- Quick Actions & Composer -->
+        <div class="prompt-chips">
+          <button class="p-chip" onclick="sendJarvisQuery('Show my spend dashboard & chart')">📊 Spend Dashboard</button>
+          <button class="p-chip" onclick="sendJarvisQuery('What are my recent spends?')">💳 Recent Spends</button>
+          <button class="p-chip" onclick="sendJarvisQuery('Where did I park my bike?')">🧭 Where Did I Park?</button>
+          <button class="p-chip" onclick="sendJarvisQuery('How much did I spend on food this month?')">🍽️ Food Analytics</button>
+          <button class="p-chip" onclick="sendJarvisQuery('What is the weather at my office now?')">🌦️ Office Weather</button>
+        </div>
+
+        <div class="chat-composer">
+          <input type="text" class="chat-input" id="jarvisInput" placeholder="Ask Jarvis about spends, parking, weather..." onkeydown="if(event.key==='Enter') sendJarvisQuery()" />
+          <button class="chat-send" id="jarvisSendBtn" onclick="sendJarvisQuery()">ASK</button>
         </div>
       </div>
-    </section>
-
-    <!-- Weekly Compliance -->
-    <section class="card">
-      <div class="card-header">
-        <span class="section-label">Weekly Compliance</span>
-        <span class="meta-badge" style="color: var(--tint-green)" onclick="exportCompliance()">Export Log</span>
-      </div>
-      <div class="streak-row" id="streakBar"></div>
-    </section>
+    </main>
   </div>
 
-  <!-- Floating AI Bot Button -->
-  <button class="bot-fab" onclick="openBotModal()" aria-label="Open Full AI Assistant">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="8" width="18" height="12" rx="4"/>
-      <path d="M12 2v6"/>
-      <circle cx="12" cy="2" r="1.5"/>
-      <circle cx="9" cy="14" r="1.3" fill="currentColor"/>
-      <circle cx="15" cy="14" r="1.3" fill="currentColor"/>
-    </svg>
-  </button>
-
-  <!-- Dedicated Full-Screen AI Assistant & Chart Modal -->
-  <div class="bot-modal" id="botModal">
-    <div class="bot-header">
-      <div>
-        <div class="nav-subtitle" style="color:var(--tint-cyan);" id="botModalStatus">OFFLINE WEBGPU COPILOT · SMOL-360M</div>
-        <div style="font-size:20px; font-weight:700; color:#FFFFFF;">LOKIFFICE Intelligence</div>
-      </div>
-      <button class="sheet-close" onclick="closeBotModal()">✕</button>
-    </div>
-
-    <div class="bot-messages" id="botMessages">
-      <div class="msg-bubble msg-bot">Hi! I'm connected to your local calendar-month SMS ledger, live office weather API, shift timer, and 3D parking coordinates. Ask me anything—like "Create a spend chart", "How many times did I eat at a hotel/cafe this month?", or "What's the weather at my office right now?"</div>
-    </div>
-
-    <div class="bot-footer">
-      <div class="ai-chip-row">
-        <button class="ai-chip" onclick="sendBotChat('Create a visual chart of my spends this month')">📊 Spend Chart</button>
-        <button class="ai-chip" onclick="sendBotChat('How many times did I visit food or hotel vendors this month?')">🍽️ Food Visits</button>
-        <button class="ai-chip" onclick="sendBotChat('What is the live weather at my office and commute status?')">🌦️ Office Weather</button>
-        <button class="ai-chip" onclick="sendBotChat('Where is my vehicle parked right now?')">🧭 3D Parking</button>
-      </div>
-      <div class="ai-input-row">
-        <input type="text" class="ai-input" id="botChatInput" placeholder="Ask about spends, charts, hotel visits, weather..." onkeydown="if(event.key==='Enter') sendBotChat()" />
-        <button class="ai-send-btn" id="botSendBtn" onclick="sendBotChat()">Send</button>
-      </div>
-    </div>
-  </div>
+  <!-- Bottom Floating 3-Tab Navigation Dock -->
+  <nav class="bottom-dock">
+    <button class="dock-btn active" id="dock-today" onclick="switchTab('today')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+      TODAY
+    </button>
+    <button class="dock-btn" id="dock-spends" onclick="switchTab('spends')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      SPENDS
+    </button>
+    <button class="dock-btn" id="dock-jarvis" onclick="switchTab('jarvis')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2h2a3 3 0 0 1 3 3v5a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-5a3 3 0 0 1 3-3h2V6a4 4 0 0 1 4-4z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>
+      JARVIS
+    </button>
+  </nav>
 
   <!-- Setup Bottom Sheet -->
-  <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSheetOnBg(event)">
-    <div class="sheet">
-      <div class="sheet-grabber"></div>
-      <div class="sheet-header">
-        <h3>Campus Geofence & System Setup</h3>
-        <button class="sheet-close" onclick="closeSheet()">✕</button>
+  <div class="sheet-bg" id="sheetBg" onclick="if(event.target.id==='sheetBg') closeSheet()">
+    <div class="sheet-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="margin:0; font-size:18px;">System & Vehicle Setup</h3>
+        <button class="icon-pill" style="height:30px; padding:0 10px;" onclick="closeSheet()">✕</button>
       </div>
 
-      <span class="sheet-label">Office Campus Center</span>
+      <!-- Fix #1: Explicit Vehicle Bluetooth Picker -->
+      <div class="eyebrow cyan" style="margin-bottom:6px;">Select Your Vehicle Bluetooth (Blocks Headphones)</div>
+      <div style="font-size:11.5px; color:var(--text-muted); margin-bottom:8px;">
+        Tap your bike/car below. Drive Shield DND will ONLY turn on when a selected vehicle is connected <b>and</b> moving.
+      </div>
+      <div class="bt-list" id="pairedBtList">
+        <div style="font-size:12px; color:var(--text-muted);">Open in Android APK to select paired vehicle Bluetooth.</div>
+      </div>
+
+      <div class="eyebrow" style="margin-bottom:6px;">Office Campus Center</div>
       <input type="text" class="sheet-input" id="officeAddressInput" placeholder="12.946960, 80.231400" />
 
-      <span class="sheet-label">Campus Geofence Radius (Meters)</span>
-      <div class="segmented" style="margin-bottom:12px;" id="radiusSeg">
-        <button class="seg-btn" onclick="setRadiusPreset(250, this)">250m</button>
-        <button class="seg-btn active" onclick="setRadiusPreset(400, this)">400m</button>
-        <button class="seg-btn" onclick="setRadiusPreset(500, this)">500m</button>
-        <button class="seg-btn" onclick="setRadiusPreset(650, this)">650m</button>
-      </div>
+      <div class="eyebrow" style="margin-bottom:6px;">Home Location</div>
+      <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street, area, or lat, lng" />
 
-      <span class="sheet-label">Home Location</span>
-      <input type="text" class="sheet-input" id="homeAddressInput" placeholder="Street name, landmark, or lat, lng" />
-
-      <span class="sheet-label">Firebase Crowd Sync Endpoint</span>
-      <input type="text" class="sheet-input" id="firebaseUrlInput" value="https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app" />
-
-      <span class="sheet-label">Mandatory Office Shift Hours</span>
+      <div class="eyebrow" style="margin-bottom:6px;">Mandatory Shift Hours</div>
       <div class="segmented" style="margin-bottom:14px;" id="shiftHoursSeg">
-        <button class="seg-btn active" onclick="setShiftHours(5, this)">5 Hours</button>
-        <button class="seg-btn" onclick="setShiftHours(6, this)">6 Hours</button>
-        <button class="seg-btn" onclick="setShiftHours(8, this)">8 Hours</button>
-        <button class="seg-btn" onclick="setShiftHours(9, this)">9 Hours</button>
+        <button class="seg-btn active" onclick="setShiftHours(5, this)">5h</button>
+        <button class="seg-btn" onclick="setShiftHours(6, this)">6h</button>
+        <button class="seg-btn" onclick="setShiftHours(8, this)">8h</button>
+        <button class="seg-btn" onclick="setShiftHours(9, this)">9h</button>
       </div>
 
-      <p class="sheet-hint" id="dndStatusHint">Manage system Do Not Disturb & Silent Ride Mode permissions below.</p>
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <button class="btn-ios btn-primary" style="width:100%" onclick="saveSettings()">Save Settings</button>
-        <button class="btn-ios btn-secondary" style="width:100%" onclick="lockCurrentDeskAsOffice()">Lock Current Desk as Office</button>
-        <button class="btn-ios btn-secondary" style="width:100%" onclick="saveCurrentGPSAsHome()">Use Current GPS as Home</button>
-        <button class="btn-ios btn-secondary" style="width:100%; color:var(--tint-purple);" id="dndSetupBtn" onclick="handleDndSetupButton()">Enable Auto-DND & Silent Profile Access</button>
-        <button class="btn-ios btn-secondary" style="width:100%; color:var(--tint-red);" onclick="purgeOfflineAiCache()">Clear Cached Offline AI Weights</button>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <button class="btn btn-primary" style="width:100%;" onclick="saveSettings()">Save Settings</button>
+        <button class="btn btn-ghost" style="width:100%;" onclick="lockCurrentDeskAsOffice()">Lock Current GPS as Office</button>
+        <button class="btn btn-ghost" style="width:100%;" onclick="saveCurrentGPSAsHome()">Lock Current GPS as Home</button>
+        <button class="btn btn-ghost" style="width:100%; color:var(--violet);" id="dndSetupBtn" onclick="handleDndSetupButton()">Enable Auto-DND Access</button>
+        <button class="btn btn-ghost" style="width:100%; color:var(--rose);" onclick="purgeOfflineAiCache()">Clear Cached Offline LLM</button>
       </div>
     </div>
   </div>
 
-  <!-- Off-Main-Thread Web Worker Script for WebGPU Transformers.js + SmolLM2-360M-Instruct -->
+  <!-- Off-Main-Thread WebGPU Transformers.js Worker -->
   <script id="ai-worker-code" type="javascript/worker">
     import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.0";
 
@@ -1230,92 +1091,53 @@
 
     const MODEL_ID = "HuggingFaceTB/SmolLM2-360M-Instruct";
     let generator = null;
-    let activeDevice = "wasm";
 
     self.onmessage = async (event) => {
-      const { type, messages, requestId, target, vendors } = event.data;
+      const { type, messages, requestId } = event.data;
 
       if (type === "LOAD") {
         try {
           const hasWebGPU = typeof navigator !== "undefined" && Boolean(navigator.gpu);
-          activeDevice = hasWebGPU ? "webgpu" : "wasm";
+          const device = hasWebGPU ? "webgpu" : "wasm";
           const dtype = hasWebGPU ? "q4" : "q8";
-
-          self.postMessage({
-            type: "STATUS",
-            text: hasWebGPU ? "WebGPU detected · Downloading SmolLM2-360M (q4)..." : "WebGPU unavailable · Using WASM (q8)...",
-            pct: 5
-          });
+          self.postMessage({ type: "STATUS", text: hasWebGPU ? "WebGPU detected · Caching SmolLM2-360M..." : "Using WASM · Caching SmolLM2-360M...", pct: 5 });
 
           generator = await pipeline("text-generation", MODEL_ID, {
-            device: activeDevice,
-            dtype: dtype,
+            device,
+            dtype,
             progress_callback: (info) => {
               if (info && info.status === "progress" && info.total) {
                 const pct = Math.min(99, Math.round((info.loaded / info.total) * 100));
-                self.postMessage({
-                  type: "PROGRESS",
-                  file: info.file || "model weights",
-                  pct
-                });
+                self.postMessage({ type: "PROGRESS", file: info.file || "weights", pct });
               }
             }
           });
-
-          self.postMessage({ type: "READY", device: activeDevice });
+          self.postMessage({ type: "READY", device });
         } catch (err) {
-          self.postMessage({ type: "ERROR", error: String(err && err.message ? err.message : err) });
+          self.postMessage({ type: "ERROR", error: String(err?.message || err) });
         }
-      }
-
-      if (type === "CLASSIFY_VENDORS") {
-        if (!generator) return;
-        try {
-          const prompt = [
-            {
-              role: "system",
-              content: "Classify each vendor into one of: Food & Dining, Commute & Fuel, Groceries & Bills, Shopping & Retail, or Peer UPI Transfer. Reply ONLY as lines 'vendor => Category'."
-            },
-            {
-              role: "user",
-              content: vendors.join("\n")
-            }
-          ];
-          const out = await generator(prompt, {
-            max_new_tokens: 140,
-            temperature: 0.1,
-            do_sample: false,
-            return_full_text: false
-          });
-          const raw = Array.isArray(out) && out[0] && out[0].generated_text
-            ? (typeof out[0].generated_text === "string"
-                ? out[0].generated_text
-                : (out[0].generated_text[out[0].generated_text.length - 1]?.content || ""))
-            : "";
-          self.postMessage({ type: "VENDOR_LABELS", text: raw });
-        } catch (_e) {}
       }
 
       if (type === "GENERATE") {
         if (!generator) {
-          self.postMessage({ type: "ERROR", error: "Model not initialized yet.", requestId, target });
+          self.postMessage({ type: "ERROR", error: "Offline LLM not loaded", requestId });
           return;
         }
         try {
           const out = await generator(messages, {
-            max_new_tokens: 200,
-            temperature: 0.35,
+            max_new_tokens: 180,
+            temperature: 0.3,
             do_sample: true,
             return_full_text: false
           });
-          const generated = Array.isArray(out) && out[0] && out[0].generated_text
+          const text = Array.isArray(out) && out[0]?.generated_text
             ? (typeof out[0].generated_text === "string"
                 ? out[0].generated_text
                 : (out[0].generated_text[out[0].generated_text.length - 1]?.content || ""))
             : "";
-          self.postMessage({ type: "RESULT", text: generated.trim(), requestId, target });
+          self.postMessage({ type: "RESULT", text: text.trim(), requestId });
         } catch (err) {
-          self.postMessage({ type: "ERROR", error: String(err && err.message ? err.message : err), requestId, target });
+          self.postMessage({ type: "ERROR", error: String(err?.message || err), requestId });
         }
       }
     };
@@ -1324,47 +1146,21 @@
   <script>
     const DEFAULT_OFFICE = { lat: 12.946960, lng: 80.231400, label: "Office Campus" };
     const DEFAULT_FIREBASE = "https://lokiffice-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const FLOOR_NAMES = { G: "Ground Floor", L1: "1st Floor", L2: "2nd Floor", L3: "3rd Floor", L4: "4th Floor" };
 
     const RAPID_TRANSIT_STATIONS = [
       { name: "Wimco Nagar", line: "Blue", lat: 13.1792, lng: 80.3078 },
-      { name: "Tiruvottiyur", line: "Blue", lat: 13.1643, lng: 80.3001 },
-      { name: "Tollgate", line: "Blue", lat: 13.1434, lng: 80.2952 },
-      { name: "New Washermanpet", line: "Blue", lat: 13.1328, lng: 80.2913 },
-      { name: "Mannadi", line: "Blue", lat: 13.0954, lng: 80.2862 },
-      { name: "High Court", line: "Blue", lat: 13.0875, lng: 80.2848 },
       { name: "Chennai Central", line: "Blue/Green", lat: 13.0819, lng: 80.2729 },
-      { name: "Government Estate", line: "Blue", lat: 13.0695, lng: 80.2728 },
-      { name: "LIC", line: "Blue", lat: 13.0646, lng: 80.2661 },
-      { name: "Thousand Lights", line: "Blue", lat: 13.0582, lng: 80.2581 },
-      { name: "AG-DMS", line: "Blue", lat: 13.0449, lng: 80.2480 },
-      { name: "Teynampet", line: "Blue", lat: 13.0383, lng: 80.2464 },
-      { name: "Nandanam", line: "Blue", lat: 13.0315, lng: 80.2400 },
-      { name: "Saidapet", line: "Blue", lat: 13.0238, lng: 80.2282 },
-      { name: "Little Mount", line: "Blue", lat: 13.0147, lng: 80.2238 },
       { name: "Guindy", line: "Blue", lat: 13.0091, lng: 80.2132 },
       { name: "Alandur", line: "Blue/Green", lat: 13.0042, lng: 80.2015 },
-      { name: "Nanganallur Road", line: "Blue", lat: 12.9999, lng: 80.1939 },
-      { name: "Meenambakkam", line: "Blue", lat: 12.9877, lng: 80.1765 },
-      { name: "Chennai Airport", line: "Blue", lat: 12.9808, lng: 80.1636 },
-      { name: "Egmore", line: "Green", lat: 13.0791, lng: 80.2615 },
-      { name: "Nehru Park", line: "Green", lat: 13.0785, lng: 80.2500 },
-      { name: "Kilpauk", line: "Green", lat: 13.0775, lng: 80.2428 },
-      { name: "Pachaiyappa's College", line: "Green", lat: 13.0755, lng: 80.2323 },
-      { name: "Shenoy Nagar", line: "Green", lat: 13.0788, lng: 80.2252 },
-      { name: "Anna Nagar East", line: "Green", lat: 13.0850, lng: 80.2186 },
-      { name: "Anna Nagar Tower", line: "Green", lat: 13.0850, lng: 80.2087 },
-      { name: "Thirumangalam", line: "Green", lat: 13.0852, lng: 80.2015 },
-      { name: "Koyambedu", line: "Green", lat: 13.0732, lng: 80.1943 },
-      { name: "CMBT", line: "Green", lat: 13.0685, lng: 80.2039 },
-      { name: "Arumbakkam", line: "Green", lat: 13.0622, lng: 80.2115 },
-      { name: "Vadapalani", line: "Green", lat: 13.0508, lng: 80.2121 },
-      { name: "Ashok Nagar", line: "Green", lat: 13.0355, lng: 80.2113 },
-      { name: "Ekkattuthangal", line: "Green", lat: 13.0171, lng: 80.2053 },
       { name: "St. Thomas Mount", line: "Green", lat: 12.9949, lng: 80.1986 },
+      { name: "Chennai Airport", line: "Blue", lat: 12.9808, lng: 80.1636 },
+      { name: "Vadapalani", line: "Green", lat: 13.0508, lng: 80.2121 },
+      { name: "Koyambedu", line: "Green", lat: 13.0732, lng: 80.1943 },
+      { name: "Anna Nagar Tower", line: "Green", lat: 13.0850, lng: 80.2087 },
       { name: "Porur Junction", line: "Yellow", lat: 13.0382, lng: 80.1565 },
-      { name: "Iyyappanthangal", line: "Yellow", lat: 13.0381, lng: 80.1355 },
-      { name: "Kattupakkam", line: "Yellow", lat: 13.0405, lng: 80.1180 },
-      { name: "Poonamallee Bypass", line: "Yellow", lat: 13.0472, lng: 80.0945 }
+      { name: "Saidapet", line: "Blue", lat: 13.0238, lng: 80.2282 },
+      { name: "Little Mount", line: "Blue", lat: 13.0147, lng: 80.2238 }
     ];
 
     let officeData = JSON.parse(localStorage.getItem("lokiffice_office") || "null") || DEFAULT_OFFICE;
@@ -1372,579 +1168,181 @@
     let firebaseUrl = (localStorage.getItem("lokiffice_fb_url") || DEFAULT_FIREBASE).replace(/\/+$/, "");
     let shiftHours = Number(localStorage.getItem("lokiffice_shift_hours") || "5");
     let radiusMeters = Number(localStorage.getItem("lokiffice_radius_m") || "400");
-    let parkedFloor = localStorage.getItem("lokiffice_park_floor") || "L1";
-    let parkVecX = 12.0;
-    let parkVecY = 18.0;
+
+    let parkState = {
+      floor: localStorage.getItem("lokiffice_park_floor") || "G",
+      walkMeters: 0,
+      walkDir: "",
+      ts: Number(localStorage.getItem("lokiffice_park_ts") || "0"),
+      source: "Auto Sensor"
+    };
     let floorCounts = { G: 0, L1: 0, L2: 0, L3: 0, L4: 0 };
     let manualRideActive = false;
     let shiftAlarmFiredToday = false;
     let webOscillator = null;
 
-    // Privacy-First Masked Spend State (Hidden until Eye icon clicked)
+    // Spend State (Strictly ₹, Calendar Month, Privacy Masked by Default, User-Excludable)
     let spendRevealed = false;
-    let vendorAiCache = JSON.parse(localStorage.getItem("lokiffice_vendor_ai_map") || "{}");
-    let currentMonthSpendData = {
-      monthLabel: new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
-      totalDebited: 0,
-      transactions: [],
-      categoryTotals: {}
-    };
+    let ignoredTxIds = new Set(JSON.parse(localStorage.getItem("lokiffice_ignored_tx") || "[]"));
+    let rawMonthTxs = [];
+    let monthLabel = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
-    // Offline WebGPU / Transformers.js Worker Manager
-    let aiWorker = null;
-    let aiModelReady = false;
-    let aiBusy = false;
-
-    function createAiWorker() {
-      if (aiWorker) return aiWorker;
-      const code = document.getElementById("ai-worker-code").textContent;
-      const blob = new Blob([code], { type: "application/javascript" });
-      aiWorker = new Worker(URL.createObjectURL(blob), { type: "module" });
-
-      aiWorker.onmessage = (e) => {
-        const msg = e.data;
-        if (msg.type === "STATUS") {
-          document.getElementById("aiProgressLabel").textContent = msg.text;
-          document.getElementById("aiProgressFill").style.width = `${msg.pct}%`;
-          document.getElementById("aiProgressPct").textContent = `${msg.pct}%`;
-        } else if (msg.type === "PROGRESS") {
-          document.getElementById("aiProgressLabel").textContent = `Caching ${msg.file}...`;
-          document.getElementById("aiProgressFill").style.width = `${msg.pct}%`;
-          document.getElementById("aiProgressPct").textContent = `${msg.pct}%`;
-        } else if (msg.type === "READY") {
-          aiModelReady = true;
-          localStorage.setItem("lokiffice_ai_cached", "1");
-          document.getElementById("aiProgressWrap").classList.remove("visible");
-          document.getElementById("aiDownloadBox").style.display = "none";
-          document.getElementById("aiWorkspace").classList.add("visible");
-          const label = msg.device === "webgpu" ? "WebGPU Ready" : "WASM Ready";
-          const badge = document.getElementById("aiBackendBadge");
-          badge.textContent = label;
-          badge.style.color = "var(--tint-green)";
-          document.getElementById("botModalStatus").textContent = `OFFLINE ${label.toUpperCase()} · SMOL-360M`;
-          runAiVendorEnrichment();
-        } else if (msg.type === "VENDOR_LABELS") {
-          applyAiVendorLabels(msg.text || "");
-        } else if (msg.type === "RESULT") {
-          aiBusy = false;
-          document.getElementById("aiSendBtn").disabled = false;
-          document.getElementById("botSendBtn").disabled = false;
-          if (msg.target === "bot") {
-            appendBotReply(msg.text || "Done.", msg.requestId);
-          } else {
-            document.getElementById("aiOutputBox").textContent = msg.text || "Done.";
-          }
-        } else if (msg.type === "ERROR") {
-          aiBusy = false;
-          document.getElementById("aiSendBtn").disabled = false;
-          document.getElementById("botSendBtn").disabled = false;
-          document.getElementById("aiProgressWrap").classList.remove("visible");
-          document.getElementById("aiDownloadBox").style.display = "flex";
-          document.getElementById("aiDownloadBtn").disabled = false;
-          document.getElementById("aiDownloadBtn").textContent = "Retry Download (270 MB)";
-          if (msg.target === "bot") {
-            appendBotReply(`Offline AI notice: ${msg.error}`, msg.requestId);
-          } else {
-            document.getElementById("aiOutputBox").textContent = `Offline AI notice: ${msg.error}`;
-          }
-        }
-      };
-      return aiWorker;
-    }
-
-    function initOfflineWebGPUModel() {
-      document.getElementById("aiDownloadBtn").disabled = true;
-      document.getElementById("aiDownloadBox").style.display = "none";
-      document.getElementById("aiProgressWrap").classList.add("visible");
-      const worker = createAiWorker();
-      worker.postMessage({ type: "LOAD" });
-    }
-
-    async function purgeOfflineAiCache() {
-      localStorage.removeItem("lokiffice_ai_cached");
-      localStorage.removeItem("lokiffice_vendor_ai_map");
-      vendorAiCache = {};
-      if ("caches" in window) {
-        const keys = await caches.keys();
-        await Promise.all(keys.filter(k => k.includes("transformers")).map(k => caches.delete(k)));
-      }
-      aiModelReady = false;
-      document.getElementById("aiWorkspace").classList.remove("visible");
-      document.getElementById("aiDownloadBox").style.display = "flex";
-      document.getElementById("aiDownloadBtn").disabled = false;
-      document.getElementById("aiDownloadBtn").textContent = "Download Offline AI (270 MB)";
-      document.getElementById("aiBackendBadge").textContent = "Browser Sandbox";
-      document.getElementById("aiBackendBadge").style.color = "var(--label-secondary)";
-      closeSheet();
-    }
-
-    // Use local SmolLM2-360M to classify ambiguous vendor names semantically
-    function runAiVendorEnrichment() {
-      if (!aiModelReady) return;
-      const unknownVendors = [...new Set(
-        currentMonthSpendData.transactions
-          .map(t => t.merchant)
-          .filter(m => m && !vendorAiCache[m.toLowerCase()])
-      )].slice(0, 15);
-
-      if (unknownVendors.length > 0) {
-        createAiWorker().postMessage({ type: "CLASSIFY_VENDORS", vendors: unknownVendors });
-      }
-    }
-
-    function applyAiVendorLabels(rawText) {
-      const validCats = ["Food & Dining", "Commute & Fuel", "Groceries & Bills", "Shopping & Retail", "Peer UPI Transfer"];
-      rawText.split("\n").forEach(line => {
-        const parts = line.split("=>");
-        if (parts.length === 2) {
-          const v = parts[0].trim().toLowerCase();
-          const c = validCats.find(vc => parts[1].toLowerCase().includes(vc.toLowerCase()));
-          if (v && c) {
-            vendorAiCache[v] = c;
-          }
-        }
-      });
-      localStorage.setItem("lokiffice_vendor_ai_map", JSON.stringify(vendorAiCache));
-      renderSpendDashboard();
-    }
-
-    // Eye Privacy Toggle for Spend Numbers
-    function toggleSpendMask() {
-      spendRevealed = !spendRevealed;
-      const svg = document.getElementById("eyeIconSvg");
-      if (spendRevealed) {
-        svg.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
-      } else {
-        svg.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
-      }
-      renderSpendDashboard();
-    }
-
-    function formatMaskedCurrency(amount) {
-      if (!spendRevealed) return "₹XXXX";
-      return `₹${Math.round(amount).toLocaleString("en-IN")}`;
-    }
-
-    function buildLiveTelemetryContext() {
-      const savedIn = localStorage.getItem(todayKey());
-      const shiftLine = savedIn
-        ? `Checked in at ${format12(new Date(Number(savedIn)))}, target exit ${format12(new Date(Number(savedIn) + SHIFT_MS()))}.`
-        : `Not checked in yet. Leave home by ${document.getElementById("leaveHome").textContent}.`;
-      const parkLine = `Vehicle parked on floor ${parkedFloor} at X=${parkVecX.toFixed(1)}m, Y=${parkVecY.toFixed(1)}m from elevator.`;
-
-      const catSummary = Object.entries(currentMonthSpendData.categoryTotals)
-        .map(([k, v]) => `${k}: ₹${Math.round(v)}`)
-        .join(", ");
-
-      const foodTxs = currentMonthSpendData.transactions.filter(t => t.resolvedCategory === "Food & Dining");
-      const vendorCounts = {};
-      currentMonthSpendData.transactions.forEach(t => {
-        vendorCounts[t.merchant] = (vendorCounts[t.merchant] || 0) + 1;
-      });
-      const topVendors = Object.entries(vendorCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 6)
-        .map(([name, cnt]) => `${name} (${cnt}x)`)
-        .join(", ");
-
-      const spendLine = `${currentMonthSpendData.monthLabel} (1st of month to today) debits: Total ₹${Math.round(currentMonthSpendData.totalDebited)} across ${currentMonthSpendData.transactions.length} transactions. Breakdown: ${catSummary || "none"}. Food/Hotel visits this month: ${foodTxs.length}. Frequent vendors: ${topVendors || "none"}.`;
-      const weatherLine = `Office weather right now: ${state.tempC}°C, rain probability ${state.rainProb}%, traffic ${state.trafficLevel}, estimated commute ${state.liveMins} mins.`;
-
-      return `${shiftLine}\n${parkLine}\n${spendLine}\n${weatherLine}`;
-    }
-
-    function buildLocalContextPrompt(userQuery) {
-      return [
-        {
-          role: "system",
-          content: "You are LOKIFFICE Offline Copilot. Answer clearly and concisely using ONLY the live local device telemetry provided."
-        },
-        {
-          role: "user",
-          content: `Live Device Telemetry:\n${buildLiveTelemetryContext()}\n\nUser Question: ${userQuery}`
-        }
-      ];
-    }
-
-    function askOfflineAI(overrideQuery) {
-      if (!aiModelReady || aiBusy) return;
-      const inputEl = document.getElementById("aiPromptInput");
-      const query = (overrideQuery || inputEl.value).trim();
-      if (!query) return;
-      if (!overrideQuery) inputEl.value = "";
-
-      aiBusy = true;
-      document.getElementById("aiSendBtn").disabled = true;
-      document.getElementById("aiOutputBox").textContent = "Thinking locally on GPU...";
-      const messages = buildLocalContextPrompt(query);
-      createAiWorker().postMessage({ type: "GENERATE", messages, requestId: Date.now(), target: "inline" });
-    }
-
-    function runQuickAiPrompt(topic) {
-      if (topic === "spend") {
-        askOfflineAI(`Summarize my ${currentMonthSpendData.monthLabel} debited spending breakdown and top vendors.`);
-      } else if (topic === "briefing") {
-        askOfflineAI("Give me a quick status briefing on my shift schedule, live office weather, and commute.");
-      } else if (topic === "parking") {
-        askOfflineAI("Tell me clearly which floor and X/Y coordinates my vehicle is parked on.");
-      }
-    }
-
-    // Dedicated Full-Screen Bot Modal + Chart Generator
-    function openBotModal() {
-      document.getElementById("botModal").classList.add("open");
-    }
-    function closeBotModal() {
-      document.getElementById("botModal").classList.remove("open");
-    }
-
-    function renderSpendChartHtml() {
-      const entries = Object.entries(currentMonthSpendData.categoryTotals).sort((a, b) => b[1] - a[1]);
-      if (entries.length === 0) {
-        return `<div class="bot-chart-card" style="font-size:12px; color:var(--label-secondary);">No debited transactions recorded yet for ${currentMonthSpendData.monthLabel}.</div>`;
-      }
-      const maxVal = Math.max(...entries.map(e => e[1]), 1);
-      const rows = entries.map(([cat, val]) => {
-        const pct = Math.round((val / maxVal) * 100);
-        return `
-          <div class="bot-bar-row">
-            <div class="bot-bar-label">${cat}</div>
-            <div class="bot-bar-track"><div class="bot-bar-fill" style="width:${pct}%"></div></div>
-            <div class="bot-bar-val">₹${Math.round(val).toLocaleString("en-IN")}</div>
-          </div>
-        `;
-      }).join("");
-      return `<div class="bot-chart-card"><div style="font-size:11px; font-weight:700; color:var(--tint-cyan); margin-bottom:4px;">${currentMonthSpendData.monthLabel.toUpperCase()} SPEND CHART</div>${rows}</div>`;
-    }
-
-    let pendingBotChart = false;
-
-    function appendBotReply(text, reqId) {
-      const container = document.getElementById("botMessages");
-      const pendingEl = document.getElementById(`bot-pending-${reqId}`);
-      if (pendingEl) pendingEl.remove();
-
-      const bubble = document.createElement("div");
-      bubble.className = "msg-bubble msg-bot";
-      bubble.textContent = text;
-      if (pendingBotChart) {
-        bubble.innerHTML += renderSpendChartHtml();
-        pendingBotChart = false;
-      }
-      container.appendChild(bubble);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    async function sendBotChat(presetQuery) {
-      const inputEl = document.getElementById("botChatInput");
-      const query = (presetQuery || inputEl.value).trim();
-      if (!query) return;
-      if (!presetQuery) inputEl.value = "";
-
-      const container = document.getElementById("botMessages");
-      const userBubble = document.createElement("div");
-      userBubble.className = "msg-bubble msg-user";
-      userBubble.textContent = query;
-      container.appendChild(userBubble);
-
-      const lowerQ = query.toLowerCase();
-      pendingBotChart = lowerQ.includes("chart") || lowerQ.includes("graph") || lowerQ.includes("breakdown");
-
-      // Refresh live weather & SMS before answering so real-time APIs are always fresh
-      if (lowerQ.includes("weather") || lowerQ.includes("rain") || lowerQ.includes("traffic")) {
-        await refreshLiveIntel();
-      }
-      if (lowerQ.includes("spend") || lowerQ.includes("hotel") || lowerQ.includes("food") || lowerQ.includes("chart")) {
-        refreshSmsSpendDashboard(false);
-      }
-
-      const reqId = Date.now();
-      const thinkingBubble = document.createElement("div");
-      thinkingBubble.className = "msg-bubble msg-bot";
-      thinkingBubble.id = `bot-pending-${reqId}`;
-      thinkingBubble.textContent = aiModelReady ? "Analyzing live telemetry locally..." : "Generating instant telemetry summary...";
-      container.appendChild(thinkingBubble);
-      container.scrollTop = container.scrollHeight;
-
-      if (!aiModelReady) {
-        // Smart deterministic fallback if user hasn't downloaded the 270MB model yet
-        let reply = "";
-        if (lowerQ.includes("weather") || lowerQ.includes("rain")) {
-          reply = `At your office right now, it is ${state.tempC}°C with ${state.rainProb}% rain probability (${state.isRaining ? "wet roads, +20% buffer active" : "dry conditions"}). Traffic is ${state.trafficLevel}.`;
-        } else if (lowerQ.includes("hotel") || lowerQ.includes("food")) {
-          const foodTxs = currentMonthSpendData.transactions.filter(t => t.resolvedCategory === "Food & Dining");
-          const foodSum = foodTxs.reduce((s, t) => s + t.amount, 0);
-          reply = `In ${currentMonthSpendData.monthLabel}, you had ${foodTxs.length} Food & Dining debit transactions totaling ₹${Math.round(foodSum).toLocaleString("en-IN")}.`;
-        } else if (lowerQ.includes("park")) {
-          reply = `Your vehicle is parked on Floor ${parkedFloor} at X=${parkVecX >= 0 ? "+" : ""}${parkVecX.toFixed(1)}m, Y=${parkVecY >= 0 ? "+" : ""}${parkVecY.toFixed(1)}m from the elevator.`;
-        } else {
-          reply = `In ${currentMonthSpendData.monthLabel} (from the 1st of the month), total debits are ₹${Math.round(currentMonthSpendData.totalDebited).toLocaleString("en-IN")} across ${currentMonthSpendData.transactions.length} transactions. Download SmolLM2-360M on the home card for open-ended offline reasoning.`;
-        }
-        setTimeout(() => appendBotReply(reply, reqId), 200);
-        return;
-      }
-
-      if (aiBusy) return;
-      aiBusy = true;
-      document.getElementById("botSendBtn").disabled = true;
-      const messages = buildLocalContextPrompt(query);
-      createAiWorker().postMessage({ type: "GENERATE", messages, requestId: reqId, target: "bot" });
-    }
-
-    const SHIFT_MS = () => shiftHours * 60 * 60 * 1000;
-    const CIRCUMFERENCE = 226.2;
-    const todayIso = () => new Date().toISOString().slice(0, 10);
-    const todayKey = () => "lokiffice_in_" + todayIso();
-
-    let state = {
+    let liveIntel = {
       distanceKm: 17.0,
       baseMins: 38,
       liveMins: 55,
       delayMins: 10,
       trafficLevel: "Moderate",
-      roadSummary: "Primary Arterial Corridor",
+      roadSummary: "Primary Corridor",
       tempC: 30,
       rainProb: 0,
       isRaining: false
     };
 
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("checkin") === "1") {
-      if (!localStorage.getItem(todayKey())) {
-        startShift(Date.now());
-      }
-      window.history.replaceState({}, document.title, window.location.pathname);
+    const SHIFT_MS = () => shiftHours * 60 * 60 * 1000;
+    const CIRCUMFERENCE = 245;
+    const todayIso = () => new Date().toISOString().slice(0, 10);
+    const todayKey = () => "lokiffice_in_" + todayIso();
+    const format12 = (d) => d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const formatINR = (val) => `₹${Math.round(Number(val) || 0).toLocaleString("en-IN")}`;
+    const formatMaskedINR = (val) => spendRevealed ? formatINR(val) : "₹••••";
+
+    // Greeting Header
+    function updateGreeting() {
+      const hr = new Date().getHours();
+      const greet = hr < 12 ? "GOOD MORNING" : hr < 17 ? "GOOD AFTERNOON" : "GOOD EVENING";
+      const dateStr = new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase();
+      document.getElementById("greetingSub").textContent = `${greet} · ${dateStr}`;
     }
 
-    document.getElementById("dateHeader").textContent =
-      new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }).toUpperCase();
-
-    const homeInput = document.getElementById("homeBy");
-    function format12(date) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    // 3-Tab Navigation
+    function switchTab(tab) {
+      ["today", "spends", "jarvis"].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle("active", t === tab);
+        document.getElementById(`dock-${t}`).classList.toggle("active", t === tab);
+      });
+      if (tab === "spends") refreshSmsSpendDashboard(false);
     }
 
-    function updateContextWorkspace() {
+    // Context-Aware Today Workspace (Shows Shift + Parking when Checked-In; Commute Planner when Away)
+    function updateAdaptiveTodayUI() {
       const isCheckedIn = Boolean(localStorage.getItem(todayKey()));
-      document.getElementById("scifiParkingCard").style.display = isCheckedIn ? "block" : "none";
-      document.getElementById("leaveCalculatorCard").style.display = isCheckedIn ? "none" : "block";
+      document.getElementById("atOfficeCard").style.display = isCheckedIn ? "block" : "none";
+      document.getElementById("parkingCard").style.display = isCheckedIn ? "block" : "none";
+      document.getElementById("preCommuteCard").style.display = isCheckedIn ? "none" : "block";
+      updateJarvisBriefingStrip();
     }
 
-    let rotAngle = 0.55;
-    function renderSciFi3DParking() {
-      const canvas = document.getElementById("parking3dCanvas");
-      if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      if (rect.width === 0) {
-        requestAnimationFrame(renderSciFi3DParking);
-        return;
+    function updateJarvisBriefingStrip() {
+      const el = document.getElementById("jarvisBriefingStrip");
+      const saved = localStorage.getItem(todayKey());
+      const activeTxs = getActiveMonthTransactions();
+      const total = activeTxs.reduce((s, t) => s + t.amount, 0);
+
+      if (saved) {
+        const outTime = format12(new Date(Number(saved) + SHIFT_MS()));
+        const fName = FLOOR_NAMES[parkState.floor] || parkState.floor;
+        el.innerHTML = `<b>J.A.R.V.I.S.</b> You wrap up at <b>${outTime}</b>. Vehicle is on <b>${fName}</b> · ${liveIntel.tempC}°C outside (${liveIntel.rainProb}% rain).`;
+      } else {
+        const leave = document.getElementById("leaveHome").textContent;
+        el.innerHTML = `<b>J.A.R.V.I.S.</b> Leave by <b>${leave}</b> (${liveIntel.liveMins}m · ${liveIntel.trafficLevel} traffic). ${activeTxs.length} debits tracked this month — tap to ask anything.`;
       }
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      const ctx = canvas.getContext("2d");
-      ctx.scale(dpr, dpr);
+    }
 
-      const W = rect.width;
-      const H = rect.height;
-      ctx.clearRect(0, 0, W, H);
+    // ==================== FIX #2 & #3: PLAIN ENGLISH PARKING UI ====================
+    function renderParkingCard() {
+      const fCode = parkState.floor || "G";
+      const fName = FLOOR_NAMES[fCode] || fCode;
 
-      rotAngle += 0.008;
-      const cosA = Math.cos(rotAngle);
-      const sinA = Math.sin(rotAngle);
+      document.getElementById("parkFloorEnglish").textContent = fName;
+      document.getElementById("parkSourceChip").textContent = parkState.source || "Auto Sensor";
 
-      function project3D(x, y, z) {
-        const rx = x * cosA - y * sinA;
-        const ry = x * sinA + y * cosA;
-        const isoX = W * 0.5 + rx * 1.45;
-        const isoY = H * 0.76 - z * 28 + ry * 0.55;
-        return { x: isoX, y: isoY };
-      }
-
-      const levels = [
-        { id: "G", z: 0, label: "G" },
-        { id: "L1", z: 1, label: "L1" },
-        { id: "L2", z: 2, label: "L2" },
-        { id: "L3", z: 3, label: "L3" },
-        { id: "L4", z: 4, label: "L4" }
-      ];
-
-      const o = project3D(-55, -55, 0);
-      const axX = project3D(65, -55, 0);
-      const axY = project3D(-55, 65, 0);
-      const axZ = project3D(-55, -55, 4.6);
-
-      ctx.strokeStyle = "rgba(100, 210, 255, 0.35)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(o.x, o.y); ctx.lineTo(axX.x, axX.y);
-      ctx.moveTo(o.x, o.y); ctx.lineTo(axY.x, axY.y);
-      ctx.moveTo(o.x, o.y); ctx.lineTo(axZ.x, axZ.y);
-      ctx.stroke();
-
-      ctx.fillStyle = "#64D2FF";
-      ctx.font = "600 9px monospace";
-      ctx.fillText("X", axX.x + 4, axX.y);
-      ctx.fillText("Y", axY.x + 4, axY.y);
-      ctx.fillText("Z", axZ.x - 3, axZ.y - 4);
-
-      const half = 48;
-      levels.forEach(lvl => {
-        const isActive = lvl.id === parkedFloor;
-        const cnt = floorCounts[lvl.id] || 0;
-        const p1 = project3D(-half, -half, lvl.z);
-        const p2 = project3D(half, -half, lvl.z);
-        const p3 = project3D(half, half, lvl.z);
-        const p4 = project3D(-half, half, lvl.z);
-
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.lineTo(p3.x, p3.y);
-        ctx.lineTo(p4.x, p4.y);
-        ctx.closePath();
-
-        if (isActive) {
-          ctx.fillStyle = "rgba(10, 132, 255, 0.24)";
-          ctx.strokeStyle = "#64D2FF";
-          ctx.lineWidth = 1.8;
-        } else if (cnt >= 160) {
-          ctx.fillStyle = "rgba(255, 69, 58, 0.12)";
-          ctx.strokeStyle = "rgba(255, 69, 58, 0.45)";
-          ctx.lineWidth = 1;
-        } else {
-          ctx.fillStyle = "rgba(48, 209, 88, 0.08)";
-          ctx.strokeStyle = "rgba(100, 210, 255, 0.25)";
-          ctx.lineWidth = 1;
-        }
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = isActive ? "#FFFFFF" : "rgba(235,235,245,0.65)";
-        ctx.font = isActive ? "bold 10px monospace" : "9px monospace";
-        ctx.fillText(`${lvl.label} [${cnt}]`, p2.x + 6, p2.y + 3);
-
-        if (isActive) {
-          const clampedX = Math.max(-38, Math.min(38, parkVecX));
-          const clampedY = Math.max(-38, Math.min(38, parkVecY));
-          const liftPt = project3D(0, 0, lvl.z);
-          const bayPt = project3D(clampedX, clampedY, lvl.z);
-
-          ctx.strokeStyle = "#30D158";
-          ctx.setLineDash([3, 3]);
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          ctx.moveTo(liftPt.x, liftPt.y);
-          ctx.lineTo(bayPt.x, bayPt.y);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
-          ctx.fillStyle = "#0A84FF";
-          ctx.beginPath();
-          ctx.arc(liftPt.x, liftPt.y, 3.5, 0, Math.PI * 2);
-          ctx.fill();
-
-          const pulse = 5 + Math.sin(rotAngle * 5) * 2;
-          ctx.fillStyle = "rgba(48, 209, 88, 0.35)";
-          ctx.beginPath();
-          ctx.arc(bayPt.x, bayPt.y, pulse, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = "#30D158";
-          ctx.beginPath();
-          ctx.arc(bayPt.x, bayPt.y, 3.8, 0, Math.PI * 2);
-          ctx.fill();
-        }
+      document.querySelectorAll(".tower-lvl").forEach(el => {
+        el.classList.toggle("parked", el.dataset.floor === fCode);
       });
 
-      requestAnimationFrame(renderSciFi3DParking);
-    }
-
-    function updateDndSetupButtonState() {
-      const btn = document.getElementById("dndSetupBtn");
-      const hint = document.getElementById("dndStatusHint");
-      let granted = false;
-      if (window.AndroidBridge && typeof window.AndroidBridge.isDndAccessGranted === "function") {
-        granted = window.AndroidBridge.isDndAccessGranted();
-      }
-      if (granted) {
-        btn.textContent = "DND Access Granted · Tap to Disable in Settings";
-        btn.style.color = "var(--tint-green)";
-        hint.textContent = "System DND & Silent profile control is active. Tap below if you want to revoke it in Android Settings.";
+      const steps = Math.round((parkState.walkMeters || 0) / 0.72);
+      if (steps >= 4 && parkState.walkDir) {
+        document.getElementById("parkDirectionsEnglish").textContent =
+          `Parked about ${steps} steps (${parkState.walkMeters}m) ${parkState.walkDir} from the lift lobby.`;
       } else {
-        btn.textContent = "Enable Auto-DND & Silent Profile Access";
-        btn.style.color = "var(--tint-purple)";
-        hint.textContent = "Grant Do Not Disturb access once so LOKIFFICE can silence calls automatically while commuting.";
+        document.getElementById("parkDirectionsEnglish").textContent =
+          `Your vehicle is pinned on ${fName}. Tap any floor on the left if you parked on a different level.`;
       }
-    }
 
-    function handleDndSetupButton() {
-      if (window.AndroidBridge && typeof window.AndroidBridge.openDndPolicySettings === "function") {
-        window.AndroidBridge.openDndPolicySettings();
+      if (parkState.ts > 0) {
+        document.getElementById("parkTimestampEnglish").textContent =
+          `Locked at ${format12(new Date(parkState.ts))} · ${parkState.source}`;
       } else {
-        alert("On iPhone, configure Settings → Focus → Driving → Turn On Automatically → While Driving.");
+        document.getElementById("parkTimestampEnglish").textContent =
+          `Sensors monitor ramp climbs automatically when approaching campus`;
       }
     }
 
-    function openSheet() {
-      document.getElementById("officeAddressInput").value = `${officeData.lat}, ${officeData.lng}`;
-      document.getElementById("firebaseUrlInput").value = firebaseUrl;
-      if (homeData) {
-        document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
+    function correctParkingFloor(floorCode) {
+      parkState.floor = floorCode;
+      parkState.ts = Date.now();
+      parkState.source = "Pinned by you";
+      localStorage.setItem("lokiffice_park_floor", floorCode);
+      localStorage.setItem("lokiffice_park_ts", String(parkState.ts));
+      if (window.AndroidBridge && typeof window.AndroidBridge.setManualParkingFloor === "function") {
+        window.AndroidBridge.setManualParkingFloor(floorCode);
       }
-      updateDndSetupButtonState();
-      document.getElementById("sheetBackdrop").classList.add("open");
-    }
-    function closeSheet() { document.getElementById("sheetBackdrop").classList.remove("open"); }
-    function closeSheetOnBg(e) { if (e.target.id === "sheetBackdrop") closeSheet(); }
-
-    function setRadiusPreset(r, el) {
-      radiusMeters = r;
-      localStorage.setItem("lokiffice_radius_m", String(r));
-      document.querySelectorAll("#radiusSeg .seg-btn").forEach(b => b.classList.remove("active"));
-      if (el) el.classList.add("active");
-      syncNativeGeofence();
+      renderParkingCard();
+      updateJarvisBriefingStrip();
     }
 
-    function syncNativeGeofence() {
-      if (window.AndroidBridge) {
-        if (typeof window.AndroidBridge.updateOfficeGeofence === "function") {
-          window.AndroidBridge.updateOfficeGeofence(officeData.lat, officeData.lng, radiusMeters);
-        }
-        if (typeof window.AndroidBridge.setFirebaseUrl === "function") {
-          window.AndroidBridge.setFirebaseUrl(firebaseUrl);
-        }
+    function triggerSensorTrack() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.startParkingSensorTracking === "function") {
+        window.AndroidBridge.startParkingSensorTracking();
+        document.getElementById("parkTimestampEnglish").textContent = "Ramp & floor sensor tracking started now";
       }
     }
 
-    function toggleManualRideMode() {
-      manualRideActive = !manualRideActive;
-      if (window.AndroidBridge && typeof window.AndroidBridge.setRideMode === "function") {
-        window.AndroidBridge.setRideMode(manualRideActive);
-      }
-      renderRideBanner(manualRideActive);
+    // ==================== FIX #4: ACCURATE ₹ SPEND ANALYTICS ====================
+    function getActiveMonthTransactions() {
+      return rawMonthTxs.filter(t => !ignoredTxIds.has(t.id));
     }
 
-    function renderRideBanner(isActive) {
-      const banner = document.getElementById("rideBanner");
-      const title = document.getElementById("rideStatusTitle");
-      const sub = document.getElementById("rideStatusSub");
-      const btn = document.getElementById("rideToggleBtn");
-
-      if (isActive) {
-        banner.classList.add("active");
-        title.textContent = "Ride Mode DND · SILENT ON";
-        sub.textContent = "Ringer set to Silent + DND active · Calls blocked";
-        btn.textContent = "End Ride";
-      } else {
-        banner.classList.remove("active");
-        title.textContent = "Ride Mode DND · Standby";
-        sub.textContent = "Silences calls on vehicle Bluetooth or motion";
-        btn.textContent = "Test Ride";
-      }
+    function computeSpendAnalytics() {
+      const txs = getActiveMonthTransactions();
+      const total = txs.reduce((s, t) => s + Number(t.amount || 0), 0);
+      const byCategory = {};
+      const byVendor = {};
+      txs.forEach(t => {
+        const cat = t.category || "UPI Transfer";
+        byCategory[cat] = (byCategory[cat] || 0) + Number(t.amount || 0);
+        const v = t.merchant || "Bank Debit";
+        if (!byVendor[v]) byVendor[v] = { count: 0, total: 0, category: cat };
+        byVendor[v].count += 1;
+        byVendor[v].total += Number(t.amount || 0);
+      });
+      return { txs, total, byCategory, byVendor };
     }
 
-    function refreshSmsSpendDashboard(triggerAi = false) {
+    function toggleSpendMask() {
+      spendRevealed = !spendRevealed;
+      const svg = document.getElementById("eyeIconSvg");
+      svg.innerHTML = spendRevealed
+        ? `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
+        : `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+      renderSpendDashboard();
+    }
+
+    function ignoreTransaction(id, e) {
+      e.stopPropagation();
+      ignoredTxIds.add(id);
+      localStorage.setItem("lokiffice_ignored_tx", JSON.stringify([...ignoredTxIds]));
+      renderSpendDashboard();
+    }
+
+    function restoreIgnoredTxs() {
+      ignoredTxIds.clear();
+      localStorage.removeItem("lokiffice_ignored_tx");
+      renderSpendDashboard();
+    }
+
+    function refreshSmsSpendDashboard() {
       if (!window.AndroidBridge) return;
       try {
         const raw = typeof window.AndroidBridge.scanCurrentMonthSmsJson === "function"
@@ -1953,40 +1351,23 @@
         const data = JSON.parse(raw);
         if (!data.permissionGranted) return;
 
-        currentMonthSpendData.monthLabel = data.monthLabel || currentMonthSpendData.monthLabel;
-        currentMonthSpendData.totalDebited = Number(data.totalDebited) || 0;
-        currentMonthSpendData.transactions = data.transactions || [];
-
+        monthLabel = data.monthLabel || monthLabel;
+        rawMonthTxs = data.transactions || [];
         renderSpendDashboard();
-        if (triggerAi) {
-          runAiVendorEnrichment();
-        }
+        updateJarvisBriefingStrip();
       } catch (_e) {}
     }
 
     function renderSpendDashboard() {
-      const monthName = currentMonthSpendData.monthLabel;
-      document.getElementById("spendMonthHeader").textContent = `${monthName} Debits`;
-      document.getElementById("spendRangeSub").textContent = `1 ${monthName.split(" ")[0]} to Today · Credits Excluded`;
-
-      const txs = currentMonthSpendData.transactions;
-      const total = currentMonthSpendData.totalDebited;
-
-      document.getElementById("spendTotalAmt").textContent = formatMaskedCurrency(total);
+      const { txs, total, byCategory } = computeSpendAnalytics();
+      document.getElementById("spendMonthHeader").textContent = `${monthLabel} Debits`;
+      document.getElementById("spendRangeSub").textContent = `1 ${monthLabel.split(" ")[0]} to Today · Credits & Balances Excluded`;
+      document.getElementById("spendTotalAmt").textContent = formatMaskedINR(total);
       document.getElementById("spendTxCount").textContent = `${txs.length} Debits`;
+      document.getElementById("restoreHiddenBtn").style.display = ignoredTxIds.size > 0 ? "inline-flex" : "none";
 
-      // Group strictly by specific vendor categories (AI-resolved first, heuristic fallback second — no generic "Other" bucket)
-      const catTotals = {};
-      txs.forEach(tx => {
-        const aiCat = vendorAiCache[(tx.merchant || "").toLowerCase()];
-        const resolved = aiCat || tx.category || "UPI Merchant / Transfer";
-        tx.resolvedCategory = resolved;
-        catTotals[resolved] = (catTotals[resolved] || 0) + Number(tx.amount || 0);
-      });
-      currentMonthSpendData.categoryTotals = catTotals;
-
-      const palette = ["#0A84FF", "#FF9F0A", "#BF5AF2", "#30D158", "#64D2FF", "#FF453A"];
-      const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+      const palette = ["#38BDF8", "#FBBF24", "#A78BFA", "#34D399", "#FB7185", "#60A5FA"];
+      const sortedCats = Object.entries(byCategory).sort((a, b) => b[1] - a[1]);
 
       const barEl = document.getElementById("dynamicSpendBar");
       const gridEl = document.getElementById("dynamicCatGrid");
@@ -1994,104 +1375,397 @@
       gridEl.innerHTML = "";
 
       if (sortedCats.length === 0) {
-        barEl.innerHTML = `<div class="spend-seg" style="width:100%; background:var(--bg-tertiary);"></div>`;
+        barEl.innerHTML = `<div class="bar-seg" style="width:100%; background:var(--surface-3);"></div>`;
       } else {
         const denom = total > 0 ? total : 1;
-        sortedCats.forEach(([catName, val], idx) => {
+        sortedCats.forEach(([cat, val], idx) => {
           const color = palette[idx % palette.length];
           const seg = document.createElement("div");
-          seg.className = "spend-seg";
+          seg.className = "bar-seg";
           seg.style.width = `${(val / denom) * 100}%`;
           seg.style.background = color;
           barEl.appendChild(seg);
 
-          const box = document.createElement("div");
-          box.className = "cat-box";
-          box.innerHTML = `
-            <div class="cat-top"><span class="cat-dot" style="background:${color};"></span>${catName}</div>
-            <div class="cat-val">${formatMaskedCurrency(val)}</div>
+          const card = document.createElement("div");
+          card.className = "cat-card";
+          card.innerHTML = `
+            <div class="cat-head"><span class="cat-dot" style="background:${color};"></span>${cat}</div>
+            <div class="cat-amt">${formatMaskedINR(val)}</div>
           `;
-          gridEl.appendChild(box);
+          gridEl.appendChild(card);
         });
       }
 
       const listEl = document.getElementById("txList");
       listEl.innerHTML = "";
       if (txs.length === 0) {
-        listEl.innerHTML = `<div class="tx-item"><span class="tx-meta">No debited bank/UPI SMS found since 1st of ${monthName}.</span></div>`;
+        listEl.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); padding:8px 0;">No debited bank/UPI SMS found since 1st of ${monthLabel}.</div>`;
         return;
       }
-      txs.slice(0, 20).forEach(tx => {
-        const d = new Date(tx.dateMs).toLocaleDateString([], { month: "short", day: "numeric" });
+
+      txs.slice(0, 30).forEach(tx => {
+        const d = new Date(tx.dateMs).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
         const row = document.createElement("div");
-        row.className = "tx-item";
+        row.className = "tx-row";
+        row.onclick = () => alert(`SMS Verification:\n\nVendor: ${tx.merchant}\nAmount: ${formatINR(tx.amount)}\nCategory: ${tx.category}\n\nOriginal SMS:\n"${tx.snippet || 'N/A'}"`);
         row.innerHTML = `
-          <div>
-            <div class="tx-name">${tx.merchant}</div>
-            <div class="tx-meta">${tx.resolvedCategory} · ${d}</div>
+          <div style="min-width:0; flex:1; padding-right:8px;">
+            <div class="tx-title">${tx.merchant}</div>
+            <div class="tx-sub">${tx.category} · ${d}</div>
           </div>
-          <div class="tx-amt">-${formatMaskedCurrency(tx.amount)}</div>
+          <div class="tx-right">
+            <div class="tx-val">-${formatMaskedINR(tx.amount)}</div>
+            <button class="tx-hide-btn" onclick="ignoreTransaction('${tx.id}', event)">Ignore</button>
+          </div>
         `;
         listEl.appendChild(row);
       });
+    }
+
+    // ==================== FIX #4: JARVIS HYBRID INTELLIGENCE ENGINE ====================
+    // Deterministic local analytics & action router (100% accurate ₹ math, charts, parking, weather)
+    // + Optional SmolLM2-360M WebGPU LLM for open-ended conversation.
+    let aiWorker = null;
+    let aiModelReady = false;
+    let aiBusy = false;
+
+    function createAiWorker() {
+      if (aiWorker) return aiWorker;
+      const blob = new Blob([document.getElementById("ai-worker-code").textContent], { type: "application/javascript" });
+      aiWorker = new Worker(URL.createObjectURL(blob), { type: "module" });
+      aiWorker.onmessage = (e) => {
+        const msg = e.data;
+        if (msg.type === "STATUS" || msg.type === "PROGRESS") {
+          document.getElementById("aiProgressWrap").style.display = "block";
+          document.getElementById("aiProgressLabel").textContent = msg.text || `Caching ${msg.file}...`;
+          document.getElementById("aiProgressFill").style.width = `${msg.pct}%`;
+          document.getElementById("aiProgressPct").textContent = `${msg.pct}%`;
+        } else if (msg.type === "READY") {
+          aiModelReady = true;
+          localStorage.setItem("lokiffice_ai_cached", "1");
+          document.getElementById("aiProgressWrap").style.display = "none";
+          document.getElementById("aiStatusTitle").textContent = `J.A.R.V.I.S. · SmolLM2 (${msg.device.toUpperCase()})`;
+          document.getElementById("aiStatusSub").textContent = "Offline neural engine + exact local analytics active";
+          document.getElementById("aiDownloadBtn").style.display = "none";
+        } else if (msg.type === "RESULT") {
+          aiBusy = false;
+          replacePendingBotMsg(msg.requestId, msg.text || "Done.");
+        } else if (msg.type === "ERROR") {
+          aiBusy = false;
+          document.getElementById("aiProgressWrap").style.display = "none";
+          document.getElementById("aiDownloadBtn").disabled = false;
+          if (msg.requestId) replacePendingBotMsg(msg.requestId, "I handled your local telemetry directly, though the optional neural model hit a notice.");
+        }
+      };
+      return aiWorker;
+    }
+
+    function initOfflineWebGPUModel() {
+      document.getElementById("aiDownloadBtn").disabled = true;
+      document.getElementById("aiProgressWrap").style.display = "block";
+      createAiWorker().postMessage({ type: "LOAD" });
+    }
+
+    async function purgeOfflineAiCache() {
+      localStorage.removeItem("lokiffice_ai_cached");
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(k => k.includes("transformers")).map(k => caches.delete(k)));
+      }
+      aiModelReady = false;
+      document.getElementById("aiDownloadBtn").style.display = "inline-flex";
+      document.getElementById("aiDownloadBtn").disabled = false;
+      closeSheet();
+    }
+
+    function appendChatBubble(role, text, widgetHtml = "", id = "") {
+      const stream = document.getElementById("chatStream");
+      const div = document.createElement("div");
+      div.className = `bubble ${role}`;
+      if (id) div.id = id;
+      div.textContent = text;
+      if (widgetHtml) div.innerHTML += widgetHtml;
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function replacePendingBotMsg(reqId, text, widgetHtml = "") {
+      const el = document.getElementById(`pending-${reqId}`);
+      if (el) el.remove();
+      appendChatBubble("bot", text, widgetHtml);
+    }
+
+    function buildSpendChartWidget(analytics) {
+      const entries = Object.entries(analytics.byCategory).sort((a, b) => b[1] - a[1]);
+      if (entries.length === 0) {
+        return `<div class="inline-widget" style="font-size:12px; color:var(--text-muted);">No verified debit SMS transactions found yet for ${monthLabel}.</div>`;
+      }
+      const maxVal = Math.max(...entries.map(e => e[1]), 1);
+      const bars = entries.map(([cat, val]) => {
+        const pct = Math.round((val / maxVal) * 100);
+        return `
+          <div class="w-bar-row">
+            <div class="w-label">${cat}</div>
+            <div class="w-track"><div class="w-fill" style="width:${pct}%"></div></div>
+            <div class="w-val">${formatINR(val)}</div>
+          </div>
+        `;
+      }).join("");
+      return `
+        <div class="inline-widget">
+          <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--cyan); margin-bottom:6px;">
+            <span>${monthLabel.toUpperCase()} DEBITS</span>
+            <span>TOTAL: ${formatINR(analytics.total)}</span>
+          </div>
+          ${bars}
+        </div>
+      `;
+    }
+
+    function buildRecentTxsWidget(txs) {
+      if (txs.length === 0) return "";
+      const rows = txs.slice(0, 5).map(t => {
+        const d = new Date(t.dateMs).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+        return `
+          <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:12px;">
+            <div><strong>${t.merchant}</strong><div style="font-size:10px; color:var(--text-muted);">${t.category} · ${d}</div></div>
+            <strong style="color:var(--rose);">${formatINR(t.amount)}</strong>
+          </div>
+        `;
+      }).join("");
+      return `<div class="inline-widget">${rows}</div>`;
+    }
+
+    async function sendJarvisQuery(preset) {
+      const input = document.getElementById("jarvisInput");
+      const q = (preset || input.value).trim();
+      if (!q) return;
+      if (!preset) input.value = "";
+
+      appendChatBubble("user", q);
+      const lower = q.toLowerCase();
+
+      // Always pull freshest SMS & parking before answering
+      refreshSmsSpendDashboard();
+      pollNativeSensorState();
+
+      // 1. Voice/Chat Command: Set Parking Floor ("I parked on 2nd floor")
+      const setFloorMatch = lower.match(/(?:parked|set|move).*(ground|0|1st|first|1|2nd|second|2|3rd|third|3|4th|fourth|4)\s*(?:floor|level)?/);
+      if (setFloorMatch && !lower.includes("where") && !lower.includes("?")) {
+        const tok = setFloorMatch[1];
+        const code = tok.includes("g") || tok === "0" ? "G" : tok.startsWith("1") || tok === "first" ? "L1" : tok.startsWith("2") || tok === "second" ? "L2" : tok.startsWith("3") || tok === "third" ? "L3" : "L4";
+        correctParkingFloor(code);
+        appendChatBubble("bot", `Got it — I've updated your parked location to ${FLOOR_NAMES[code]}.`);
+        return;
+      }
+
+      // 2. Where Did I Park?
+      if (lower.includes("park") || lower.includes("bike") || lower.includes("scooter") || lower.includes("car") || lower.includes("floor")) {
+        const fName = FLOOR_NAMES[parkState.floor] || parkState.floor;
+        const steps = Math.round((parkState.walkMeters || 0) / 0.72);
+        const walkSentence = steps >= 4 && parkState.walkDir
+          ? `It's roughly ${steps} steps (${parkState.walkMeters}m) ${parkState.walkDir} from the lift lobby.`
+          : `No lift walk steps were recorded yet.`;
+        const timeSentence = parkState.ts > 0 ? `Locked at ${format12(new Date(parkState.ts))} via ${parkState.source}.` : `Sensors haven't logged a fresh garage entry today yet — you can tell me "I parked on 2nd floor" anytime to pin it.`;
+        appendChatBubble("bot", `Your vehicle is on ${fName}.\n${walkSentence}\n${timeSentence}`);
+        return;
+      }
+
+      // 3. Recent Spends / Dashboard / Analytics / Charts (100% Exact ₹ Data)
+      if (lower.includes("spend") || lower.includes("expense") || lower.includes("debit") || lower.includes("chart") || lower.includes("dashboard") || lower.includes("recent") || lower.includes("money") || lower.includes("food") || lower.includes("hotel") || lower.includes("fuel")) {
+        const analytics = computeSpendAnalytics();
+
+        if (lower.includes("food") || lower.includes("hotel") || lower.includes("eat") || lower.includes("cafe")) {
+          const foodTxs = analytics.txs.filter(t => t.category === "Food & Dining");
+          const foodSum = foodTxs.reduce((s, t) => s + t.amount, 0);
+          const topPlaces = Object.entries(analytics.byVendor)
+            .filter(([_, info]) => info.category === "Food & Dining")
+            .sort((a, b) => b[1].total - a[1].total)
+            .slice(0, 3)
+            .map(([name, info]) => `${name} (${info.count}x · ${formatINR(info.total)})`)
+            .join(", ");
+          const reply = foodTxs.length > 0
+            ? `In ${monthLabel}, you spent ${formatINR(foodSum)} across ${foodTxs.length} Food & Dining visits.\nTop spots: ${topPlaces}.`
+            : `No Food & Dining debits found yet in ${monthLabel}.`;
+          appendChatBubble("bot", reply, buildRecentTxsWidget(foodTxs));
+          return;
+        }
+
+        if (lower.includes("recent") || lower.includes("last")) {
+          const latest = analytics.txs[0];
+          const reply = latest
+            ? `Your most recent debit in ${monthLabel} was ${formatINR(latest.amount)} at ${latest.merchant} (${latest.category}). Total month debits: ${formatINR(analytics.total)} across ${analytics.txs.length} transactions.`
+            : `No debited transactions recorded yet in ${monthLabel}.`;
+          appendChatBubble("bot", reply, buildRecentTxsWidget(analytics.txs));
+          return;
+        }
+
+        // Full Spend Dashboard + Chart
+        const topCat = Object.entries(analytics.byCategory).sort((a, b) => b[1] - a[1])[0];
+        const avgPerDay = Math.round(analytics.total / Math.max(1, new Date().getDate()));
+        const summary = analytics.txs.length > 0
+          ? `${monthLabel} Spend Summary:\n• Total Debited: ${formatINR(analytics.total)} (${analytics.txs.length} transactions)\n• Daily Average: ${formatINR(avgPerDay)}/day\n• Top Category: ${topCat[0]} (${formatINR(topCat[1])})`
+          : `No verified debit SMS transactions found for ${monthLabel} yet. Ensure SMS permission is allowed in App Info.`;
+        appendChatBubble("bot", summary, buildSpendChartWidget(analytics) + buildRecentTxsWidget(analytics.txs.slice(0, 3)));
+        return;
+      }
+
+      // 4. Office Weather & Traffic
+      if (lower.includes("weather") || lower.includes("rain") || lower.includes("traffic") || lower.includes("commute") || lower.includes("leave")) {
+        await refreshLiveIntel();
+        const saved = localStorage.getItem(todayKey());
+        const shiftPart = saved
+          ? `Your shift ends at ${format12(new Date(Number(saved) + SHIFT_MS()))}.`
+          : `Recommended departure from home: ${document.getElementById("leaveHome").textContent}.`;
+        appendChatBubble("bot", `Office Weather: ${liveIntel.tempC}°C with ${liveIntel.rainProb}% rain probability (${liveIntel.isRaining ? "wet roads expected" : "dry conditions"}).\nTraffic: ${liveIntel.trafficLevel} (~${liveIntel.liveMins} mins via ${liveIntel.roadSummary}).\n${shiftPart}`);
+        return;
+      }
+
+      // 5. Shift / Timer Status
+      if (lower.includes("shift") || lower.includes("time") || lower.includes("logout") || lower.includes("out")) {
+        const saved = localStorage.getItem(todayKey());
+        if (saved) {
+          const outDate = new Date(Number(saved) + SHIFT_MS());
+          appendChatBubble("bot", `You checked in at ${format12(new Date(Number(saved)))}. Your ${shiftHours}-hour shift completes at ${format12(outDate)} (${document.getElementById("countdown").textContent} remaining).`);
+        } else {
+          appendChatBubble("bot", `You haven't checked in yet today. Tap "Check In Now" on the Today tab when you arrive.`);
+        }
+        return;
+      }
+
+      // 6. Open-Ended Conversation -> Local SmolLM2-360M LLM (if downloaded)
+      if (aiModelReady && !aiBusy) {
+        const reqId = Date.now();
+        aiBusy = true;
+        appendChatBubble("bot", "Thinking locally...", "", `pending-${reqId}`);
+        const analytics = computeSpendAnalytics();
+        const ctx = `Month: ${monthLabel}, Total Debits: ${formatINR(analytics.total)}, Parked Floor: ${FLOOR_NAMES[parkState.floor]}, Weather: ${liveIntel.tempC}C (${liveIntel.rainProb}% rain).`;
+        createAiWorker().postMessage({
+          type: "GENERATE",
+          requestId: reqId,
+          messages: [
+            { role: "system", content: "You are J.A.R.V.I.S. inside LOKIFFICE. Answer concisely using Indian Rupees (₹) for currency." },
+            { role: "user", content: `Context: ${ctx}\nQuestion: ${q}` }
+          ]
+        });
+      } else {
+        appendChatBubble("bot", `I can instantly answer questions about your ${monthLabel} spends, charts, recent transactions, parking floor, office weather, and shift timer — or tap "Get LLM (270MB)" above for open-ended offline chat.`);
+      }
+    }
+
+    // ==================== BLUETOOTH PICKER & SETUP ====================
+    function renderPairedBluetoothList() {
+      const container = document.getElementById("pairedBtList");
+      if (!window.AndroidBridge || typeof window.AndroidBridge.getPairedBluetoothDevicesJson !== "function") {
+        return;
+      }
+      try {
+        const devices = JSON.parse(window.AndroidBridge.getPairedBluetoothDevicesJson());
+        if (!devices.length) {
+          container.innerHTML = `<div style="font-size:12px; color:var(--text-muted);">No paired Bluetooth devices found (check Nearby Devices permission).</div>`;
+          return;
+        }
+        container.innerHTML = "";
+        devices.forEach(dev => {
+          const item = document.createElement("div");
+          item.className = "bt-item" + (dev.selected ? " selected" : "");
+          item.onclick = () => {
+            window.AndroidBridge.toggleVehicleBluetoothAddress(dev.address);
+            renderPairedBluetoothList();
+          };
+          const tagText = dev.selected ? "Vehicle ✓" : dev.isHeadphone ? "Audio (Ignored)" : "Tap to Select";
+          item.innerHTML = `<span>${dev.name}</span><span class="bt-tag">${tagText}</span>`;
+          container.appendChild(item);
+        });
+      } catch (_e) {}
+    }
+
+    function openSheet() {
+      document.getElementById("officeAddressInput").value = `${officeData.lat}, ${officeData.lng}`;
+      if (homeData) document.getElementById("homeAddressInput").value = `${homeData.lat}, ${homeData.lng}`;
+      renderPairedBluetoothList();
+      updateDndSetupButtonState();
+      document.getElementById("sheetBg").classList.add("open");
+    }
+    function closeSheet() { document.getElementById("sheetBg").classList.remove("open"); }
+
+    function updateDndSetupButtonState() {
+      const btn = document.getElementById("dndSetupBtn");
+      const granted = window.AndroidBridge && typeof window.AndroidBridge.isDndAccessGranted === "function"
+        ? window.AndroidBridge.isDndAccessGranted() : false;
+      btn.textContent = granted ? "DND Access Active · Tap to Manage/Disable" : "Enable Auto-DND & Silent Profile Access";
+      btn.style.color = granted ? "var(--emerald)" : "var(--violet)";
+    }
+
+    function handleDndSetupButton() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.openDndPolicySettings === "function") {
+        window.AndroidBridge.openDndPolicySettings();
+      }
+    }
+
+    function toggleManualRideMode() {
+      manualRideActive = !manualRideActive;
+      if (window.AndroidBridge && typeof window.AndroidBridge.setRideMode === "function") {
+        window.AndroidBridge.setRideMode(manualRideActive);
+      }
+      renderShieldBar(manualRideActive, false, false);
+    }
+
+    function renderShieldBar(active, btConn, moving) {
+      const bar = document.getElementById("shieldBar");
+      const title = document.getElementById("shieldTitle");
+      const sub = document.getElementById("shieldSub");
+      const btn = document.getElementById("shieldToggleBtn");
+
+      bar.classList.toggle("active", active);
+      if (active) {
+        title.textContent = "Drive Shield · SILENT / DND ON";
+        sub.textContent = "Vehicle moving & connected · Distractions blocked";
+        btn.textContent = "Stop";
+      } else if (btConn && !moving) {
+        title.textContent = "Drive Shield · Vehicle Idle";
+        sub.textContent = "Vehicle Bluetooth connected · Waiting for motion (>8 km/h)";
+        btn.textContent = "Test";
+      } else {
+        title.textContent = "Drive Shield · Standby";
+        sub.textContent = "Headphones ignored · Triggers only on Vehicle BT + Motion";
+        btn.textContent = "Test";
+      }
+    }
+
+    // ==================== TELEMETRY, WEATHER, PLANNER, SHIFT ====================
+    function pollNativeSensorState() {
+      if (!window.AndroidBridge || typeof window.AndroidBridge.getAutoParkingJson !== "function") return;
+      try {
+        const d = JSON.parse(window.AndroidBridge.getAutoParkingJson());
+        if (d.ts > 0 && d.ts >= parkState.ts) {
+          parkState.floor = d.floor || parkState.floor;
+          parkState.walkMeters = d.walkMeters || 0;
+          parkState.walkDir = d.walkDir || "";
+          parkState.ts = d.ts;
+          parkState.source = d.source || "Auto Sensor";
+          localStorage.setItem("lokiffice_park_floor", parkState.floor);
+          localStorage.setItem("lokiffice_park_ts", String(parkState.ts));
+          renderParkingCard();
+        }
+        if (!manualRideActive) {
+          renderShieldBar(Boolean(d.rideMode), Boolean(d.vehicleBtConnected), Boolean(d.isMoving));
+        }
+        if (d.alarmRinging) document.getElementById("alarmBanner").classList.add("ringing");
+      } catch (_e) {}
     }
 
     async function fetchFirebaseCrowdState() {
       try {
         const res = await fetch(`${firebaseUrl}/campus_parking/${todayIso()}/floors.json`);
         const floors = (await res.json()) || {};
-        const order = ["L4", "L3", "L2", "L1", "G"];
-        let bestFloor = "L2";
-        let minCount = Infinity;
-
-        order.forEach(f => {
-          const info = floors[f] || { count: 0 };
-          const count = Number(info.count) || 0;
-          floorCounts[f] = count;
-          if (count < minCount) {
-            minCount = count;
-            bestFloor = f;
-          }
+        ["G", "L1", "L2", "L3", "L4"].forEach(f => {
+          const c = Number(floors[f]?.count) || 0;
+          floorCounts[f] = c;
+          const badge = document.getElementById(`cnt-${f}`);
+          if (badge) badge.textContent = f === parkState.floor ? "HERE" : `${c} parked`;
         });
-        document.getElementById("hudBestFloor").textContent = `OPTIMAL: ${bestFloor}`;
       } catch (_e) {}
-    }
-
-    function pollNativeSensorState() {
-      if (window.AndroidBridge && typeof window.AndroidBridge.getAutoParkingJson === "function") {
-        try {
-          const data = JSON.parse(window.AndroidBridge.getAutoParkingJson());
-          if (data.floor && data.ts > 0) {
-            parkedFloor = data.floor;
-            parkVecX = Number(data.vecX) || 12.0;
-            parkVecY = Number(data.vecY) || 18.0;
-            const zMeters = { G: "0.0m", L1: "+3.5m", L2: "+7.0m", L3: "+10.5m", L4: "+14.0m" }[parkedFloor] || "+3.5m";
-            document.getElementById("hudFloorTag").textContent = `Z-LEVEL: ${parkedFloor}`;
-            document.getElementById("hudVectorTag").textContent = `VECTOR: ${parkVecX >= 0 ? "+" : ""}${parkVecX.toFixed(0)}m X · ${parkVecY >= 0 ? "+" : ""}${parkVecY.toFixed(0)}m Y`;
-            document.getElementById("coordX").textContent = `${parkVecX >= 0 ? "+" : ""}${parkVecX.toFixed(1)} m`;
-            document.getElementById("coordY").textContent = `${parkVecY >= 0 ? "+" : ""}${parkVecY.toFixed(1)} m`;
-            document.getElementById("coordZ").textContent = `${parkedFloor} (${zMeters})`;
-          }
-          if (!manualRideActive) {
-            renderRideBanner(Boolean(data.rideMode));
-          }
-          const banner = document.getElementById("alarmBanner");
-          if (data.alarmRinging) {
-            banner.classList.add("ringing");
-          }
-        } catch (_e) {}
-      }
-    }
-
-    function dismissActiveAlarm() {
-      document.getElementById("alarmBanner").classList.remove("ringing");
-      if (webOscillator) {
-        try { webOscillator.stop(); } catch (_e) {}
-        webOscillator = null;
-      }
-      if (window.AndroidBridge && typeof window.AndroidBridge.stopActiveAlarm === "function") {
-        window.AndroidBridge.stopActiveAlarm();
-      }
     }
 
     function setShiftHours(hrs, el) {
@@ -2099,24 +1773,20 @@
       localStorage.setItem("lokiffice_shift_hours", String(hrs));
       document.querySelectorAll("#shiftHoursSeg .seg-btn").forEach(b => b.classList.remove("active"));
       if (el) el.classList.add("active");
-      document.getElementById("shiftHeaderLabel").textContent = `${shiftHours}-Hour Shift Timer`;
-
       const saved = localStorage.getItem(todayKey());
-      if (saved && window.AndroidBridge && typeof window.AndroidBridge.scheduleShiftEndAlarm === "function") {
+      if (saved && window.AndroidBridge?.scheduleShiftEndAlarm) {
         window.AndroidBridge.scheduleShiftEndAlarm(Number(saved) + SHIFT_MS());
       }
       updatePlanner();
     }
 
-    async function geocodeInput(val, defaultLabel) {
-      const coordMatch = val.match(/^(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)$/);
-      if (coordMatch) {
-        return { lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), label: defaultLabel };
-      }
-      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=1`);
-      const data = await res.json();
-      if (data.features && data.features.length > 0) {
-        const [lng, lat] = data.features[0].geometry.coordinates;
+    async function geocodeInput(val, fallback) {
+      const m = val.match(/^(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)$/);
+      if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]), label: fallback };
+      const r = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=1`);
+      const d = await r.json();
+      if (d.features?.length) {
+        const [lng, lat] = d.features[0].geometry.coordinates;
         return { lat, lng, label: val };
       }
       return null;
@@ -2125,206 +1795,135 @@
     async function saveSettings() {
       const hVal = document.getElementById("homeAddressInput").value.trim();
       const oVal = document.getElementById("officeAddressInput").value.trim();
-      const fbVal = document.getElementById("firebaseUrlInput").value.trim();
       try {
-        if (fbVal) {
-          firebaseUrl = fbVal.replace(/\/+$/, "");
-          localStorage.setItem("lokiffice_fb_url", firebaseUrl);
-        }
         if (hVal) {
-          const parsedH = await geocodeInput(hVal, "Home Pin");
-          if (parsedH) {
-            homeData = parsedH;
-            localStorage.setItem("lokiffice_home", JSON.stringify(homeData));
-          }
+          const p = await geocodeInput(hVal, "Home");
+          if (p) { homeData = p; localStorage.setItem("lokiffice_home", JSON.stringify(homeData)); }
         }
         if (oVal) {
-          const parsedO = await geocodeInput(oVal, officeData.label);
-          if (parsedO) {
-            officeData = parsedO;
-            localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
-          }
+          const p = await geocodeInput(oVal, officeData.label);
+          if (p) { officeData = p; localStorage.setItem("lokiffice_office", JSON.stringify(officeData)); }
         }
-        syncNativeGeofence();
-      } catch (e) {}
+        if (window.AndroidBridge?.updateOfficeGeofence) {
+          window.AndroidBridge.updateOfficeGeofence(officeData.lat, officeData.lng, radiusMeters);
+        }
+      } catch (_e) {}
       closeSheet();
-      await fetchFirebaseCrowdState();
       await refreshLiveIntel();
     }
 
     function lockCurrentDeskAsOffice() {
-      if (!("geolocation" in navigator)) return;
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        officeData = {
-          lat: +pos.coords.latitude.toFixed(6),
-          lng: +pos.coords.longitude.toFixed(6),
-          label: "My Desk"
-        };
+      navigator.geolocation?.getCurrentPosition(pos => {
+        officeData = { lat: +pos.coords.latitude.toFixed(6), lng: +pos.coords.longitude.toFixed(6), label: "My Office" };
         localStorage.setItem("lokiffice_office", JSON.stringify(officeData));
-        syncNativeGeofence();
+        window.AndroidBridge?.updateOfficeGeofence?.(officeData.lat, officeData.lng, radiusMeters);
         closeSheet();
-        await refreshLiveIntel();
+        refreshLiveIntel();
       }, () => {}, { enableHighAccuracy: true });
     }
 
     function saveCurrentGPSAsHome() {
-      if (!("geolocation" in navigator)) return;
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        homeData = {
-          lat: +pos.coords.latitude.toFixed(6),
-          lng: +pos.coords.longitude.toFixed(6),
-          label: "My Home"
-        };
+      navigator.geolocation?.getCurrentPosition(pos => {
+        homeData = { lat: +pos.coords.latitude.toFixed(6), lng: +pos.coords.longitude.toFixed(6), label: "My Home" };
         localStorage.setItem("lokiffice_home", JSON.stringify(homeData));
         closeSheet();
-        await refreshLiveIntel();
+        refreshLiveIntel();
       });
     }
 
-    function findNearestTransitToHome() {
-      if (!homeData) return null;
-      let nearest = null;
-      let minMeters = Infinity;
-      RAPID_TRANSIT_STATIONS.forEach(st => {
-        const d = getDistanceMeters(homeData.lat, homeData.lng, st.lat, st.lng);
-        if (d < minMeters) {
-          minMeters = d;
-          nearest = { ...st, distKm: +(d / 1000).toFixed(1) };
-        }
-      });
-      return nearest;
-    }
-
-    function updateMapLaunchers() {
-      const destOffice = `${officeData.lat},${officeData.lng}`;
-      const originHome = homeData ? `&origin=${homeData.lat},${homeData.lng}` : "";
-      document.getElementById("gmapsToOffice").href =
-        `https://www.google.com/maps/dir/?api=1${originHome}&destination=${destOffice}&travelmode=driving`;
-
-      const destHome = homeData ? `${homeData.lat},${homeData.lng}` : "";
-      document.getElementById("gmapsToHome").href = destHome
-        ? `https://www.google.com/maps/dir/?api=1&origin=${destOffice}&destination=${destHome}&travelmode=driving`
-        : `https://www.google.com/maps/search/?api=1&query=Home`;
+    function getDistanceMeters(lat1, lon1, lat2, lon2) {
+      const R = 6371000;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
     async function refreshLiveIntel() {
-      document.getElementById("shiftHeaderLabel").textContent = `${shiftHours}-Hour Shift Timer`;
-      updateMapLaunchers();
+      const destOffice = `${officeData.lat},${officeData.lng}`;
+      const originHome = homeData ? `&origin=${homeData.lat},${homeData.lng}` : "";
+      document.getElementById("gmapsToOffice").href = `https://www.google.com/maps/dir/?api=1${originHome}&destination=${destOffice}&travelmode=driving`;
+      document.getElementById("gmapsToHome").href = homeData
+        ? `https://www.google.com/maps/dir/?api=1&origin=${destOffice}&destination=${homeData.lat},${homeData.lng}&travelmode=driving`
+        : `https://www.google.com/maps/search/?api=1&query=Home`;
 
       if (homeData) {
-        document.getElementById("homeLabel").textContent = homeData.label;
         try {
-          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${homeData.lng},${homeData.lat};${officeData.lng},${officeData.lat}?alternatives=true&overview=false`;
-          const rRes = await fetch(osrmUrl);
-          const rData = await rRes.json();
-          if (rData.routes && rData.routes.length > 0) {
-            const best = rData.routes[0];
-            state.distanceKm = +(best.distance / 1000).toFixed(1);
-            state.baseMins = Math.max(10, Math.round(best.duration / 60));
-            state.roadSummary = (best.legs && best.legs[0] && best.legs[0].summary) || "Primary Arterial Corridor";
+          const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${homeData.lng},${homeData.lat};${officeData.lng},${officeData.lat}?overview=false`);
+          const d = await r.json();
+          if (d.routes?.length) {
+            liveIntel.distanceKm = +(d.routes[0].distance / 1000).toFixed(1);
+            liveIntel.baseMins = Math.max(10, Math.round(d.routes[0].duration / 60));
+            liveIntel.roadSummary = d.routes[0].legs?.[0]?.summary || "Primary Corridor";
           }
-        } catch (e) {}
+        } catch (_e) {}
       }
 
       try {
-        const wxUrl = `https://api.open-meteo.com/v1/forecast?latitude=${officeData.lat}&longitude=${officeData.lng}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability&forecast_days=1`;
-        const wRes = await fetch(wxUrl);
-        const wData = await wRes.json();
-        if (wData.current) {
-          state.tempC = Math.round(wData.current.temperature_2m);
-          const currentRain = (wData.current.rain || 0) + (wData.current.precipitation || 0);
+        const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${officeData.lat}&longitude=${officeData.lng}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability&forecast_days=1`);
+        const d = await w.json();
+        if (d.current) {
+          liveIntel.tempC = Math.round(d.current.temperature_2m);
+          const rainNow = (d.current.rain || 0) + (d.current.precipitation || 0);
           const hr = new Date().getHours();
-          const nextProb = (wData.hourly && wData.hourly.precipitation_probability) ? (wData.hourly.precipitation_probability[hr] || 0) : 0;
-          state.rainProb = nextProb;
-          state.isRaining = currentRain > 0.1 || nextProb >= 55;
+          liveIntel.rainProb = d.hourly?.precipitation_probability?.[hr] || 0;
+          liveIntel.isRaining = rainNow > 0.1 || liveIntel.rainProb >= 55;
         }
-      } catch (e) {}
+      } catch (_e) {}
 
       const hr = new Date().getHours();
-      let factor = 1.15;
-      if ((hr >= 8 && hr <= 10) || (hr >= 17 && hr <= 20)) factor = 1.50;
-      else if (hr >= 11 && hr <= 16) factor = 1.25;
-      else factor = 1.05;
+      let f = (hr >= 8 && hr <= 10) || (hr >= 17 && hr <= 20) ? 1.5 : hr >= 11 && hr <= 16 ? 1.25 : 1.08;
+      if (liveIntel.isRaining) f += 0.2;
+      liveIntel.liveMins = Math.round(liveIntel.baseMins * f);
+      liveIntel.delayMins = Math.max(0, liveIntel.liveMins - liveIntel.baseMins);
+      liveIntel.trafficLevel = f >= 1.45 ? "Heavy" : f >= 1.22 ? "Moderate" : "Clear";
 
-      if (state.isRaining) factor += 0.20;
-
-      state.liveMins = Math.round(state.baseMins * factor);
-      state.delayMins = Math.max(0, state.liveMins - state.baseMins);
-
-      if (factor >= 1.45) state.trafficLevel = "Heavy";
-      else if (factor >= 1.22) state.trafficLevel = "Moderate";
-      else state.trafficLevel = "Clear";
-
-      renderInsights();
+      renderConditions();
       updatePlanner();
+      updateJarvisBriefingStrip();
     }
 
-    function renderInsights() {
-      document.getElementById("bufferPill").textContent = `${state.distanceKm} km · ${state.liveMins}m`;
-      document.getElementById("roadLabel").textContent = state.roadSummary;
+    function renderConditions() {
+      document.getElementById("bufferPill").textContent = `${liveIntel.distanceKm} km · ${liveIntel.liveMins}m`;
+      document.getElementById("roadLabel").textContent = liveIntel.roadSummary;
 
       const tBadge = document.getElementById("trafficBadge");
-      tBadge.textContent = state.delayMins > 0 ? `${state.trafficLevel} (+${state.delayMins}m)` : "Clear Flow";
-      tBadge.style.color = state.trafficLevel === "Heavy" ? "var(--tint-red)" :
-                           state.trafficLevel === "Moderate" ? "var(--tint-amber)" : "var(--tint-green)";
+      tBadge.textContent = liveIntel.delayMins > 0 ? `${liveIntel.trafficLevel} (+${liveIntel.delayMins}m)` : "Clear";
+      tBadge.style.color = liveIntel.trafficLevel === "Heavy" ? "var(--rose)" : liveIntel.trafficLevel === "Moderate" ? "var(--amber)" : "var(--emerald)";
 
-      document.getElementById("wxTemp").textContent = `${state.tempC}°C · ${state.rainProb}% Rain`;
-      document.getElementById("wxDesc").textContent = state.isRaining
-        ? "Wet road conditions detected. Added +20% transit buffer; covered transit advised."
-        : "Dry conditions along corridor. Standard road grip and clear visibility.";
+      document.getElementById("wxTemp").textContent = `${liveIntel.tempC}°C · ${liveIntel.rainProb}% Rain`;
+      document.getElementById("wxDesc").textContent = liveIntel.isRaining
+        ? "Rain likely along your route. Added +20% transit buffer."
+        : "Dry skies and clear road conditions around campus.";
 
+      let nearest = null;
+      if (homeData) {
+        let minM = Infinity;
+        RAPID_TRANSIT_STATIONS.forEach(s => {
+          const d = getDistanceMeters(homeData.lat, homeData.lng, s.lat, s.lng);
+          if (d < minM) { minM = d; nearest = { ...s, distKm: +(d / 1000).toFixed(1) }; }
+        });
+      }
+      const hasMetro = nearest && nearest.distKm <= 2.5;
       const tTitle = document.getElementById("transitTitle");
       const tReason = document.getElementById("transitReason");
 
-      const nearestMetro = findNearestTransitToHome();
-      const hasMetroAccess = nearestMetro && nearestMetro.distKm <= 2.5;
-
       if (!homeData) {
-        tTitle.textContent = "Personal Vehicle / Two-Wheeler";
-        tReason.textContent = "Set your Home Pin in Setup to check rapid transit / Metro coverage.";
-      } else if (!hasMetroAccess) {
-        if (state.isRaining) {
-          tTitle.textContent = "Covered Cab / Car (No Metro Nearby)";
-          tReason.textContent = `Nearest rapid transit (${nearestMetro.name}) is ${nearestMetro.distKm} km from home—too far for walk/feeder in rain (${state.rainProb}%).`;
-        } else {
-          tTitle.textContent = "Personal Vehicle Direct Route";
-          tReason.textContent = `Nearest station (${nearestMetro.name}) is ${nearestMetro.distKm} km away. Direct road commute is fastest (${state.liveMins}m).`;
-        }
+        tTitle.textContent = "Personal Vehicle";
+        tReason.textContent = "Save your Home location in Setup for live route & transit checks.";
+      } else if (!hasMetro) {
+        tTitle.textContent = liveIntel.isRaining ? "Cab / Covered Ride" : "Personal Vehicle (Direct)";
+        tReason.textContent = `Nearest metro (${nearest.name}) is ${nearest.distKm} km away — direct road commute is fastest (${liveIntel.liveMins}m).`;
       } else {
-        if (state.isRaining) {
-          tTitle.textContent = `Rapid Transit / Metro (${nearestMetro.line} Line)`;
-          tReason.textContent = `Rain risk (${state.rainProb}%). ${nearestMetro.name} station is ${nearestMetro.distKm} km from home—use rail + feeder.`;
-        } else if (state.trafficLevel === "Heavy") {
-          tTitle.textContent = `Two-Wheeler or ${nearestMetro.name} Metro`;
-          tReason.textContent = `Peak congestion (+${state.delayMins}m). ${nearestMetro.name} (${nearestMetro.distKm} km away) bypasses road gridlock.`;
-        } else {
-          tTitle.textContent = "Personal Vehicle / Two-Wheeler";
-          tReason.textContent = `Smooth ${state.liveMins}m commute (${nearestMetro.name} station ${nearestMetro.distKm} km away available as backup).`;
-        }
+        tTitle.textContent = liveIntel.isRaining ? `${nearest.name} Metro (${nearest.line})` : "Vehicle or Metro";
+        tReason.textContent = `${nearest.name} station is ${nearest.distKm} km from home.`;
       }
     }
 
-    function speakBriefing() {
-      const leave = document.getElementById("leaveHome").textContent;
-      const mode = document.getElementById("transitTitle").textContent;
-      const isCheckedIn = Boolean(localStorage.getItem(todayKey()));
-      const text = isCheckedIn
-        ? `LOKIFFICE briefing. You are checked in at the office. Vehicle parked on ${parkedFloor}.`
-        : `LOKIFFICE briefing. Leave home by ${leave}, estimated travel ${state.liveMins} minutes via ${mode}.`;
-
-      if (window.AndroidBridge && typeof window.AndroidBridge.speak === "function") {
-        window.AndroidBridge.speak(text);
-        return;
-      }
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-      }
-    }
-
+    const homeInput = document.getElementById("homeBy");
     function setPreset(val, el) {
       homeInput.value = val;
-      document.querySelectorAll(".target-controls .seg-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#preCommuteCard .seg-btn").forEach(b => b.classList.remove("active"));
       if (el) el.classList.add("active");
       updatePlanner();
     }
@@ -2332,9 +1931,8 @@
     function updatePlanner() {
       const [h, m] = homeInput.value.split(":").map(Number);
       if (isNaN(h)) return;
-      const travelMs = state.liveMins * 60 * 1000;
-      const back = new Date();
-      back.setHours(h, m, 0, 0);
+      const travelMs = liveIntel.liveMins * 60000;
+      const back = new Date(); back.setHours(h, m, 0, 0);
       const out = new Date(back.getTime() - travelMs);
       const inn = new Date(out.getTime() - SHIFT_MS());
       const leave = new Date(inn.getTime() - travelMs);
@@ -2344,149 +1942,98 @@
       document.getElementById("officeOut").textContent = format12(out);
       document.getElementById("backHome").textContent = format12(back);
     }
-    homeInput.addEventListener("input", () => {
-      document.querySelectorAll(".target-controls .seg-btn").forEach(b => b.classList.remove("active"));
-      updatePlanner();
-    });
-
-    function getDistanceMeters(lat1, lon1, lat2, lon2) {
-      const R = 6371000;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2)**2 +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2)**2;
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    }
+    homeInput.addEventListener("input", updatePlanner);
 
     function startShift(ts) {
       if (!localStorage.getItem(todayKey())) {
         localStorage.setItem(todayKey(), String(ts));
         shiftAlarmFiredToday = false;
-        if ("Notification" in window && Notification.permission === "default") {
-          Notification.requestPermission().catch(() => {});
-        }
-        if (window.AndroidBridge && typeof window.AndroidBridge.scheduleShiftEndAlarm === "function") {
-          window.AndroidBridge.scheduleShiftEndAlarm(ts + SHIFT_MS());
-        }
-        updateContextWorkspace();
+        window.AndroidBridge?.scheduleShiftEndAlarm?.(ts + SHIFT_MS());
+        updateAdaptiveTodayUI();
         renderStreak();
       }
     }
-
     function manualLogin() { startShift(Date.now()); }
-
     function adjustIn(mins) {
-      const saved = localStorage.getItem(todayKey());
-      const base = saved ? Number(saved) : Date.now();
+      const base = Number(localStorage.getItem(todayKey()) || Date.now());
       const updated = base + mins * 60000;
       localStorage.setItem(todayKey(), String(updated));
       shiftAlarmFiredToday = false;
-      if (window.AndroidBridge && typeof window.AndroidBridge.scheduleShiftEndAlarm === "function") {
-        window.AndroidBridge.scheduleShiftEndAlarm(updated + SHIFT_MS());
-      }
-      updateContextWorkspace();
+      window.AndroidBridge?.scheduleShiftEndAlarm?.(updated + SHIFT_MS());
+      updateAdaptiveTodayUI();
+    }
+    function resetShift() {
+      localStorage.removeItem(todayKey());
+      dismissActiveAlarm();
+      window.AndroidBridge?.cancelShiftEndAlarm?.();
+      updateAdaptiveTodayUI();
       renderStreak();
     }
 
-    function resetShift() {
-      localStorage.removeItem(todayKey());
-      shiftAlarmFiredToday = false;
-      dismissActiveAlarm();
-      if (window.AndroidBridge && typeof window.AndroidBridge.cancelShiftEndAlarm === "function") {
-        window.AndroidBridge.cancelShiftEndAlarm();
-      }
-      const hrsStr = String(shiftHours).padStart(2, "0");
-      document.getElementById("countdown").textContent = `${hrsStr}:00:00`;
-      document.getElementById("shiftInfo").textContent = "Awaiting arrival at office";
-      document.getElementById("ringProgress").style.strokeDashoffset = CIRCUMFERENCE;
-      document.getElementById("pctLabel").textContent = "0%";
-      updateContextWorkspace();
-      renderStreak();
+    function dismissActiveAlarm() {
+      document.getElementById("alarmBanner").classList.remove("ringing");
+      try { webOscillator?.stop(); } catch (_e) {}
+      webOscillator = null;
+      window.AndroidBridge?.stopActiveAlarm?.();
     }
 
     function triggerShiftCompleteChime() {
       if (shiftAlarmFiredToday) return;
       shiftAlarmFiredToday = true;
       document.getElementById("alarmBanner").classList.add("ringing");
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.25, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        webOscillator = osc;
-        setTimeout(() => { try { osc.stop(); } catch (_e) {} }, 15000);
-      } catch (_e) {}
+    }
+
+    function speakBriefing() {
+      const text = document.getElementById("jarvisBriefingStrip").textContent;
+      if (window.AndroidBridge?.speak) window.AndroidBridge.speak(text);
+      else if ("speechSynthesis" in window) window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
     }
 
     function exportCompliance() {
-      const lines = ["LOKIFFICE Hybrid Attendance Log", "Date,Check-In Time,Target Out Time"];
+      const lines = ["Date,Check-In,Target-Out"];
       Object.keys(localStorage).sort().forEach(k => {
         if (k.startsWith("lokiffice_in_")) {
-          const dateStr = k.replace("lokiffice_in_", "");
-          const inTs = Number(localStorage.getItem(k));
-          const outTs = inTs + SHIFT_MS();
-          lines.push(`${dateStr},${format12(new Date(inTs))},${format12(new Date(outTs))}`);
+          const ts = Number(localStorage.getItem(k));
+          lines.push(`${k.replace("lokiffice_in_", "")},${format12(new Date(ts))},${format12(new Date(ts + SHIFT_MS()))}`);
         }
       });
-      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "LOKIFFICE-Attendance-Log.csv";
+      a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" }));
+      a.download = "LOKIFFICE-Attendance.csv";
       a.click();
-    }
-
-    function requestGPS() {
-      const dot = document.getElementById("gpsDot");
-      const lbl = document.getElementById("gpsLabel");
-      if (!("geolocation" in navigator)) return;
-      navigator.geolocation.watchPosition(
-        (pos) => {
-          const dist = Math.round(getDistanceMeters(
-            pos.coords.latitude, pos.coords.longitude, officeData.lat, officeData.lng
-          ));
-          if (dist <= radiusMeters) {
-            dot.classList.remove("away");
-            lbl.textContent = "At Office";
-            startShift(Date.now());
-          } else {
-            dot.classList.add("away");
-            lbl.textContent = (dist / 1000).toFixed(1) + " km";
-          }
-        },
-        () => {},
-        { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
-      );
     }
 
     function renderStreak() {
       const bar = document.getElementById("streakBar");
       bar.innerHTML = "";
-      const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const labels = ["M", "T", "W", "T", "F", "S", "S"];
       const now = new Date();
       const todayIdx = (now.getDay() + 6) % 7;
-
       for (let i = 0; i < 7; i++) {
         const d = new Date(now);
         d.setDate(now.getDate() - (todayIdx - i));
-        const key = "lokiffice_in_" + d.toISOString().slice(0, 10);
-        const isDone = Boolean(localStorage.getItem(key));
-
+        const done = Boolean(localStorage.getItem("lokiffice_in_" + d.toISOString().slice(0, 10)));
         const cell = document.createElement("div");
-        cell.className = "day-cell" + (isDone ? " done" : "") + (i === todayIdx ? " today" : "");
-        cell.innerHTML = `
-          <span>${labels[i]}</span>
-          <div class="day-check">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-        `;
+        cell.className = "day-pill" + (done ? " done" : "") + (i === todayIdx ? " today" : "");
+        cell.innerHTML = `<span>${labels[i]}</span><div class="day-dot">✓</div>`;
         bar.appendChild(cell);
       }
+    }
+
+    function requestGPS() {
+      const dot = document.getElementById("gpsDot");
+      const lbl = document.getElementById("gpsLabel");
+      navigator.geolocation?.watchPosition(pos => {
+        const dist = Math.round(getDistanceMeters(pos.coords.latitude, pos.coords.longitude, officeData.lat, officeData.lng));
+        if (dist <= radiusMeters) {
+          dot.classList.remove("away");
+          lbl.textContent = "At Office";
+          startShift(Date.now());
+        } else {
+          dot.classList.add("away");
+          lbl.textContent = (dist / 1000).toFixed(1) + " km";
+        }
+      }, () => {}, { enableHighAccuracy: true, maximumAge: 10000 });
     }
 
     setInterval(() => {
@@ -2496,46 +2043,37 @@
       const inTime = Number(saved);
       const outTime = inTime + SHIFT_MS();
       const rem = Math.max(0, outTime - Date.now());
-      const elapsed = Math.min(SHIFT_MS(), Math.max(0, Date.now() - inTime));
-      const pct = Math.round((elapsed / SHIFT_MS()) * 100);
+      const pct = Math.round((Math.min(SHIFT_MS(), Math.max(0, Date.now() - inTime)) / SHIFT_MS()) * 100);
 
-      document.getElementById("ringProgress").style.strokeDashoffset =
-        CIRCUMFERENCE - (CIRCUMFERENCE * pct) / 100;
+      document.getElementById("ringProgress").style.strokeDashoffset = CIRCUMFERENCE - (CIRCUMFERENCE * pct) / 100;
       document.getElementById("pctLabel").textContent = `${pct}%`;
-      document.getElementById("shiftInfo").textContent =
-        `In ${format12(new Date(inTime))} · Out ${format12(new Date(outTime))}`;
+      document.getElementById("shiftInfo").textContent = `In ${format12(new Date(inTime))} · Done at ${format12(new Date(outTime))}`;
 
       if (rem === 0) {
         document.getElementById("countdown").textContent = "00:00:00";
         triggerShiftCompleteChime();
       } else {
-        const hrs = String(Math.floor(rem / 3600000)).padStart(2, "0");
-        const mins = String(Math.floor((rem % 3600000) / 60000)).padStart(2, "0");
-        const secs = String(Math.floor((rem % 60000) / 1000)).padStart(2, "0");
-        document.getElementById("countdown").textContent = `${hrs}:${mins}:${secs}`;
+        const h = String(Math.floor(rem / 3600000)).padStart(2, "0");
+        const m = String(Math.floor((rem % 3600000) / 60000)).padStart(2, "0");
+        const s = String(Math.floor((rem % 60000) / 1000)).padStart(2, "0");
+        document.getElementById("countdown").textContent = `${h}:${m}:${s}`;
       }
     }, 1000);
 
     setInterval(fetchFirebaseCrowdState, 20000);
     window.addEventListener("focus", updateDndSetupButtonState);
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+    if (localStorage.getItem("lokiffice_ai_cached") === "1") initOfflineWebGPUModel();
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
-    }
-
-    if (localStorage.getItem("lokiffice_ai_cached") === "1") {
-      initOfflineWebGPUModel();
-    }
-
-    updateContextWorkspace();
-    renderSciFi3DParking();
-    renderRideBanner(false);
+    updateGreeting();
+    updateAdaptiveTodayUI();
+    renderParkingCard();
+    renderShieldBar(false, false, false);
     fetchFirebaseCrowdState();
-    refreshSmsSpendDashboard(true);
+    refreshSmsSpendDashboard();
     renderStreak();
     refreshLiveIntel();
     requestGPS();
-    syncNativeGeofence();
   </script>
 </body>
 </html>

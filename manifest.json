@@ -1,11 +1,11 @@
 {
   "name": "LOKIFFICE",
   "short_name": "LOKIFFICE",
-  "description": "Global Work-Life OS with Calendar-Month Masked SMS Analytics, Sci-Fi 3D XYZ Parking Matrix, and Offline WebGPU Copilot.",
+  "description": "J.A.R.V.I.S. Adaptive Work-Life OS — Smart Drive Shield, Natural Parking Locator, Accurate ₹ Spend Analytics & Local AI.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#05070B",
+  "theme_color": "#05070B",
   "orientation": "portrait",
   "icons": [
     {
